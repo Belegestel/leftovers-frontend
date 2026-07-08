@@ -12,8 +12,13 @@ import {
 import logo from '@/assets/logo.svg';
 import SearchIcon from '@mui/icons-material/Search';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import AddIcon from '@mui/icons-material/Add';
 import { useState } from 'react';
 import { useRecipeCategories } from '@/hooks/useRecipeCategories';
+import { isAuthenticated, removeToken } from '@/auth/authService';
+import { useNavigate } from 'react-router';
+
+const authenticated = await isAuthenticated();
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
@@ -42,8 +47,14 @@ const Logo = styled('img')({
 });
 
 export function NavBar() {
+  const navigate = useNavigate();
   const [recipesAnchor, setRecipesAnchor] = useState<null | HTMLElement>(null);
+  const [myAccountAnchor, setMyAccountAnchor] = useState<null | HTMLElement>(
+    null
+  );
   const [searchQuery, setSearchQuery] = useState('');
+
+
   const { categories } = useRecipeCategories();
 
   const handleSearch = () => {
@@ -78,6 +89,11 @@ export function NavBar() {
         <Spacer />
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          {authenticated && (
+            <Button color="primary" startIcon={<AddIcon />}>
+              Add recipe
+            </Button>
+          )}
           <Button
             color="inherit"
             endIcon={<KeyboardArrowDownIcon />}
@@ -93,7 +109,7 @@ export function NavBar() {
             {categories.map((category) => (
               <MenuItem
                 key={category.name}
-                onClick={(event) => {
+                onClick={() => {
                   console.log('Clicked', category.name);
                   setRecipesAnchor(null);
                 }}
@@ -102,8 +118,37 @@ export function NavBar() {
               </MenuItem>
             ))}
           </Menu>
-          <Button color="primary">Login</Button>
-          <Button variant="contained"> Sign up </Button>
+          {authenticated ? (
+            <>
+              <Button variant="contained" endIcon={<KeyboardArrowDownIcon />} onClick={(event) => setMyAccountAnchor(event.currentTarget)}>
+                My account
+              </Button>
+              <Menu
+                anchorEl={myAccountAnchor}
+                open={Boolean(myAccountAnchor)}
+                onClose={() => setMyAccountAnchor(null)}
+              >
+                <MenuItem key='saved-recipes' onClick={() => {
+                  console.log('Clicked saved recipes');
+                  navigate('/saved');
+                }}>Saved recipes</MenuItem>
+                <MenuItem key='my-recipes' onClick={() => {
+                  console.log('Clicked my recipes');
+                  navigate('/my-recipes');
+                }}>My recipes</MenuItem>
+                <MenuItem key='log-out' onClick={() => {
+                  removeToken();
+                  navigate('/');
+                  setMyAccountAnchor(null);
+                }}>Log out</MenuItem>
+              </Menu>
+            </>
+          ) : (
+            <>
+              <Button color="primary">Log in</Button>
+              <Button variant="contained"> Sign up </Button>
+            </>
+          )}
         </Box>
       </Toolbar>
     </StyledAppBar>

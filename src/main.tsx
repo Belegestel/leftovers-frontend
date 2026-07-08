@@ -11,5 +11,5 @@ if (!rootElement) {
 ReactDOM.createRoot(rootElement).render(
   <AppProviders>
     <RouterProvider router={router} />
-  </AppProviders>,
+  </AppProviders>
 );

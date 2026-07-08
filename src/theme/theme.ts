@@ -26,7 +26,7 @@ export const theme = createTheme({
     button: { fontWeight: 600, textTransform: 'none' },
   },
   shape: {
-    borderRadius: 10,
+    borderRadius: 4,
   },
 
   components: {
@@ -52,7 +52,7 @@ export const theme = createTheme({
     MuiCard: {
       styleOverrides: {
         root: {
-          borderRadius: 12,
+          borderRadius: 4,
           boxShadow: '0 2px 12px rgba(0,0,0,0.08)',
         },
       },

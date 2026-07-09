@@ -5,8 +5,6 @@ import {
   Box,
   Link,
   Dialog,
-  DialogContent,
-  DialogTitle,
   IconButton,
   InputAdornment,
   TextField,
@@ -29,7 +27,7 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [termsAccepted, setTermsAccepted] = useState(false);
-  const [showPassowrd, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -50,9 +48,6 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
         message:
           "You've successfully registered on our website. To complete the registration process, please check your email 📬",
       });
-      setEmail('');
-      setPassword('');
-      setTermsAccepted(false);
       onClose();
     } catch (error) {
       showSnackbar({
@@ -81,7 +76,7 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
           Sign up
         </Typography>
 
-        <Typography variant="body2" color="text.secondary" sx={{paddingBottom:3}}>
+        <Typography variant="body2" color="text.secondary">
           Create an account for free
         </Typography>
 
@@ -90,8 +85,10 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
           placeholder="Enter your email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          slotProps={{inputLabel:{shrink:true}}}
           fullWidth
+          slotProps={{
+            inputLabel: { shrink: true },
+          }}
           sx={{
             '& .MuiOutlinedInput-root': {
               '& fieldset': {
@@ -108,7 +105,7 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
           label="Password*"
           placeholder="Create a password"
           value={password}
-          type={showPassowrd ? 'text' : 'password'}
+          type={showPassword ? 'text' : 'password'}
           onChange={(event) => setPassword(event.target.value)}
           fullWidth
           sx={{
@@ -126,16 +123,19 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
             input: {
               endAdornment: (
                 <InputAdornment position="end">
+                  {' '}
                   <IconButton
+                  aria-label='toggle password visibility'
                     onClick={() => setShowPassword((previous) => !previous)}
                     edge="end"
                   >
-                    {showPassowrd ? (
+                    {' '}
+                    {showPassword ? (
                       <VisibilityOffOutlinedIcon />
                     ) : (
                       <VisibilityOutlinedIcon />
-                    )}
-                  </IconButton>
+                    )}{' '}
+                  </IconButton>{' '}
                 </InputAdornment>
               ),
             },

@@ -6,6 +6,7 @@ import { describe, expect, it, vi } from 'vitest';
 import '@testing-library/jest-dom/vitest';
 
 const mockedNavigate = vi.fn();
+const mockedLocation = vi.fn();
 
 vi.mock('@/auth/authService', () => ({
   isAuthenticated: vi.fn(),
@@ -13,6 +14,7 @@ vi.mock('@/auth/authService', () => ({
 }));
 vi.mock('react-router', () => ({
   useNavigate: () => mockedNavigate,
+  useLocation: () => mockedLocation,
 }));
 vi.mock('@/hooks/useRecipeCategories', () => ({
   useRecipeCategories: () => ({

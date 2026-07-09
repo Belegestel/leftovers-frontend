@@ -16,7 +16,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
 import { useRecipeCategories } from '@/hooks/useRecipeCategories';
 import { isAuthenticated, removeToken } from '@/auth/authService';
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
@@ -46,6 +46,7 @@ const Logo = styled('img')({
 
 export function NavBar() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [recipesAnchor, setRecipesAnchor] = useState<null | HTMLElement>(null);
   const [myAccountAnchor, setMyAccountAnchor] = useState<null | HTMLElement>(
     null
@@ -170,7 +171,18 @@ export function NavBar() {
           ) : (
             <>
               <Button color="primary">Log in</Button>
-              <Button variant="contained"> Sign up </Button>
+              <Button
+                variant="contained"
+                onClick={() =>
+                  navigate({
+                    pathname: location.pathname,
+                    search: '?signup=true'
+                  })
+                }
+              >
+                {' '}
+                Sign up{' '}
+              </Button>
             </>
           )}
         </Box>

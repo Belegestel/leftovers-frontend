@@ -110,7 +110,7 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
           type={showPassword ? 'text' : 'password'}
           onChange={(event) => setPassword(event.target.value)}
           fullWidth
-          error={password.length < 8}
+          error={password.length < 8 && password.length > 0}
           sx={{
             '& .MuiOutlinedInput-root': {
               '& fieldset': {
@@ -190,7 +190,7 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
           )}
         </Button>
 
-        <Typography variant="body2" sx={{ mt: 1, textAlign: 'center' }}>
+        <Typography variant="body2" sx={{ mt: 1, textAlign: 'left' }}>
           Already have an account?{' '}
           <Link
             href={`${location.pathname}?login=true`}

@@ -187,7 +187,7 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
 
           <Typography variant="body2">Remember me</Typography>
         </Box>
-        <Typography variant="body2" sx={{ mt: 1, textAlign: 'center' }}>
+        <Typography variant="body2" sx={{ mt: 1, textAlign: 'left' }}>
           Don't have an account yet?{' '}
           <Link
             href={`${location.pathname}?signup=true`}

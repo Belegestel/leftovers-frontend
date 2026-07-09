@@ -144,9 +144,9 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
             },
           }}
         />
-        {password.length < 8 && (<Typography sx={{fontSize:12, color:'error.main'}}>Minimum password length is 8</Typography>)}
+        {password.length < 8 && password.length > 0 && (<Typography sx={{fontSize:12, color:'error.main'}}>Minimum password length is 8</Typography>)}
 
-        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, justifyContent: 'left'}}>
           <input
             type="checkbox"
             checked={termsAccepted}
@@ -181,7 +181,7 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
           variant="contained"
           disabled={!canSubmit}
           onClick={handleSubmit}
-          sx={{ mt: 1, height: 44 }}
+          sx={{ mt: 1, height: 44 , width: 220}}
         >
           {loading ? (
             <CircularProgress size={22} color="inherit" />

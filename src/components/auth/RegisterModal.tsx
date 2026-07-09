@@ -85,6 +85,7 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
           placeholder="Enter your email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
+          error={!emailValid && email.length > 0}
           fullWidth
           slotProps={{
             inputLabel: { shrink: true },
@@ -100,6 +101,7 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
             },
           }}
         />
+        {(!emailValid && email.length > 0) && (<Typography sx={{fontSize:12, color:'error.main'}}>Enter a valid email</Typography>)}
 
         <TextField
           label="Password*"
@@ -108,6 +110,7 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
           type={showPassword ? 'text' : 'password'}
           onChange={(event) => setPassword(event.target.value)}
           fullWidth
+          error={password.length < 8}
           sx={{
             '& .MuiOutlinedInput-root': {
               '& fieldset': {
@@ -141,8 +144,9 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
             },
           }}
         />
+        {password.length < 8 && password.length > 0 && (<Typography sx={{fontSize:12, color:'error.main'}}>Minimum password length is 8</Typography>)}
 
-        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, justifyContent: 'left'}}>
           <input
             type="checkbox"
             checked={termsAccepted}
@@ -177,7 +181,7 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
           variant="contained"
           disabled={!canSubmit}
           onClick={handleSubmit}
-          sx={{ mt: 1, height: 44 }}
+          sx={{ mt: 1, height: 44 , width: 220}}
         >
           {loading ? (
             <CircularProgress size={22} color="inherit" />

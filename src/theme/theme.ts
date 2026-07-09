@@ -14,6 +14,7 @@ export const theme = createTheme({
       primary: '#111111',
       secondary: '#666666',
     },
+    divider: '#aaaaaa',
   },
   typography: {
     fontFamily: ['Poppins', 'Roboto', 'Arial', 'sans-serif'].join(','),
@@ -26,7 +27,7 @@ export const theme = createTheme({
     button: { fontWeight: 600, textTransform: 'none' },
   },
   shape: {
-    borderRadius: 10,
+    borderRadius: 4,
   },
 
   components: {
@@ -52,7 +53,7 @@ export const theme = createTheme({
     MuiCard: {
       styleOverrides: {
         root: {
-          borderRadius: 12,
+          borderRadius: 4,
           boxShadow: '0 2px 12px rgba(0,0,0,0.08)',
         },
       },

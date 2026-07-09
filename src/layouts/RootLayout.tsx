@@ -3,6 +3,7 @@ import { Box, Container } from '@mui/material';
 import { NavBar } from '@/components/navigation/NavBar';
 import { Footer } from '@/components/footer/Footer';
 import { RegisterModal } from '@/components/auth/RegisterModal';
+import { LoginModal } from '@/components/auth/LoginModal';
 
 export function RootLayout() {
   const location = useLocation();
@@ -10,6 +11,8 @@ export function RootLayout() {
 
   const signupOpen =
     new URLSearchParams(location.search).get('signup') === 'true';
+  const loginOpen =
+    new URLSearchParams(location.search).get('login') === 'true';
 
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -24,6 +27,13 @@ export function RootLayout() {
       <RegisterModal
         open={signupOpen}
         onClose={() => navigate({ pathname: location.pathname, search: '' })}
+      />
+      <LoginModal
+        open={loginOpen}
+        onClose={() => {
+          navigate(window.location.pathname, {replace:true})
+          window.location.reload()
+        }}
       />
     </Box>
   );

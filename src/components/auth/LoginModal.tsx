@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useSnackbar } from '../common/SnackbarProvider';
-import { register } from '@/services/authService';
+import { login } from '@/services/authService';
 import {
   Box,
   Link,
@@ -15,43 +15,39 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import { setToken } from '@/services/tokenService';
 
-interface RegisterModalProps {
+interface LoginModalProps {
   open: boolean;
   onClose: () => void;
 }
 
-export function RegisterModal({ open, onClose }: RegisterModalProps) {
+export function LoginModal({ open, onClose }: LoginModalProps) {
   const showSnackbar = useSnackbar();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-  const canSubmit =
-    emailValid && password.length > 8 && termsAccepted && !loading;
+  const canSubmit = emailValid && password.length > 0 && !loading;
 
   const handleSubmit = async () => {
     if (!canSubmit) return;
     try {
       setLoading(true);
-      await register({
+      const response = await login({
         email,
         password,
       });
-
-      showSnackbar({
-        message:
-          "You've successfully registered on our website. To complete the registration process, please check your email 📬",
-      });
+      setToken(response.accessToken, rememberMe);
       onClose();
     } catch (error) {
       showSnackbar({
-        message: 'Registration failed. Please try again.',
+        message: 'Login failed. Please try again.',
       });
     } finally {
       setLoading(false);
@@ -73,17 +69,14 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         <Typography variant="h4" sx={{ font: 'Poppins', fontWeight: 600 }}>
-          Sign up
-        </Typography>
-
-        <Typography variant="body2" color="text.secondary">
-          Create an account for free
+          Log in
         </Typography>
 
         <TextField
           label="E-mail address*"
           placeholder="Enter your email"
           value={email}
+          error={!emailValid && email.length > 0}
           onChange={(event) => setEmail(event.target.value)}
           fullWidth
           slotProps={{
@@ -101,9 +94,15 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
           }}
         />
 
+        {!emailValid && email.length > 0 && (
+          <Typography sx={{ fontSize: 12, color: 'error.main' }}>
+            Enter a valid email
+          </Typography>
+        )}
+
         <TextField
           label="Password*"
-          placeholder="Create a password"
+          placeholder="Enter your password"
           value={password}
           type={showPassword ? 'text' : 'password'}
           onChange={(event) => setPassword(event.target.value)}
@@ -125,7 +124,7 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
                 <InputAdornment position="end">
                   {' '}
                   <IconButton
-                  aria-label='toggle password visibility'
+                    aria-label="toggle password visibility"
                     onClick={() => setShowPassword((previous) => !previous)}
                     edge="end"
                   >
@@ -141,62 +140,42 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
             },
           }}
         />
-
-        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
-          <input
-            type="checkbox"
-            checked={termsAccepted}
-            onChange={(event) => setTermsAccepted(event.target.checked)}
-            style={{ marginTop: 4 }}
-          />
-
-          <Typography variant="body2">
-            {' '}
-            Acceptance of{' '}
-            <Link
-              href="/tos"
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{ color: 'text.primary', fontWeight: 'bold' }}
-            >
-              Terms & conditions
-            </Link>{' '}
-            and{' '}
-            <Link
-              href="/privacy"
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{ color: 'text.primary', fontWeight: 'bold' }}
-            >
-              Privacy Policy
-            </Link>{' '}
-          </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Link href="#" sx={{ color: 'text.secondary', fontSize: 12 }}>
+            Forgot your password?
+          </Link>
         </Box>
 
         <Button
           variant="contained"
           disabled={!canSubmit}
           onClick={handleSubmit}
-          sx={{ mt: 1, height: 44 }}
+          sx={{ mt: 1, height: 32, width: 80 }}
         >
-          {loading ? (
-            <CircularProgress size={22} color="inherit" />
-          ) : (
-            'Create an account'
-          )}
+          {loading ? <CircularProgress size={22} color="inherit" /> : 'Log in'}
         </Button>
 
+        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
+          <input
+            type="checkbox"
+            checked={rememberMe}
+            onChange={(event) => setRememberMe(event.target.checked)}
+            style={{ marginTop: 4 }}
+          />
+
+          <Typography variant="body2">Remember me</Typography>
+        </Box>
         <Typography variant="body2" sx={{ mt: 1, textAlign: 'center' }}>
-          Already have an account?{' '}
+          Don't have an account yet?{' '}
           <Link
-            href={`${location.pathname}?login=true`}
+            href={`${location.pathname}?signup=true`}
             sx={{
               fontWeight: 'bold',
               color: 'text.primary',
             }}
             underline="always"
           >
-            Login
+            Create an account
           </Link>
         </Typography>
       </Box>

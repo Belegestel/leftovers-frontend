@@ -142,13 +142,23 @@ export function NavBar() {
             </>
           ) : (
             <>
-              <Button color="primary">Log in</Button>
+              <Button
+                color="primary"
+                onClick={() =>
+                  navigate({
+                    pathname: location.pathname,
+                    search: '?login=true',
+                  })
+                }
+              >
+                Log in
+              </Button>
               <Button
                 variant="contained"
                 onClick={() =>
                   navigate({
                     pathname: location.pathname,
-                    search: '?signup=true'
+                    search: '?signup=true',
                   })
                 }
               >

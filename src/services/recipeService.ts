@@ -8,7 +8,7 @@ export class RecipeCategory {
   }
 }
 
-type RecipeCategoriesResponse = { categories: string };
+type RecipeCategoriesResponse = { categories: string[] };
 
 export async function getRecipeCategories(): Promise<RecipeCategory[]> {
   const response = await httpService.get<RecipeCategoriesResponse>(

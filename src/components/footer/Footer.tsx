@@ -44,13 +44,13 @@ export function Footer() {
 
       <Typography variant="body2">contact@leftovers.com</Typography>
 
-      <Box sx={{ height: 20, width: '1px', bgcolor: '#888888', mx: 1 }} />
+      <Box sx={{ height: 20, width: '1px', bgcolor: 'divider', mx: 1 }} />
 
       <Link href="/tos" underline="hover" color="text.primary">
         Terms of Service
       </Link>
 
-      <Box sx={{ height: 20, width: '1px', bgcolor: '#888888', mx: 1 }} />
+      <Box sx={{ height: 20, width: '1px', bgcolor: 'divider', mx: 1 }} />
 
       <Link href="/privacy" underline="hover" color="text.primary">
         Privacy Policy

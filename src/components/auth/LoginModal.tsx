@@ -23,12 +23,11 @@ interface LoginModalProps {
 }
 
 export function LoginModal({ open, onClose }: LoginModalProps) {
-  const showSnackbar = useSnackbar();
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [loginMessage, setLoginMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -45,10 +44,12 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
       });
       setToken(response.accessToken, rememberMe);
       onClose();
-    } catch (error) {
-      showSnackbar({
-        message: 'Login failed. Please try again.',
-      });
+    } catch (error: unknown) {
+      if (error.response?.status === 401) {
+        setLoginMessage('Login failed - invalid credentials');
+      } else {
+        setLoginMessage('Login failed');
+      }
     } finally {
       setLoading(false);
     }
@@ -77,7 +78,10 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
           placeholder="Enter your email"
           value={email}
           error={!emailValid && email.length > 0}
-          onChange={(event) => setEmail(event.target.value)}
+          onChange={(event) => {
+            setEmail(event.target.value);
+            setLoginMessage('');
+          }}
           fullWidth
           slotProps={{
             inputLabel: { shrink: true },
@@ -105,7 +109,10 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
           placeholder="Enter your password"
           value={password}
           type={showPassword ? 'text' : 'password'}
-          onChange={(event) => setPassword(event.target.value)}
+          onChange={(event) => {
+            setPassword(event.target.value);
+            setLoginMessage('');
+          }}
           fullWidth
           sx={{
             '& .MuiOutlinedInput-root': {
@@ -146,14 +153,30 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
           </Link>
         </Box>
 
-        <Button
-          variant="contained"
-          disabled={!canSubmit}
-          onClick={handleSubmit}
-          sx={{ mt: 1, height: 32, width: 80 }}
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'flex-start',
+            justifyContent: 'space-between',
+          }}
         >
-          {loading ? <CircularProgress size={22} color="inherit" /> : 'Log in'}
-        </Button>
+          <Button
+            variant="contained"
+            disabled={!canSubmit}
+            onClick={handleSubmit}
+            sx={{ mt: 1, height: 32, width: 80 }}
+          >
+            {loading ? (
+              <CircularProgress size={22} color="inherit" />
+            ) : (
+              'Log in'
+            )}
+          </Button>
+          <Typography color="error" sx={{ mt: 1.5 }}>
+            {loginMessage}
+          </Typography>
+        </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
           <input

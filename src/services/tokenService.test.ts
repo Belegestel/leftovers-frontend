@@ -4,7 +4,7 @@ import {
   setToken,
   removeToken,
   isAuthenticated,
-} from './authService';
+} from './tokenService';
 
 describe('authService', () => {
   beforeEach(() => {

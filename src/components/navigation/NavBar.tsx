@@ -15,7 +15,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
 import { useRecipeCategories } from '@/hooks/useRecipeCategories';
-import { isAuthenticated, removeToken } from '@/auth/authService';
+import { isAuthenticated, removeToken } from '@/services/tokenService';
 import { useNavigate, useLocation } from 'react-router';
 
 export function NavBar() {

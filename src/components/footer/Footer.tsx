@@ -23,7 +23,7 @@ export function Footer() {
           alt="Instagram"
           sx={{
             width: 24,
-            heigh: 24,
+            height: 24,
             display: 'block',
           }}
         />
@@ -36,7 +36,7 @@ export function Footer() {
           alt="Facebook"
           sx={{
             width: 24,
-            heigh: 24,
+            height: 24,
             display: 'block',
           }}
         />
@@ -44,13 +44,24 @@ export function Footer() {
 
       <Typography variant="body2">contact@leftovers.com</Typography>
 
-      <Box sx={{height:20,width:'1px',bgcolor:'#888888',mx:1}}/>
+      <Box sx={{ height: 20, width: '1px', bgcolor: '#888888', mx: 1 }} />
 
-      <Link href='/tos' underline='hover' color='text.primary'>Terms of Service</Link>
+      <Link href="/tos" underline="hover" color="text.primary">
+        Terms of Service
+      </Link>
 
-      <Box sx={{height:20,width:'1px',bgcolor:'#888888',mx:1}}/>
+      <Box sx={{ height: 20, width: '1px', bgcolor: '#888888', mx: 1 }} />
 
-      <Link href='/privacy' underline='hover' color='text.primary'>Privacy Policy</Link>
+      <Link href="/privacy" underline="hover" color="text.primary">
+        Privacy Policy
+      </Link>
+
+      <Typography variant="body2" sx={{ ml: 'auto' }}>
+        Powered by{' '}
+        <Link href="https://example.com" color="inherit" underline="always">
+          BotAI
+        </Link>
+      </Typography>
     </Box>
   );
 }

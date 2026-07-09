@@ -12,6 +12,6 @@ export function removeToken() {
   localStorage.removeItem(TOKEN_KEY);
 }
 
-export async function isAuthenticated() {
+export function isAuthenticated() {
   return getToken() !== null;
 }

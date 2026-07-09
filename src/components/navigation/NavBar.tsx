@@ -13,12 +13,10 @@ import logo from '@/assets/logo.svg';
 import SearchIcon from '@mui/icons-material/Search';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import AddIcon from '@mui/icons-material/Add';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRecipeCategories } from '@/hooks/useRecipeCategories';
 import { isAuthenticated, removeToken } from '@/auth/authService';
 import { useNavigate } from 'react-router';
-
-const authenticated = await isAuthenticated();
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
@@ -53,7 +51,8 @@ export function NavBar() {
     null
   );
   const [searchQuery, setSearchQuery] = useState('');
-
+  const [authenticated, setAuthenticated] = useState(false);
+  useEffect(() => setAuthenticated(isAuthenticated()), []);
 
   const { categories } = useRecipeCategories();
 
@@ -105,13 +104,18 @@ export function NavBar() {
             anchorEl={recipesAnchor}
             open={Boolean(recipesAnchor)}
             onClose={() => setRecipesAnchor(null)}
+            slotProps={{ paper: { sx: { width: 220 } } }}
           >
-            {categories.map((category) => (
+            {categories.map((category, index) => (
               <MenuItem
                 key={category.name}
                 onClick={() => {
                   console.log('Clicked', category.name);
                   setRecipesAnchor(null);
+                }}
+                sx={{
+                  borderTop: index != 0 ? '2px solid' : '0px solid',
+                  borderColor: '#cccccc',
                 }}
               >
                 {category.name.replace(/\b\w/g, (char) => char.toUpperCase())}
@@ -120,7 +124,11 @@ export function NavBar() {
           </Menu>
           {authenticated ? (
             <>
-              <Button variant="contained" endIcon={<KeyboardArrowDownIcon />} onClick={(event) => setMyAccountAnchor(event.currentTarget)}>
+              <Button
+                variant="contained"
+                endIcon={<KeyboardArrowDownIcon />}
+                onClick={(event) => setMyAccountAnchor(event.currentTarget)}
+              >
                 My account
               </Button>
               <Menu
@@ -128,19 +136,35 @@ export function NavBar() {
                 open={Boolean(myAccountAnchor)}
                 onClose={() => setMyAccountAnchor(null)}
               >
-                <MenuItem key='saved-recipes' onClick={() => {
-                  console.log('Clicked saved recipes');
-                  navigate('/saved');
-                }}>Saved recipes</MenuItem>
-                <MenuItem key='my-recipes' onClick={() => {
-                  console.log('Clicked my recipes');
-                  navigate('/my-recipes');
-                }}>My recipes</MenuItem>
-                <MenuItem key='log-out' onClick={() => {
-                  removeToken();
-                  navigate('/');
-                  setMyAccountAnchor(null);
-                }}>Log out</MenuItem>
+                <MenuItem
+                  key="saved-recipes"
+                  onClick={() => {
+                    console.log('Clicked saved recipes');
+                    navigate('/saved');
+                  }}
+                >
+                  Saved recipes
+                </MenuItem>
+                <MenuItem
+                  key="my-recipes"
+                  onClick={() => {
+                    console.log('Clicked my recipes');
+                    navigate('/my-recipes');
+                  }}
+                >
+                  My recipes
+                </MenuItem>
+                <MenuItem
+                  key="log-out"
+                  onClick={() => {
+                    removeToken();
+                    setAuthenticated(false);
+                    navigate('/');
+                    setMyAccountAnchor(null);
+                  }}
+                >
+                  Log out
+                </MenuItem>
               </Menu>
             </>
           ) : (

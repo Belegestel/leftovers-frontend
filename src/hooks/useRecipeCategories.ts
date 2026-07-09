@@ -13,7 +13,7 @@ export function useRecipeCategories() {
       .finally(() => setLoading(false));
   }, []);
   const categories: RecipeCategory[] = [
-    new RecipeCategory('All categories'),
+    new RecipeCategory('🍽 All recipes'),
     ...recipeCategories.map((category) => new RecipeCategory(category.name)),
   ];
   return { categories, loading };

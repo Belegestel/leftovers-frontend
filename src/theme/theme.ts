@@ -18,6 +18,9 @@ export const theme = createTheme({
       secondary: '#666666',
     },
     divider: '#aaaaaa',
+    error: {
+      main: '#ff5555'
+    },
   },
   typography: {
     fontFamily: ['Poppins', 'Roboto', 'Arial', 'sans-serif'].join(','),

@@ -18,32 +18,6 @@ import { useRecipeCategories } from '@/hooks/useRecipeCategories';
 import { isAuthenticated, removeToken } from '@/auth/authService';
 import { useNavigate, useLocation } from 'react-router';
 
-const StyledAppBar = styled(AppBar)(({ theme }) => ({
-  backgroundColor: theme.palette.background.paper,
-  color: theme.palette.text.primary,
-  boxShadow: 'none',
-  borderBottom: '1px solid #eeeeee',
-}));
-
-const SearchBox = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  width: 570,
-  height: 40,
-  padding: '0 16px',
-  borderRadius: theme.shape.borderRadius,
-  border: '2px solid #dddddd',
-}));
-const SearchInput = styled(InputBase)({ flex: 1 });
-const Spacer = styled(Box)({
-  flexGrow: 1,
-});
-const Logo = styled('img')({
-  height: 40,
-  width: 'auto',
-  display: 'block',
-});
-
 export function NavBar() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -58,8 +32,9 @@ export function NavBar() {
   const { categories } = useRecipeCategories();
 
   const handleSearch = () => {
-    if (!searchQuery.trim()) return;
-    console.log(`Searching: ${searchQuery}`);
+    if (!searchQuery.trim()) {
+      return;
+    }
   };
 
   return (
@@ -111,12 +86,11 @@ export function NavBar() {
               <MenuItem
                 key={category.name}
                 onClick={() => {
-                  console.log('Clicked', category.name);
                   setRecipesAnchor(null);
                 }}
                 sx={{
-                  borderTop: index != 0 ? '2px solid' : '0px solid',
-                  borderColor: '#cccccc',
+                  borderTop: index != 0 ? '1px solid' : '0px solid',
+                  borderColor: 'divider',
                 }}
               >
                 {category.name.replace(/\b\w/g, (char) => char.toUpperCase())}
@@ -140,7 +114,6 @@ export function NavBar() {
                 <MenuItem
                   key="saved-recipes"
                   onClick={() => {
-                    console.log('Clicked saved recipes');
                     navigate('/saved');
                   }}
                 >
@@ -149,7 +122,6 @@ export function NavBar() {
                 <MenuItem
                   key="my-recipes"
                   onClick={() => {
-                    console.log('Clicked my recipes');
                     navigate('/my-recipes');
                   }}
                 >
@@ -190,3 +162,28 @@ export function NavBar() {
     </StyledAppBar>
   );
 }
+
+const StyledAppBar = styled(AppBar)(({ theme }) => ({
+  backgroundColor: theme.palette.background.paper,
+  color: theme.palette.text.primary,
+  boxShadow: 'none',
+}));
+
+const SearchBox = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  width: 570,
+  height: 40,
+  padding: '0 16px',
+  borderRadius: theme.shape.borderRadius,
+  border: `1px solid ${theme.palette.divider}`,
+}));
+const SearchInput = styled(InputBase)({ flex: 1 });
+const Spacer = styled(Box)({
+  flexGrow: 1,
+});
+const Logo = styled('img')({
+  height: 40,
+  width: 'auto',
+  display: 'block',
+});

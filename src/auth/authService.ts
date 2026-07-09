@@ -13,5 +13,9 @@ export function removeToken() {
 }
 
 export function isAuthenticated() {
-  return getToken() !== null;
+  const token = getToken();
+  if (token === undefined || token === null) {
+    return false;
+  }
+  return token.trim().length > 0;
 }

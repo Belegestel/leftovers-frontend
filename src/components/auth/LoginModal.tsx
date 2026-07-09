@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useSnackbar } from '../common/SnackbarProvider';
 import { login } from '@/services/authService';
 import {
   Box,

@@ -38,6 +38,7 @@ export function RootLayout() {
         open={loginOpen}
         onClose={() => {
           navigate(window.location.pathname, { replace: true });
+          window.location.reload();
         }}
       />
       <ForgotPasswordModal

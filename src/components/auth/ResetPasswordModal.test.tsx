@@ -26,7 +26,7 @@ describe('ResetPasswordModal', () => {
 
   it('renders the reset password modal', () => {
     renderModal();
-    expect(screen.getByText('Forgot password')).toBeInTheDocument();
+    expect(screen.getByText('New password')).toBeInTheDocument();
     expect(screen.getByLabelText('New password*')).toBeInTheDocument();
     expect(screen.getByLabelText('Repeat new password*')).toBeInTheDocument();
   });

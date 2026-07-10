@@ -68,7 +68,7 @@ export function ResetPasswordModal({ open, onClose }: ResetPasswordModalProps) {
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         <Typography variant="h4" sx={{ font: 'Poppins', fontWeight: 600 }}>
-          Forgot password
+          New password
         </Typography>
 
         <Typography sx={{ paddingBottom: 3 }}>

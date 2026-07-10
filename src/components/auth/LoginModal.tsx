@@ -15,33 +15,48 @@ import CloseIcon from '@mui/icons-material/Close';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { setToken } from '@/services/tokenService';
+import { useForm } from 'react-hook-form';
 
 interface LoginModalProps {
   open: boolean;
   onClose: (isPwdChanged: boolean) => void;
 }
 
+interface LoginFormValues {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+}
+
 export function LoginModal({ open, onClose }: LoginModalProps) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [loginMessage, setLoginMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const {
+    register: registerField,
+    handleSubmit,
+    watch,
+    formState: { errors, isValid },
+  } = useForm<LoginFormValues>({
+    mode: 'onChange',
+    defaultValues: {
+      email: '',
+      password: '',
+      rememberMe: false,
+    },
+  });
 
-  const canSubmit = emailValid && password.length > 0 && !loading;
+  const rememberMe = watch('rememberMe');
 
-  const handleSubmit = async () => {
-    if (!canSubmit) return;
+  const submit = async (data: LoginFormValues) => {
     try {
       setLoading(true);
       const response = await login({
-        email,
-        password,
+        email: data.email,
+        password: data.password,
       });
-      setToken(response.accessToken, rememberMe);
+      setToken(response.accessToken, data.rememberMe);
       onClose(false);
     } catch (error: unknown) {
       if (error.response?.status === 401) {
@@ -75,12 +90,15 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
         <TextField
           label="E-mail address*"
           placeholder="Enter your email"
-          value={email}
-          error={!emailValid && email.length > 0}
-          onChange={(event) => {
-            setEmail(event.target.value);
-            setLoginMessage('');
-          }}
+          error={!!errors.email}
+          {...registerField('email', {
+            required: true,
+            pattern: {
+              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+              message: 'Enter a valid email'
+            },
+            onChange: () => setLoginMessage('')
+          })}
           fullWidth
           slotProps={{
             inputLabel: { shrink: true },
@@ -97,7 +115,7 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
           }}
         />
 
-        {!emailValid && email.length > 0 && (
+        {errors.email && (
           <Typography sx={{ fontSize: 12, color: 'error.main' }}>
             Enter a valid email
           </Typography>
@@ -106,12 +124,11 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
         <TextField
           label="Password*"
           placeholder="Enter your password"
-          value={password}
           type={showPassword ? 'text' : 'password'}
-          onChange={(event) => {
-            setPassword(event.target.value);
-            setLoginMessage('');
-          }}
+          {...registerField('password', {
+            required: true,
+            onChange: () => setLoginMessage('')
+          })}
           fullWidth
           sx={{
             '& .MuiOutlinedInput-root': {
@@ -147,7 +164,10 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
           }}
         />
         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Link href={`${location.pathname}?forgot-password=true`} sx={{ color: 'text.secondary', fontSize: 12 }}>
+          <Link
+            href={`${location.pathname}?forgot-password=true`}
+            sx={{ color: 'text.secondary', fontSize: 12 }}
+          >
             Forgot your password?
           </Link>
         </Box>
@@ -162,8 +182,8 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
         >
           <Button
             variant="contained"
-            disabled={!canSubmit}
-            onClick={handleSubmit}
+            disabled={!isValid || loading}
+            onClick={handleSubmit(submit)}
             sx={{ mt: 1, height: 32, width: 80 }}
           >
             {loading ? (

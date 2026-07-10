@@ -95,9 +95,9 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
             required: true,
             pattern: {
               value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-              message: 'Enter a valid email'
+              message: 'Enter a valid email',
             },
-            onChange: () => setLoginMessage('')
+            onChange: () => setLoginMessage(''),
           })}
           fullWidth
           slotProps={{
@@ -127,7 +127,7 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
           type={showPassword ? 'text' : 'password'}
           {...registerField('password', {
             required: true,
-            onChange: () => setLoginMessage('')
+            onChange: () => setLoginMessage(''),
           })}
           fullWidth
           sx={{
@@ -200,8 +200,7 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
         <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
           <input
             type="checkbox"
-            checked={rememberMe}
-            onChange={(event) => setRememberMe(event.target.checked)}
+            {...registerField('rememberMe')}
             style={{ marginTop: 4 }}
           />
 

@@ -147,7 +147,7 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
           }}
         />
         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Link href="#" sx={{ color: 'text.secondary', fontSize: 12 }}>
+          <Link href={`${location.pathname}?reset-password=true`} sx={{ color: 'text.secondary', fontSize: 12 }}>
             Forgot your password?
           </Link>
         </Box>

@@ -4,6 +4,7 @@ import { NavBar } from '@/components/navigation/NavBar';
 import { Footer } from '@/components/footer/Footer';
 import { RegisterModal } from '@/components/auth/RegisterModal';
 import { LoginModal } from '@/components/auth/LoginModal';
+import { ForgotPasswordModal } from '@/components/auth/ForgotPasswordModal';
 
 export function RootLayout() {
   const location = useLocation();
@@ -13,6 +14,8 @@ export function RootLayout() {
     new URLSearchParams(location.search).get('signup') === 'true';
   const loginOpen =
     new URLSearchParams(location.search).get('login') === 'true';
+  const resetPasswordOpen =
+    new URLSearchParams(location.search).get('reset-password') === 'true';
 
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -31,8 +34,13 @@ export function RootLayout() {
       <LoginModal
         open={loginOpen}
         onClose={() => {
-          navigate(window.location.pathname, {replace:true})
-          window.location.reload()
+          navigate(window.location.pathname, { replace: true });
+        }}
+      />
+      <ForgotPasswordModal
+        open={resetPasswordOpen}
+        onClose={() => {
+          navigate(window.location.pathname, { replace: true });
         }}
       />
     </Box>

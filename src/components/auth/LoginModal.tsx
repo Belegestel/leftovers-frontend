@@ -18,7 +18,7 @@ import { setToken } from '@/services/tokenService';
 
 interface LoginModalProps {
   open: boolean;
-  onClose: () => void;
+  onClose: (isPwdChanged: boolean) => void;
 }
 
 export function LoginModal({ open, onClose }: LoginModalProps) {
@@ -42,7 +42,7 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
         password,
       });
       setToken(response.accessToken, rememberMe);
-      onClose();
+      onClose(false);
     } catch (error: unknown) {
       if (error.response?.status === 401) {
         setLoginMessage('Login failed - invalid credentials');
@@ -63,7 +63,7 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
       slotProps={{ paper: { sx: { borderRadius: 1, padding: 3 } } }}
     >
       <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <IconButton onClick={onClose}>
+        <IconButton onClick={() => onClose(false)}>
           <CloseIcon />
         </IconButton>
       </Box>
@@ -147,7 +147,7 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
           }}
         />
         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Link href={`${location.pathname}?reset-password=true`} sx={{ color: 'text.secondary', fontSize: 12 }}>
+          <Link href={`${location.pathname}?forgot-password=true`} sx={{ color: 'text.secondary', fontSize: 12 }}>
             Forgot your password?
           </Link>
         </Box>

@@ -5,6 +5,7 @@ import { Footer } from '@/components/footer/Footer';
 import { RegisterModal } from '@/components/auth/RegisterModal';
 import { LoginModal } from '@/components/auth/LoginModal';
 import { ForgotPasswordModal } from '@/components/auth/ForgotPasswordModal';
+import { ResetPasswordModal } from '@/components/auth/ResetPasswordModal';
 
 export function RootLayout() {
   const location = useLocation();
@@ -14,6 +15,8 @@ export function RootLayout() {
     new URLSearchParams(location.search).get('signup') === 'true';
   const loginOpen =
     new URLSearchParams(location.search).get('login') === 'true';
+  const forgotPasswordOpen =
+    new URLSearchParams(location.search).get('forgot-password') === 'true';
   const resetPasswordOpen =
     new URLSearchParams(location.search).get('reset-password') === 'true';
 
@@ -38,9 +41,21 @@ export function RootLayout() {
         }}
       />
       <ForgotPasswordModal
-        open={resetPasswordOpen}
+        open={forgotPasswordOpen}
         onClose={() => {
           navigate(window.location.pathname, { replace: true });
+        }}
+      />
+      <ResetPasswordModal
+        open={resetPasswordOpen}
+        onClose={(isPwdChanged: boolean | undefined) => {
+          navigate(
+            {
+              pathname: window.location.pathname,
+              search: isPwdChanged ? '?login=true' : '',
+            },
+            { replace: true }
+          );
         }}
       />
     </Box>

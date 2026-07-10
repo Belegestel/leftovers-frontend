@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { resetPassword } from '@/services/authService';
+import { forgotPassword } from '@/services/authService';
 import {
   Box,
   Dialog,
@@ -12,12 +12,12 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import { useSnackbar } from '../common/SnackbarProvider';
 
-interface LoginModalProps {
+interface ForgotPasswordModalProps {
   open: boolean;
   onClose: () => void;
 }
 
-export function ForgotPasswordModal({ open, onClose }: LoginModalProps) {
+export function ForgotPasswordModal({ open, onClose }: ForgotPasswordModalProps) {
   const showSnackbar = useSnackbar();
 
   const [email, setEmail] = useState('');
@@ -33,7 +33,7 @@ export function ForgotPasswordModal({ open, onClose }: LoginModalProps) {
     }
     try {
       setLoading(true);
-      const response = await resetPassword({
+      const response = await forgotPassword({
         email,
       });
       showSnackbar({

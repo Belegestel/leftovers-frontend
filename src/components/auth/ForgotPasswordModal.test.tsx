@@ -3,10 +3,10 @@ import { useSnackbar } from '../common/SnackbarProvider';
 import { ForgotPasswordModal } from './ForgotPasswordModal';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { resetPassword } from '@/services/authService';
+import { forgotPassword } from '@/services/authService';
 
 vi.mock('@/services/authService', () => ({
-  resetPassword: vi.fn(),
+  forgotPassword: vi.fn(),
 }));
 
 vi.mock('../common/SnackbarProvider', () => ({
@@ -62,7 +62,7 @@ describe('ForgotPasswordModal', () => {
   });
 
   it('submits successfully and closes the modal', async () => {
-    vi.mocked(resetPassword).mockResolvedValue({});
+    vi.mocked(forgotPassword).mockResolvedValue({});
     renderModal();
 
     await userEvent.type(
@@ -72,7 +72,7 @@ describe('ForgotPasswordModal', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Send e-mail' }));
 
     await waitFor(() => {
-      expect(resetPassword).toHaveBeenCalledWith({ email: 'valid@email.com' });
+      expect(forgotPassword).toHaveBeenCalledWith({ email: 'valid@email.com' });
     });
 
     expect(showSnackbar).toHaveBeenCalledWith({
@@ -83,7 +83,7 @@ describe('ForgotPasswordModal', () => {
   });
 
   it('shows error snackbar when reset fails', async () => {
-    vi.mocked(resetPassword).mockRejectedValue(new Error('Failed'));
+    vi.mocked(forgotPassword).mockRejectedValue(new Error('Failed'));
     renderModal();
 
     await userEvent.type(
@@ -101,7 +101,9 @@ describe('ForgotPasswordModal', () => {
   });
 
   it('shows loading state while submitting', async () => {
-    vi.mocked(resetPassword).mockImplementation(() => new Promise(() => {}));
+    vi.mocked(forgotPassword).mockImplementation(
+      () => new Promise(() => {})
+    );
 
     renderModal();
 

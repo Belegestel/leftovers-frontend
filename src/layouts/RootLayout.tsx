@@ -19,7 +19,15 @@ export function RootLayout() {
   const navigate = useNavigate();
 
   const handleSignupOpenModal = searchParams.get('signup') === 'true';
+  const handleSignupClose = () =>
+    navigate({ pathname: location.pathname, search: '' });
   const handleLoginOpenModal = searchParams.get('login') === 'true';
+  const handleLogin = () => {
+    setAuthenticated(true);
+  };
+  const handleLoginClose = () => {
+    navigate(location.pathname, { replace: true });
+  };
 
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -36,14 +44,12 @@ export function RootLayout() {
 
       <RegisterModal
         open={handleSignupOpenModal}
-        onClose={() => navigate({ pathname: location.pathname, search: '' })}
+        onClose={handleSignupClose}
       />
       <LoginModal
         open={handleLoginOpenModal}
-        onLogin={() => setAuthenticated(true)}
-        onClose={() => {
-          navigate(location.pathname, { replace: true });
-        }}
+        onLogin={handleLogin}
+        onClose={handleLoginClose}
       />
     </Box>
   );

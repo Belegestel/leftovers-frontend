@@ -12,7 +12,7 @@ vi.mock('@/services/tokenService', () => ({
   isAuthenticated: vi.fn(),
   removeToken: vi.fn(),
 }));
-vi.mock('react-router', () => ({
+vi.mock('react-router-dom', () => ({
   useNavigate: () => mockedNavigate,
   useLocation: () => mockedLocation,
 }));
@@ -26,7 +26,7 @@ vi.mock('@/hooks/useRecipeCategories', () => ({
 describe('NavBar', () => {
   it('shows login and signup when logged out', async () => {
     vi.mocked(isAuthenticated).mockReturnValue(false);
-    render(<NavBar />);
+    render(<NavBar authenticated={false} onLogout={()=>{}}/>);
 
     await waitFor(() => {
       expect(screen.queryByText('Log in')).toBeInTheDocument();
@@ -37,7 +37,7 @@ describe('NavBar', () => {
 
   it('shows authenticated controls when logged in', async () => {
     vi.mocked(isAuthenticated).mockReturnValue(true);
-    render(<NavBar />);
+    render(<NavBar authenticated={true} onLogout={() => {}}/>);
 
     await waitFor(() => {
       expect(screen.queryByText('Add recipe')).toBeInTheDocument();
@@ -48,7 +48,7 @@ describe('NavBar', () => {
 
   it('opens account menu', async () => {
     vi.mocked(isAuthenticated).mockReturnValue(true);
-    render(<NavBar />);
+    render(<NavBar authenticated={true} onLogout={() => {}}/>);
 
     await waitFor(() => {
       expect(screen.queryByText('Add recipe')).toBeInTheDocument();
@@ -62,7 +62,8 @@ describe('NavBar', () => {
 
   it('logs the user out', async () => {
     vi.mocked(isAuthenticated).mockReturnValue(true);
-    render(<NavBar />);
+    let authd = true;
+    render(<NavBar authenticated={authd} onLogout={() => { authd = false; }}/>);
 
     await waitFor(() =>
       expect(screen.queryByText('My account')).toBeInTheDocument()

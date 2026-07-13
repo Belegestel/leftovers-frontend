@@ -27,7 +27,7 @@ export function RecipeCard({
   const isFeatured = variant === 'featured';
   const navigate = useNavigate();
 
-  const imageHeight = isFeatured ? { xs: 280, md: 360 } : 240;
+  const imageHeight = isFeatured ? { xs: 280, md: 360 } : undefined;
 
   const image = recipe.imageLink ? (
     <CardMedia
@@ -36,6 +36,7 @@ export function RecipeCard({
       alt={recipe.title}
       sx={{
         height: imageHeight,
+        aspectRatio: isFeatured ? undefined : '4 / 3',
         objectFit: 'cover',
       }}
     />
@@ -161,7 +162,12 @@ export function RecipeCard({
   }
 
   return (
-    <Card>
+    <Card
+      sx={{
+        maxWidth: 300,
+        width: '100%',
+      }}
+    >
       <Box
         sx={{
           position: 'relative',

@@ -23,7 +23,7 @@ interface NavBarProps {
   onLogout: () => void;
 }
 
-export function NavBar({ authenticated, onLogout}: NavBarProps) {
+export function NavBar({ authenticated, onLogout }: NavBarProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const [recipesAnchor, setRecipesAnchor] = useState<null | HTMLElement>(null);

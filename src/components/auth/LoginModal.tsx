@@ -16,10 +16,12 @@ import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { setToken } from '@/services/tokenService';
 import { useForm } from 'react-hook-form';
+import { emailValid } from '@/utils/validation';
 
 interface LoginModalProps {
   open: boolean;
-  onClose: (isPwdChanged: boolean) => void;
+  onLogin: () => void;
+  onClose: () => void;
 }
 
 interface LoginFormValues {
@@ -28,10 +30,10 @@ interface LoginFormValues {
   rememberMe: boolean;
 }
 
-export function LoginModal({ open, onClose }: LoginModalProps) {
+export function LoginModal({ open, onLogin, onClose }: LoginModalProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [loginMessage, setLoginMessage] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     register: registerField,
@@ -51,13 +53,14 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
 
   const submit = async (data: LoginFormValues) => {
     try {
-      setLoading(true);
+      setIsSubmitting(true);
       const response = await login({
         email: data.email,
         password: data.password,
       });
-      setToken(response.accessToken, data.rememberMe);
-      onClose(false);
+      setToken(response.accessToken, rememberMe);
+      onLogin();
+      onClose();
     } catch (error: unknown) {
       if (error.response?.status === 401) {
         setLoginMessage('Login failed - invalid credentials');
@@ -65,7 +68,7 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
         setLoginMessage('Login failed');
       }
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -78,7 +81,7 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
       slotProps={{ paper: { sx: { borderRadius: 1, padding: 3 } } }}
     >
       <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <IconButton onClick={() => onClose(false)}>
+        <IconButton onClick={() => onClose()}>
           <CloseIcon />
         </IconButton>
       </Box>
@@ -94,7 +97,7 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
           {...registerField('email', {
             required: true,
             pattern: {
-              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+              value: emailValid,
               message: 'Enter a valid email',
             },
             onChange: () => setLoginMessage(''),
@@ -182,11 +185,11 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
         >
           <Button
             variant="contained"
-            disabled={!isValid || loading}
+            disabled={!isValid || isSubmitting}
             onClick={handleSubmit(submit)}
             sx={{ mt: 1, height: 32, width: 80 }}
           >
-            {loading ? (
+            {isSubmitting ? (
               <CircularProgress size={22} color="inherit" />
             ) : (
               'Log in'

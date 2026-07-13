@@ -3,11 +3,14 @@ import { Container } from '@mui/material';
 import { getRecipeSummaries } from '@/services/recipeService';
 import type { RecipeSummary } from '@/types/recipe';
 import { RecipeCard } from '@/components/recipe/RecipeCard';
+import { useNavigate } from 'react-router-dom';
 
 export default function Home() {
   const [recipeOfTheDay, setRecipeOfTheDay] = useState<RecipeSummary | null>(
     null
   );
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function loadRecipeOfTheDay() {
@@ -41,7 +44,7 @@ export default function Home() {
           recipe={recipeOfTheDay}
           variant="featured"
           onSave={() => {
-            console.log('Save recipe clicked');
+            navigate('?saveLogin=true')
           }}
         />
       )}

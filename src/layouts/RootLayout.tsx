@@ -11,6 +11,7 @@ import { RegisterModal } from '@/components/auth/RegisterModal';
 import { LoginModal } from '@/components/auth/LoginModal';
 import { useState } from 'react';
 import { isAuthenticated } from '@/services/tokenService';
+import { RequireLoginModal } from '@/components/auth/RequireLoginModal';
 
 export function RootLayout() {
   const [authenticated, setAuthenticated] = useState(isAuthenticated());
@@ -28,6 +29,13 @@ export function RootLayout() {
   const handleLoginClose = () => {
     navigate(location.pathname, { replace: true });
   };
+  const handleRequireLoginRecipeSaveModal = searchParams.get('saveLogin') === 'true';
+  const handleRequireLoginRecipeSaveClose = () => {
+    navigate(location.pathname, { replace: true });
+  };
+  const handleRequireLoginToSaveLogin = () => {
+    navigate(`${location.pathname}?login=true`);
+  };
 
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -42,14 +50,18 @@ export function RootLayout() {
       </Box>
       <Footer />
 
-      <RegisterModal
-        open={handleSignupOpenModal}
-        onClose={handleSignupClose}
-      />
+      <RegisterModal open={handleSignupOpenModal} onClose={handleSignupClose} />
       <LoginModal
         open={handleLoginOpenModal}
         onLogin={handleLogin}
         onClose={handleLoginClose}
+      />
+      <RequireLoginModal
+        open={handleRequireLoginRecipeSaveModal}
+        title="Login to save the recipe"
+        message="If you want to save this recipe you need to login or create an account. Don't miss out on the convenience of having your favorite recipes at your fingertips whenever you crave them!"
+        onClose={handleRequireLoginRecipeSaveClose}
+        onLogin={handleRequireLoginToSaveLogin}
       />
     </Box>
   );

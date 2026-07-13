@@ -20,7 +20,7 @@ describe('LoginModal', () => {
   });
 
   it('renders login form', () => {
-    render(<LoginModal open={true} onClose={mockClose} />);
+    render(<LoginModal open={true} onClose={mockClose} onLogin={() => {}}/>);
 
     expect(screen.getByRole('heading', { name: 'Log in' })).toBeInTheDocument();
     expect(screen.getByLabelText('E-mail address*')).toBeInTheDocument();
@@ -29,13 +29,13 @@ describe('LoginModal', () => {
   });
 
   it('disables login button initially', () => {
-    render(<LoginModal open={true} onClose={mockClose} />);
+    render(<LoginModal open={true} onClose={mockClose} onLogin={() => {}}/>);
     expect(screen.getByRole('button', { name: 'Log in' })).toBeDisabled();
   });
 
   it('enables login button after valid email and password', async () => {
     const user = userEvent.setup();
-    render(<LoginModal open={true} onClose={mockClose} />);
+    render(<LoginModal open={true} onClose={mockClose} onLogin={() => {}}/>);
 
     await user.type(
       screen.getByLabelText('E-mail address*'),
@@ -47,7 +47,7 @@ describe('LoginModal', () => {
 
   it('shows email verification error for invalid email', async () => {
     const user = userEvent.setup();
-    render(<LoginModal open={true} onClose={mockClose} />);
+    render(<LoginModal open={true} onClose={mockClose} onLogin={() => {}}/>);
 
     await user.type(
       screen.getByLabelText('E-mail address*'),
@@ -59,7 +59,7 @@ describe('LoginModal', () => {
 
   it('toggles password visibility', async () => {
     const user = userEvent.setup();
-    render(<LoginModal open={true} onClose={mockClose} />);
+    render(<LoginModal open={true} onClose={mockClose} onLogin={() => {}}/>);
     const passwordField = screen.getByLabelText('Password*');
     expect(passwordField).toHaveAttribute('type', 'password');
     await user.click(screen.getByLabelText('toggle password visibility'));
@@ -71,7 +71,7 @@ describe('LoginModal', () => {
     vi.mocked(login).mockResolvedValue({
       accessToken: 'fake-token',
     });
-    render(<LoginModal open={true} onClose={mockClose} />);
+    render(<LoginModal open={true} onClose={mockClose} onLogin={() => {}}/>);
 
     await user.type(
       screen.getByLabelText('E-mail address*'),
@@ -95,7 +95,7 @@ describe('LoginModal', () => {
 
   it('allows selecting "Remember me" checkbox', async () => {
     const user = userEvent.setup();
-    render(<LoginModal open={true} onClose={mockClose} />);
+    render(<LoginModal open={true} onClose={mockClose} onLogin={() => {}}/>);
 
     const checkbox = screen.getByRole('checkbox');
     expect(checkbox).not.toBeChecked();

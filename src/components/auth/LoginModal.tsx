@@ -15,33 +15,36 @@ import CloseIcon from '@mui/icons-material/Close';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { setToken } from '@/services/tokenService';
+import { emailValid } from '@/utils/validation';
 
 interface LoginModalProps {
   open: boolean;
+  onLogin: () => void;
   onClose: () => void;
 }
 
-export function LoginModal({ open, onClose }: LoginModalProps) {
+export function LoginModal({ open, onLogin, onClose }: LoginModalProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [loginMessage, setLoginMessage] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const isEmailValid = emailValid.test(email);
 
-  const canSubmit = emailValid && password.length > 0 && !loading;
+  const canSubmit = isEmailValid && password.length > 0 && !isSubmitting;
 
   const handleSubmit = async () => {
     if (!canSubmit) return;
     try {
-      setLoading(true);
+      setIsSubmitting(true);
       const response = await login({
         email,
         password,
       });
       setToken(response.accessToken, rememberMe);
+      onLogin();
       onClose();
     } catch (error: unknown) {
       if (error.response?.status === 401) {
@@ -50,7 +53,7 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
         setLoginMessage('Login failed');
       }
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -76,7 +79,7 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
           label="E-mail address*"
           placeholder="Enter your email"
           value={email}
-          error={!emailValid && email.length > 0}
+          error={!isEmailValid && email.length > 0}
           onChange={(event) => {
             setEmail(event.target.value);
             setLoginMessage('');
@@ -97,7 +100,7 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
           }}
         />
 
-        {!emailValid && email.length > 0 && (
+        {!isEmailValid && email.length > 0 && (
           <Typography sx={{ fontSize: 12, color: 'error.main' }}>
             Enter a valid email
           </Typography>
@@ -166,7 +169,7 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
             onClick={handleSubmit}
             sx={{ mt: 1, height: 32, width: 80 }}
           >
-            {loading ? (
+            {isSubmitting ? (
               <CircularProgress size={22} color="inherit" />
             ) : (
               'Log in'

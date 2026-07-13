@@ -35,3 +35,11 @@ export async function getRecipe(id: number): Promise<Recipe> {
 
   return response.data.recipes[0];
 }
+
+export async function bookmarkRecipe(id: number): Promise<void> {
+  await httpService.post(`/recipes/${id}/bookmark`);
+}
+
+export async function unbookmarkRecipe(id: number): Promise<void> {
+  await httpService.post(`/recipes/${id}/unbookmark`);
+}

@@ -16,13 +16,13 @@ import { useNavigate } from 'react-router-dom';
 interface RecipeCardProps {
   recipe: RecipeSummary;
   variant?: 'default' | 'featured';
-  onSave: () => void;
+  onBookmarkToggle: () => void;
 }
 
 export function RecipeCard({
   recipe,
   variant = 'default',
-  onSave,
+  onBookmarkToggle,
 }: RecipeCardProps) {
   const isFeatured = variant === 'featured';
   const navigate = useNavigate();
@@ -44,6 +44,7 @@ export function RecipeCard({
     <Box
       sx={{
         height: imageHeight,
+        aspectRatio: isFeatured ? undefined : '4 / 3',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -57,6 +58,13 @@ export function RecipeCard({
         }}
       />
     </Box>
+  );
+
+  const saveButton = (
+    <SaveRecipeButton
+      bookmarked={recipe.isBookmarked}
+      onToggle={onBookmarkToggle}
+    />
   );
 
   if (isFeatured) {
@@ -85,7 +93,7 @@ export function RecipeCard({
                 right: 16,
               }}
             >
-              <SaveRecipeButton onSave={onSave} />
+              {saveButton}
             </Box>
           </Box>
 
@@ -99,12 +107,20 @@ export function RecipeCard({
           >
             <Typography
               variant="overline"
-              sx={{ color: 'primary.main', fontWeight: 600, fontSize: 16 }}
+              sx={{
+                color: 'primary.main',
+                fontWeight: 600,
+                fontSize: 16,
+              }}
             >
               RECIPE OF THE DAY
             </Typography>
 
-            <RecipeRating rating={recipe.rating} featured />
+            <RecipeRating
+              rating={recipe.rating}
+              ratingCount={recipe.ratingCount}
+              featured
+            />
 
             <Typography
               variant="h3"
@@ -163,9 +179,11 @@ export function RecipeCard({
 
   return (
     <Card
+      onClick={() => navigate(`/recipes/${recipe.id}`)}
       sx={{
         maxWidth: 300,
         width: '100%',
+        cursor: 'pointer',
       }}
     >
       <Box
@@ -182,7 +200,7 @@ export function RecipeCard({
             right: 16,
           }}
         >
-          <SaveRecipeButton onSave={onSave} />
+          {saveButton}
         </Box>
       </Box>
 
@@ -203,7 +221,10 @@ export function RecipeCard({
         </Typography>
 
         <Box sx={{ mt: 2 }}>
-          <RecipeRating rating={recipe.rating} />
+          <RecipeRating
+            rating={recipe.rating}
+            ratingCount={recipe.ratingCount}
+          />
         </Box>
       </CardContent>
     </Card>

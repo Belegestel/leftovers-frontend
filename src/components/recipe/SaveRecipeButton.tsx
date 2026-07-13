@@ -1,25 +1,34 @@
 import { IconButton } from '@mui/material';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
 
 interface SaveRecipeButtonProps {
-  onSave: () => void;
+  bookmarked: boolean;
+  onToggle: () => void;
 }
 
-export function SaveRecipeButton({ onSave }: SaveRecipeButtonProps) {
+export function SaveRecipeButton({
+  bookmarked,
+  onToggle,
+}: SaveRecipeButtonProps) {
   return (
     <IconButton
-      onClick={onSave}
+      onClick={(event) => {
+        event.stopPropagation();
+        onToggle();
+      }}
       sx={{
         backgroundColor: 'white',
-        width: 44,
-        height: 44,
-        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
         '&:hover': {
-          backgroundColor: 'white',
+          backgroundColor: 'grey.100',
         },
       }}
     >
-      <BookmarkBorderIcon color="secondary" />
+      {bookmarked ? (
+        <BookmarkIcon sx={{ color: 'primary.main' }} />
+      ) : (
+        <BookmarkBorderIcon sx={{ color: 'primary.main' }} />
+      )}
     </IconButton>
   );
 }

@@ -3,10 +3,11 @@ import StarIcon from '@mui/icons-material/Star';
 
 interface RecipeRatingProps {
   rating: number;
+  ratingCount: number;
   featured?: boolean;
 }
 
-export function RecipeRating({ rating, featured = false }: RecipeRatingProps) {
+export function RecipeRating({ rating, ratingCount, featured = false }: RecipeRatingProps) {
   const stars = Math.round(rating);
 
   return (
@@ -30,13 +31,13 @@ export function RecipeRating({ rating, featured = false }: RecipeRatingProps) {
       ) : (
         <StarIcon
           sx={{
-            color: 'primary.main',
+            color: 'rating.main',
           }}
         />
       )}
 
       <Typography variant="body2" color="text.secondary">
-        (120)
+        ({ratingCount})
       </Typography>
     </Box>
   );

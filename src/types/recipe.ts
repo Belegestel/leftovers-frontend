@@ -5,8 +5,10 @@ export interface RecipeSummary {
   prepTime: number;
   servings: number;
   rating: number;
+  ratingCount: number;
   category: string;
   imageLink?: string | null;
+  isBookmarked: boolean;
 }
 
 export interface Recipe extends RecipeSummary {

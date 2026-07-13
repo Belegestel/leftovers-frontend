@@ -1,7 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Divider, Container, Grid, Typography } from '@mui/material';
-import { getRecipeSummaries } from '@/services/recipeService';
+import {
+  Box,
+  Container,
+  Divider,
+  Grid,
+  Typography,
+} from '@mui/material';
+import {
+  bookmarkRecipe,
+  getRecipeSummaries,
+  unbookmarkRecipe,
+} from '@/services/recipeService';
+import { isAuthenticated } from '@/services/tokenService';
 import type { RecipeSummary } from '@/types/recipe';
 import { RecipeCard } from '@/components/recipe/RecipeCard';
 
@@ -9,9 +20,8 @@ export default function Home() {
   const navigate = useNavigate();
 
   const [recipes, setRecipes] = useState<RecipeSummary[]>([]);
-  const [recipeOfTheDay, setRecipeOfTheDay] = useState<RecipeSummary | null>(
-    null
-  );
+  const [recipeOfTheDay, setRecipeOfTheDay] =
+    useState<RecipeSummary | null>(null);
 
   useEffect(() => {
     async function loadRecipes() {
@@ -27,29 +37,76 @@ export default function Home() {
     loadRecipes();
   }, []);
 
+  const handleBookmarkToggle = async (recipe: RecipeSummary) => {
+    if (!isAuthenticated()) {
+      navigate('?saveLogin=true');
+      return;
+    }
+
+    try {
+      if (recipe.isBookmarked) {
+        await unbookmarkRecipe(recipe.id);
+      } else {
+        await bookmarkRecipe(recipe.id);
+      }
+
+      setRecipes((currentRecipes) =>
+        currentRecipes.map((currentRecipe) =>
+          currentRecipe.id === recipe.id
+            ? {
+                ...currentRecipe,
+                isBookmarked: !currentRecipe.isBookmarked,
+              }
+            : currentRecipe
+        )
+      );
+
+      setRecipeOfTheDay((currentRecipe) =>
+        currentRecipe?.id === recipe.id
+          ? {
+              ...currentRecipe,
+              isBookmarked: !currentRecipe.isBookmarked,
+            }
+          : currentRecipe
+      );
+    } catch (error) {
+      console.error('Failed to update bookmark', error);
+    }
+  };
+
   return (
     <Container>
       {recipeOfTheDay && (
         <RecipeCard
           recipe={recipeOfTheDay}
           variant="featured"
-          onSave={() => navigate('?saveLogin=true')}
+          onBookmarkToggle={() =>
+            handleBookmarkToggle(recipeOfTheDay)
+          }
         />
       )}
 
-      <Typography
-        variant="h5"
+      <Box
         sx={{
           mt: 6,
-          mb: 1,
+          mb: 3,
         }}
       >
-        New Recipes
-      </Typography>
+        <Typography variant="h5">
+          New Recipes
+        </Typography>
 
-      <Divider sx={{ mb: 4 }} />
+        <Divider
+          sx={{
+            mt: 2,
+          }}
+        />
+      </Box>
 
-      <Grid container spacing={3}>
+      <Grid
+        container
+        spacing={3}
+      >
         {recipes.map((recipe) => (
           <Grid
             key={recipe.id}
@@ -60,12 +117,14 @@ export default function Home() {
             }}
             sx={{
               display: 'flex',
-              justifyContent: 'space-between',
+              justifyContent: 'flex-start',
             }}
           >
             <RecipeCard
               recipe={recipe}
-              onSave={() => navigate('?saveLogin=true')}
+              onBookmarkToggle={() =>
+                handleBookmarkToggle(recipe)
+              }
             />
           </Grid>
         ))}

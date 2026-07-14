@@ -15,30 +15,46 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import { useForm } from 'react-hook-form';
 
 interface RegisterModalProps {
   open: boolean;
   onClose: () => void;
 }
 
+interface RegisterFormValues {
+  email: string;
+  password: string;
+  termsAccepted: boolean;
+}
+
 export function RegisterModal({ open, onClose }: RegisterModalProps) {
   const showSnackbar = useSnackbar();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [termsAccepted, setTermsAccepted] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const {
+    register: registerField,
+    handleSubmit,
+    watch,
+    formState: { errors, isValid },
+  } = useForm<RegisterFormValues>({
+    mode: 'onChange',
+    defaultValues: {
+      email: '',
+      password: '',
+      termsAccepted: false,
+    },
+  });
+
+  const email = watch('email');
+  const password = watch('password');
+  const termsAccepted = watch('termsAccepted');
 
   const MIN_PASSWORD_LENGTH = 8;
 
-  const canSubmit =
-    emailValid && password.length >= MIN_PASSWORD_LENGTH && termsAccepted && !loading;
-
-  const handleSubmit = async () => {
-    if (!canSubmit) return;
+  const submit = async (data: RegisterFormValues) => {
     try {
       setLoading(true);
       await register({
@@ -85,9 +101,14 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
         <TextField
           label="E-mail address*"
           placeholder="Enter your email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          error={!emailValid && email.length > 0}
+          {...registerField('email', {
+            required: true,
+            pattern: {
+              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+              message: 'Enter a valid email',
+            },
+          })}
+          error={!!errors.email}
           fullWidth
           slotProps={{
             inputLabel: { shrink: true },
@@ -103,14 +124,23 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
             },
           }}
         />
-        {(!emailValid && email.length > 0) && (<Typography sx={{fontSize:12, color:'error.main'}}>Enter a valid email</Typography>)}
+
+        {errors.email && (
+          <Typography sx={{ fontSize: 12, color: 'error.main' }}>
+            Enter a valid email
+          </Typography>
+        )}
 
         <TextField
           label="Password*"
           placeholder="Create a password"
-          value={password}
           type={showPassword ? 'text' : 'password'}
-          onChange={(event) => setPassword(event.target.value)}
+          {...registerField('password', {
+            minLength: {
+              value: {MIN_PASSWORD_LENGTH},
+              message: `Minimum password length is ${MIN_PASSWORD_LENGTH}`,
+            },
+          })}
           fullWidth
           error={password.length < MIN_PASSWORD_LENGTH && password.length > 0 }
           sx={{
@@ -129,7 +159,7 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
               endAdornment: (
                 <InputAdornment position="end">
                   <IconButton
-                  aria-label='toggle password visibility'
+                    aria-label="toggle password visibility"
                     onClick={() => setShowPassword((previous) => !previous)}
                     edge="end"
                   >
@@ -144,13 +174,25 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
             },
           }}
         />
-        {password.length < MIN_PASSWORD_LENGTH && password.length > 0 && (<Typography sx={{fontSize:12, color:'error.main'}}>Minimum password length is {MIN_PASSWORD_LENGTH}</Typography>)}
+        {errors.password && (
+          <Typography sx={{ fontSize: 12, color: 'error.main' }}>
+            Minimum password length is {MIN_PASSWORD_LENGTH}
+          </Typography>
+        )}
 
-        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, justifyContent: 'left'}}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: 1,
+            justifyContent: 'left',
+          }}
+        >
           <input
             type="checkbox"
-            checked={termsAccepted}
-            onChange={(event) => setTermsAccepted(event.target.checked)}
+            {...registerField('termsAccepted', {
+              required: true
+            })}
             style={{ marginTop: 4 }}
           />
 
@@ -178,9 +220,9 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
 
         <Button
           variant="contained"
-          disabled={!canSubmit}
-          onClick={handleSubmit}
-          sx={{ mt: 1, height: 44 , width: 220}}
+          disabled={!isValid}
+          onClick={handleSubmit(submit)}
+          sx={{ mt: 1, height: 44, width: 220 }}
         >
           {loading ? (
             <CircularProgress size={22} color="inherit" />

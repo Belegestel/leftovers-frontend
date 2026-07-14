@@ -14,34 +14,47 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useSnackbar } from '../common/SnackbarProvider';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import { useForm } from 'react-hook-form';
 
 interface ResetPasswordModalProps {
   open: boolean;
   onClose: (isPwdChanged?: boolean) => void;
 }
 
+interface ResetPasswordFormValues {
+  password: string;
+  repeatPassword: string;
+}
+
 export function ResetPasswordModal({ open, onClose }: ResetPasswordModalProps) {
   const showSnackbar = useSnackbar();
 
-  const [password, setPassword] = useState('');
-  const [repeatPassword, setRepeatPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const canSubmit = password == repeatPassword && password.length >= 8;
+  const {
+    register: registerField,
+    handleSubmit,
+    watch,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<ResetPasswordFormValues>({
+    mode: 'onChange',
+    defaultValues: {
+      password: '',
+      repeatPassword: '',
+    },
+  });
+  const password = watch('password');
 
-  const handleSubmit = async () => {
-    if (!canSubmit) {
-      return;
-    }
+  const submit = async (data: ResetPasswordFormValues) => {
     try {
       setLoading(true);
       const token = new URLSearchParams(window.location.search).get('token');
       if (!token) {
         throw new Error('Missing reset token');
       }
-      const response = await resetPassword({
+      await resetPassword({
         token,
         newPassword: password,
       });
@@ -72,17 +85,18 @@ export function ResetPasswordModal({ open, onClose }: ResetPasswordModalProps) {
         </Typography>
 
         <Typography sx={{ paddingBottom: 3 }}>
-        Please ensure your password is a minumum of 8 characters long. Ideally, include a mix of both letters and numbers.
+          Please ensure your password is a minumum of 8 characters long.
+          Ideally, include a mix of both letters and numbers.
         </Typography>
 
         <TextField
           label="New password*"
           placeholder="Type new password"
-          value={password}
           type={showPassword ? 'text' : 'password'}
-          onChange={(event) => {
-            setPassword(event.target.value);
-          }}
+          {...registerField('password', {
+            required: true,
+            minLength: 9,
+          })}
           fullWidth
           sx={{
             '& .MuiOutlinedInput-root': {
@@ -121,11 +135,12 @@ export function ResetPasswordModal({ open, onClose }: ResetPasswordModalProps) {
         <TextField
           label="Repeat new password*"
           placeholder="Type new password again"
-          value={repeatPassword}
           type={showRepeatPassword ? 'text' : 'password'}
-          onChange={(event) => {
-            setRepeatPassword(event.target.value);
-          }}
+          {...registerField('repeatPassword', {
+            required: true,
+            validate: (value) =>
+              value === password || 'Both passwords must be the same',
+          })}
           fullWidth
           sx={{
             '& .MuiOutlinedInput-root': {
@@ -145,7 +160,9 @@ export function ResetPasswordModal({ open, onClose }: ResetPasswordModalProps) {
                   {' '}
                   <IconButton
                     aria-label="toggle password visibility"
-                    onClick={() => setShowRepeatPassword((previous) => !previous)}
+                    onClick={() =>
+                      setShowRepeatPassword((previous) => !previous)
+                    }
                     edge="end"
                   >
                     {' '}
@@ -160,12 +177,11 @@ export function ResetPasswordModal({ open, onClose }: ResetPasswordModalProps) {
             },
           }}
         />
-        {password != repeatPassword && (
-          <Typography color='error' sx={{fontSize:12}}>
-          Both passwords must be the same
+        {errors.repeatPassword && (
+          <Typography color="error" sx={{ fontSize: 12 }}>
+            Both passwords must be the same
           </Typography>
         )}
-
 
         <Box
           sx={{
@@ -186,8 +202,8 @@ export function ResetPasswordModal({ open, onClose }: ResetPasswordModalProps) {
 
           <Button
             variant="contained"
-            disabled={!canSubmit}
-            onClick={handleSubmit}
+            disabled={!isValid || isSubmitting}
+            onClick={handleSubmit(submit)}
             sx={{ mt: 1, height: 32, width: 180 }}
           >
             {loading ? (

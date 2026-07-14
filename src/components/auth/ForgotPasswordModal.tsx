@@ -11,30 +11,39 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useSnackbar } from '../common/SnackbarProvider';
+import { useForm } from 'react-hook-form';
 
 interface ForgotPasswordModalProps {
   open: boolean;
   onClose: () => void;
 }
 
-export function ForgotPasswordModal({ open, onClose }: ForgotPasswordModalProps) {
+interface ForgotPasswordFormValues {
+  email: string;
+}
+
+export function ForgotPasswordModal({
+  open,
+  onClose,
+}: ForgotPasswordModalProps) {
   const showSnackbar = useSnackbar();
 
-  const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const {
+    register: registerField,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<ForgotPasswordFormValues>({
+    mode: 'onChange',
+    defaultValues: { email: '' },
+  });
 
-  const canSubmit = emailValid;
-
-  const handleSubmit = async () => {
-    if (!canSubmit) {
-      return;
-    }
+  const submit = async (data: ForgotPasswordFormValues) => {
     try {
       setLoading(true);
       const response = await forgotPassword({
-        email,
+        email: data.email,
       });
       showSnackbar({
         message:
@@ -74,11 +83,14 @@ export function ForgotPasswordModal({ open, onClose }: ForgotPasswordModalProps)
         <TextField
           label="E-mail address*"
           placeholder="Enter your email"
-          value={email}
-          error={!emailValid && email.length > 0}
-          onChange={(event) => {
-            setEmail(event.target.value);
-          }}
+          error={!!errors.email}
+          {...registerField('email', {
+            required: true,
+            pattern: {
+              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+              message: 'Enter a valid email'
+            }
+          })}
           fullWidth
           slotProps={{
             inputLabel: { shrink: true },
@@ -96,7 +108,7 @@ export function ForgotPasswordModal({ open, onClose }: ForgotPasswordModalProps)
           }}
         />
 
-        {!emailValid && email.length > 0 && (
+        {errors.email && (
           <Typography sx={{ fontSize: 12, color: 'error.main' }}>
             Enter a valid email
           </Typography>
@@ -121,8 +133,8 @@ export function ForgotPasswordModal({ open, onClose }: ForgotPasswordModalProps)
 
           <Button
             variant="contained"
-            disabled={!canSubmit}
-            onClick={handleSubmit}
+            disabled={!isValid || loading}
+            onClick={handleSubmit(submit)}
             sx={{ mt: 1, height: 32, width: 123 }}
           >
             {loading ? (

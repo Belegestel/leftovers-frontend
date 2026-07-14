@@ -9,6 +9,8 @@ import { NavBar } from '@/components/navigation/NavBar';
 import { Footer } from '@/components/footer/Footer';
 import { RegisterModal } from '@/components/auth/RegisterModal';
 import { LoginModal } from '@/components/auth/LoginModal';
+import { ForgotPasswordModal } from '@/components/auth/ForgotPasswordModal';
+import { ResetPasswordModal } from '@/components/auth/ResetPasswordModal';
 import { useState } from 'react';
 import { isAuthenticated } from '@/services/tokenService';
 import { RequireLoginModal } from '@/components/auth/RequireLoginModal';
@@ -29,12 +31,28 @@ export function RootLayout() {
   const handleLoginClose = () => {
     navigate(location.pathname, { replace: true });
   };
-  const handleRequireLoginRecipeSaveModal = searchParams.get('saveLogin') === 'true';
+  const handleRequireLoginRecipeSaveModal =
+    searchParams.get('saveLogin') === 'true';
   const handleRequireLoginRecipeSaveClose = () => {
     navigate(location.pathname, { replace: true });
   };
   const handleRequireLoginToSaveLogin = () => {
     navigate(`${location.pathname}?login=true`);
+  };
+  const handleForgotPasswordModal =
+    searchParams.get('forgot-password') === 'true';
+  const handleForgotPasswordClose = () =>
+    navigate(location.pathname, { replace: true });
+  const handleResetPasswordModal =
+    searchParams.get('reset-password') === 'true';
+  const handleResetPasswordClose = (isPwdChanged: boolean | undefined) => {
+    navigate(
+      {
+        pathname: location.pathname,
+        search: isPwdChanged ? '?login=true' : '',
+      },
+      { replace: true }
+    );
   };
 
   return (
@@ -62,6 +80,14 @@ export function RootLayout() {
         message="If you want to save this recipe you need to login or create an account. Don't miss out on the convenience of having your favorite recipes at your fingertips whenever you crave them!"
         onClose={handleRequireLoginRecipeSaveClose}
         onLogin={handleRequireLoginToSaveLogin}
+      />
+      <ForgotPasswordModal
+        open={handleForgotPasswordModal}
+        onClose={handleForgotPasswordClose}
+      />
+      <ResetPasswordModal
+        open={handleResetPasswordModal}
+        onClose={handleResetPasswordClose}
       />
     </Box>
   );

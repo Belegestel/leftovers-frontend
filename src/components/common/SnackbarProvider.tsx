@@ -1,5 +1,7 @@
 import { Typography, Paper, Snackbar } from '@mui/material';
 import React, { createContext, useContext, useState } from 'react';
+import { IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 type SnackbarState = {
   message: string;
@@ -23,17 +25,34 @@ export function SnackbarProvider({ children }: { children: React.ReactNode }) {
           <Paper
             elevation={4}
             sx={{
+              display: 'flex',
+              alignItems: 'center',
               width: 'fit-content',
               maxWidth: '90vw',
               borderRadius: 1,
-              px: 3,
-              py: 2,
+              px: 2,
+              py: 1,
               color: 'text.primary',
             }}
           >
-            <Typography variant="body1" sx={{whiteSpace: 'nowrap'}}>
-             {snackbar.message}
+            <Typography
+              variant="body1"
+              sx={{
+                whiteSpace: 'nowrap',
+                mr: 1,
+              }}
+            >
+              {snackbar.message}
             </Typography>
+
+            <IconButton
+              size="small"
+              onClick={() => setSnackbar(null)}
+              aria-label="close"
+              sx={{ p: 0.5 }}
+            >
+              <CloseIcon fontSize="small" />
+            </IconButton>
           </Paper>
         </Snackbar>
       )}

@@ -10,6 +10,15 @@ export interface LoginRequest {
   password: string;
 }
 
+export interface ForgotPasswordRequest {
+  email: string;
+}
+
+export interface ResetPasswordRequest {
+  token: string;
+  newPassword: string;
+}
+
 export async function register(data: RegisterRequest) {
   const response = await httpService.post('/auth/register', data);
 
@@ -18,6 +27,18 @@ export async function register(data: RegisterRequest) {
 
 export async function login(data: LoginRequest) {
   const response = await httpService.post('/auth/login', data);
+
+  return response.data;
+}
+
+export async function forgotPassword(data: ForgotPasswordRequest) {
+  const response = await httpService.post('/auth/reset-password', data);
+
+  return response.data;
+}
+
+export async function resetPassword(data: ResetPasswordRequest) {
+  const response = await httpService.post('/auth/reset-password/confirm', data);
 
   return response.data;
 }

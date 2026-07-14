@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { login } from '@/services/authService';
 import {
   Box,
-  Link,
   Dialog,
   IconButton,
   InputAdornment,
@@ -10,13 +9,16 @@ import {
   Typography,
   Button,
   CircularProgress,
+  Link,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { setToken } from '@/services/tokenService';
+import { useForm } from 'react-hook-form';
 import { emailValid } from '@/utils/validation';
 import { useAuth } from '@/context/AuthContext';
+import { Link as RouterLink } from 'react-router-dom';
 
 interface LoginModalProps {
   open: boolean;
@@ -24,26 +26,40 @@ interface LoginModalProps {
   onClose: () => void;
 }
 
+interface LoginFormValues {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+}
+
 export function LoginModal({ open, onLogin, onClose }: LoginModalProps) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [loginMessage, setLoginMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { authChanged } = useAuth();
 
-  const isEmailValid = emailValid.test(email);
+  const {
+    register: registerField,
+    handleSubmit,
+    watch,
+    formState: { errors, isValid },
+  } = useForm<LoginFormValues>({
+    mode: 'onChange',
+    defaultValues: {
+      email: '',
+      password: '',
+      rememberMe: false,
+    },
+  });
 
-  const canSubmit = isEmailValid && password.length > 0 && !isSubmitting;
+  const rememberMe = watch('rememberMe');
 
-  const handleSubmit = async () => {
-    if (!canSubmit) return;
+  const submit = async (data: LoginFormValues) => {
     try {
       setIsSubmitting(true);
       const response = await login({
-        email,
-        password,
+        email: data.email,
+        password: data.password,
       });
       setToken(response.accessToken, rememberMe);
       authChanged();
@@ -69,7 +85,7 @@ export function LoginModal({ open, onLogin, onClose }: LoginModalProps) {
       slotProps={{ paper: { sx: { borderRadius: 1, padding: 3 } } }}
     >
       <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <IconButton onClick={onClose}>
+        <IconButton onClick={() => onClose()}>
           <CloseIcon />
         </IconButton>
       </Box>
@@ -81,12 +97,15 @@ export function LoginModal({ open, onLogin, onClose }: LoginModalProps) {
         <TextField
           label="E-mail address*"
           placeholder="Enter your email"
-          value={email}
-          error={!isEmailValid && email.length > 0}
-          onChange={(event) => {
-            setEmail(event.target.value);
-            setLoginMessage('');
-          }}
+          error={!!errors.email}
+          {...registerField('email', {
+            required: true,
+            pattern: {
+              value: emailValid,
+              message: 'Enter a valid email',
+            },
+            onChange: () => setLoginMessage(''),
+          })}
           fullWidth
           slotProps={{
             inputLabel: { shrink: true },
@@ -103,7 +122,7 @@ export function LoginModal({ open, onLogin, onClose }: LoginModalProps) {
           }}
         />
 
-        {!isEmailValid && email.length > 0 && (
+        {errors.email && (
           <Typography sx={{ fontSize: 12, color: 'error.main' }}>
             Enter a valid email
           </Typography>
@@ -112,12 +131,11 @@ export function LoginModal({ open, onLogin, onClose }: LoginModalProps) {
         <TextField
           label="Password*"
           placeholder="Enter your password"
-          value={password}
           type={showPassword ? 'text' : 'password'}
-          onChange={(event) => {
-            setPassword(event.target.value);
-            setLoginMessage('');
-          }}
+          {...registerField('password', {
+            required: true,
+            onChange: () => setLoginMessage(''),
+          })}
           fullWidth
           sx={{
             '& .MuiOutlinedInput-root': {
@@ -153,7 +171,12 @@ export function LoginModal({ open, onLogin, onClose }: LoginModalProps) {
           }}
         />
         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Link href="#" sx={{ color: 'text.secondary', fontSize: 12 }}>
+          <Link
+            component={RouterLink}
+            to="?forgot-password=true"
+            underline="always"
+            sx={{ color: 'text.secondary', fontSize: 12 }}
+          >
             Forgot your password?
           </Link>
         </Box>
@@ -168,8 +191,8 @@ export function LoginModal({ open, onLogin, onClose }: LoginModalProps) {
         >
           <Button
             variant="contained"
-            disabled={!canSubmit}
-            onClick={handleSubmit}
+            disabled={!isValid || isSubmitting}
+            onClick={handleSubmit(submit)}
             sx={{ mt: 1, height: 32, width: 80 }}
           >
             {isSubmitting ? (
@@ -186,8 +209,7 @@ export function LoginModal({ open, onLogin, onClose }: LoginModalProps) {
         <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
           <input
             type="checkbox"
-            checked={rememberMe}
-            onChange={(event) => setRememberMe(event.target.checked)}
+            {...registerField('rememberMe')}
             style={{ marginTop: 4 }}
           />
 
@@ -196,7 +218,8 @@ export function LoginModal({ open, onLogin, onClose }: LoginModalProps) {
         <Typography variant="body2" sx={{ mt: 1, textAlign: 'left' }}>
           Don't have an account yet?{' '}
           <Link
-            href={`${location.pathname}?signup=true`}
+            component={RouterLink}
+            to="?signup=true"
             sx={{
               fontWeight: 'bold',
               color: 'text.primary',

@@ -168,8 +168,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                   })
                 }
               >
-                {' '}
-                Sign up{' '}
+                Sign up
               </Button>
             </>
           )}

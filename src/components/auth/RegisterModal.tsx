@@ -38,7 +38,7 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
     register: registerField,
     handleSubmit,
     watch,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<RegisterFormValues>({
     mode: 'onChange',
     defaultValues: {
@@ -53,14 +53,6 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
   const termsAccepted = watch('termsAccepted');
 
   const MIN_PASSWORD_LENGTH = 8;
-
-  const canSubmit =
-    email.length > 0 &&
-    password.length >= MIN_PASSWORD_LENGTH &&
-    termsAccepted &&
-    !errors.email &&
-    !errors.password &&
-    !loading;
 
   const submit = async (data: RegisterFormValues) => {
     try {
@@ -228,7 +220,7 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
 
         <Button
           variant="contained"
-          disabled={!canSubmit}
+          disabled={!isValid}
           onClick={handleSubmit(submit)}
           sx={{ mt: 1, height: 44, width: 220 }}
         >

@@ -37,7 +37,7 @@ export function ResetPasswordModal({ open, onClose }: ResetPasswordModalProps) {
     register: registerField,
     handleSubmit,
     watch,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isSubmitting },
   } = useForm<ResetPasswordFormValues>({
     mode: 'onChange',
     defaultValues: {
@@ -45,11 +45,7 @@ export function ResetPasswordModal({ open, onClose }: ResetPasswordModalProps) {
       repeatPassword: '',
     },
   });
-
   const password = watch('password');
-  const repeatPassword = watch('repeatPassword');
-
-  const passwordsMatch = password === repeatPassword;
 
   const submit = async (data: ResetPasswordFormValues) => {
     try {
@@ -58,7 +54,7 @@ export function ResetPasswordModal({ open, onClose }: ResetPasswordModalProps) {
       if (!token) {
         throw new Error('Missing reset token');
       }
-      const response = await resetPassword({
+      await resetPassword({
         token,
         newPassword: password,
       });
@@ -181,13 +177,11 @@ export function ResetPasswordModal({ open, onClose }: ResetPasswordModalProps) {
             },
           }}
         />
-        {!passwordsMatch &&
-          password.length > 0 &&
-          repeatPassword.length > 0 && (
-            <Typography color="error" sx={{ fontSize: 12 }}>
-              Both passwords must be the same
-            </Typography>
-          )}
+        {errors.repeatPassword && (
+          <Typography color="error" sx={{ fontSize: 12 }}>
+            Both passwords must be the same
+          </Typography>
+        )}
 
         <Box
           sx={{
@@ -208,7 +202,7 @@ export function ResetPasswordModal({ open, onClose }: ResetPasswordModalProps) {
 
           <Button
             variant="contained"
-            disabled={!isValid || !passwordsMatch || loading}
+            disabled={!isValid || isSubmitting}
             onClick={handleSubmit(submit)}
             sx={{ mt: 1, height: 32, width: 180 }}
           >

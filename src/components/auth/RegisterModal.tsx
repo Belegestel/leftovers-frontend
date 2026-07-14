@@ -52,9 +52,11 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
   const password = watch('password');
   const termsAccepted = watch('termsAccepted');
 
+  const MIN_PASSWORD_LENGTH = 8;
+
   const canSubmit =
     email.length > 0 &&
-    password.length > 8 &&
+    password.length >= MIN_PASSWORD_LENGTH &&
     termsAccepted &&
     !errors.email &&
     !errors.password &&
@@ -143,12 +145,12 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
           type={showPassword ? 'text' : 'password'}
           {...registerField('password', {
             minLength: {
-              value: 8,
-              message: 'Minimum password length is 8',
+              value: {MIN_PASSWORD_LENGTH},
+              message: `Minimum password length is ${MIN_PASSWORD_LENGTH}`,
             },
           })}
           fullWidth
-          error={password.length < 8 && password.length > 0}
+          error={password.length < MIN_PASSWORD_LENGTH && password.length > 0 }
           sx={{
             '& .MuiOutlinedInput-root': {
               '& fieldset': {
@@ -164,28 +166,25 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
             input: {
               endAdornment: (
                 <InputAdornment position="end">
-                  {' '}
                   <IconButton
                     aria-label="toggle password visibility"
                     onClick={() => setShowPassword((previous) => !previous)}
                     edge="end"
                   >
-                    {' '}
                     {showPassword ? (
                       <VisibilityOffOutlinedIcon />
                     ) : (
                       <VisibilityOutlinedIcon />
-                    )}{' '}
-                  </IconButton>{' '}
+                    )}
+                  </IconButton>
                 </InputAdornment>
               ),
             },
           }}
         />
-
         {errors.password && (
           <Typography sx={{ fontSize: 12, color: 'error.main' }}>
-            Minimum password length is 8
+            Minimum password length is {MIN_PASSWORD_LENGTH}
           </Typography>
         )}
 
@@ -206,7 +205,6 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
           />
 
           <Typography variant="body2">
-            {' '}
             Acceptance of{' '}
             <Link
               href="/tos"

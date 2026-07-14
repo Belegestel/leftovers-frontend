@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { login } from '@/services/authService';
 import {
   Box,
-  Link,
   Dialog,
   IconButton,
   InputAdornment,
@@ -10,6 +9,7 @@ import {
   Typography,
   Button,
   CircularProgress,
+  Link,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
@@ -17,6 +17,7 @@ import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { setToken } from '@/services/tokenService';
 import { useForm } from 'react-hook-form';
 import { emailValid } from '@/utils/validation';
+import { Link as RouterLink } from 'react-router-dom';
 
 interface LoginModalProps {
   open: boolean;
@@ -168,7 +169,9 @@ export function LoginModal({ open, onLogin, onClose }: LoginModalProps) {
         />
         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Link
-            href={`${location.pathname}?forgot-password=true`}
+            component={RouterLink}
+            to="?forgot-password=true"
+            underline="always"
             sx={{ color: 'text.secondary', fontSize: 12 }}
           >
             Forgot your password?
@@ -212,7 +215,8 @@ export function LoginModal({ open, onLogin, onClose }: LoginModalProps) {
         <Typography variant="body2" sx={{ mt: 1, textAlign: 'left' }}>
           Don't have an account yet?{' '}
           <Link
-            href={`${location.pathname}?signup=true`}
+            component={RouterLink}
+            to="?signup=true"
             sx={{
               fontWeight: 'bold',
               color: 'text.primary',

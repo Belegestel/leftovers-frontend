@@ -1,78 +1,12 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import {
-  Box,
-  Container,
-  Divider,
-  Grid,
-  Typography,
-} from '@mui/material';
-import {
-  bookmarkRecipe,
-  getRecipeSummaries,
-  unbookmarkRecipe,
-} from '@/services/recipeService';
-import { isAuthenticated } from '@/services/tokenService';
-import type { RecipeSummary } from '@/types/recipe';
+import { Box, Container, Divider, Grid, Typography } from '@mui/material';
 import { RecipeCard } from '@/components/recipe/RecipeCard';
-
+import { useRecipes } from '@/hooks/useRecipes';
+import { useBookmark } from '@/hooks/useBookmark';
 export default function Home() {
-  const navigate = useNavigate();
+  const { recipes, setRecipes, recipeOfTheDay, setRecipeOfTheDay } =
+    useRecipes();
 
-  const [recipes, setRecipes] = useState<RecipeSummary[]>([]);
-  const [recipeOfTheDay, setRecipeOfTheDay] =
-    useState<RecipeSummary | null>(null);
-
-  useEffect(() => {
-    async function loadRecipes() {
-      const recipes = await getRecipeSummaries();
-
-      setRecipes(recipes);
-
-      if (recipes.length > 0) {
-        setRecipeOfTheDay(recipes[0]);
-      }
-    }
-
-    loadRecipes();
-  }, []);
-
-  const handleBookmarkToggle = async (recipe: RecipeSummary) => {
-    if (!isAuthenticated()) {
-      navigate('?saveLogin=true');
-      return;
-    }
-
-    try {
-      if (recipe.isBookmarked) {
-        await unbookmarkRecipe(recipe.id);
-      } else {
-        await bookmarkRecipe(recipe.id);
-      }
-
-      setRecipes((currentRecipes) =>
-        currentRecipes.map((currentRecipe) =>
-          currentRecipe.id === recipe.id
-            ? {
-                ...currentRecipe,
-                isBookmarked: !currentRecipe.isBookmarked,
-              }
-            : currentRecipe
-        )
-      );
-
-      setRecipeOfTheDay((currentRecipe) =>
-        currentRecipe?.id === recipe.id
-          ? {
-              ...currentRecipe,
-              isBookmarked: !currentRecipe.isBookmarked,
-            }
-          : currentRecipe
-      );
-    } catch (error) {
-      console.error('Failed to update bookmark', error);
-    }
-  };
+  const { toggleBookmark } = useBookmark(setRecipes, setRecipeOfTheDay);
 
   return (
     <Container>
@@ -80,9 +14,7 @@ export default function Home() {
         <RecipeCard
           recipe={recipeOfTheDay}
           variant="featured"
-          onBookmarkToggle={() =>
-            handleBookmarkToggle(recipeOfTheDay)
-          }
+          onBookmarkToggle={() => toggleBookmark(recipeOfTheDay)}
         />
       )}
 
@@ -92,9 +24,7 @@ export default function Home() {
           mb: 3,
         }}
       >
-        <Typography variant="h5">
-          New Recipes
-        </Typography>
+        <Typography variant="h5">New Recipes</Typography>
 
         <Divider
           sx={{
@@ -103,10 +33,7 @@ export default function Home() {
         />
       </Box>
 
-      <Grid
-        container
-        spacing={3}
-      >
+      <Grid container spacing={3}>
         {recipes.map((recipe) => (
           <Grid
             key={recipe.id}
@@ -122,9 +49,7 @@ export default function Home() {
           >
             <RecipeCard
               recipe={recipe}
-              onBookmarkToggle={() =>
-                handleBookmarkToggle(recipe)
-              }
+              onBookmarkToggle={() => toggleBookmark(recipe)}
             />
           </Grid>
         ))}

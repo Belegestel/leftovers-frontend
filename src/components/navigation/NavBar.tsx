@@ -152,8 +152,7 @@ export function NavBar() {
                   })
                 }
               >
-                {' '}
-                Sign up{' '}
+                Sign up
               </Button>
             </>
           )}

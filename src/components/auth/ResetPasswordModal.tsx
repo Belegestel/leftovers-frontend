@@ -29,7 +29,7 @@ export function ResetPasswordModal({ open, onClose }: ResetPasswordModalProps) {
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const canSubmit = password == repeatPassword && password.length > 8;
+  const canSubmit = password == repeatPassword && password.length >= 8;
 
   const handleSubmit = async () => {
     if (!canSubmit) {

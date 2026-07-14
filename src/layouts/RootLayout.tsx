@@ -33,12 +33,12 @@ export function RootLayout() {
   const handleForgotPasswordModal =
     searchParams.get('forgot-password') === 'true';
   const handleForgotPasswordClose = () =>
-    navigate(window.location.pathname, { replace: true });
+    navigate(location.pathname, { replace: true });
   const handleResetPasswordModal =
     searchParams.get('reset-password') === 'true';
   const handleResetPasswordClose = (isPwdChanged: boolean | undefined) => {
     navigate(
-      { pathname: window.location.pathname, search: isPwdChanged ? '?login=true' : ''},
+      { pathname: location.pathname, search: isPwdChanged ? '?login=true' : ''},
       {replace:true}
     )
   }

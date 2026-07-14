@@ -9,6 +9,8 @@ import { NavBar } from '@/components/navigation/NavBar';
 import { Footer } from '@/components/footer/Footer';
 import { RegisterModal } from '@/components/auth/RegisterModal';
 import { LoginModal } from '@/components/auth/LoginModal';
+import { ForgotPasswordModal } from '@/components/auth/ForgotPasswordModal';
+import { ResetPasswordModal } from '@/components/auth/ResetPasswordModal';
 import { useState } from 'react';
 import { isAuthenticated } from '@/services/tokenService';
 
@@ -28,6 +30,18 @@ export function RootLayout() {
   const handleLoginClose = () => {
     navigate(location.pathname, { replace: true });
   };
+  const handleForgotPasswordModal =
+    searchParams.get('forgot-password') === 'true';
+  const handleForgotPasswordClose = () =>
+    navigate(location.pathname, { replace: true });
+  const handleResetPasswordModal =
+    searchParams.get('reset-password') === 'true';
+  const handleResetPasswordClose = (isPwdChanged: boolean | undefined) => {
+    navigate(
+      { pathname: location.pathname, search: isPwdChanged ? '?login=true' : ''},
+      {replace:true}
+    )
+  }
 
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -42,14 +56,19 @@ export function RootLayout() {
       </Box>
       <Footer />
 
-      <RegisterModal
-        open={handleSignupOpenModal}
-        onClose={handleSignupClose}
-      />
+      <RegisterModal open={handleSignupOpenModal} onClose={handleSignupClose} />
       <LoginModal
         open={handleLoginOpenModal}
         onLogin={handleLogin}
         onClose={handleLoginClose}
+      />
+      <ForgotPasswordModal
+        open={handleForgotPasswordModal}
+        onClose={handleForgotPasswordClose}
+      />
+      <ResetPasswordModal
+        open={handleResetPasswordModal}
+        onClose={handleResetPasswordClose}
       />
     </Box>
   );

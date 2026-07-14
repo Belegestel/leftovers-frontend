@@ -17,6 +17,7 @@ import { useState } from 'react';
 import { useRecipeCategories } from '@/hooks/useRecipeCategories';
 import { removeToken } from '@/services/tokenService';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '@/context/AuthContext';
 
 interface NavBarProps {
   authenticated: boolean;
@@ -31,6 +32,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
     null
   );
   const [searchQuery, setSearchQuery] = useState('');
+  const { authChanged } = useAuth();
 
   const { categories } = useRecipeCategories();
 
@@ -135,6 +137,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                   onClick={() => {
                     removeToken();
                     onLogout();
+                    authChanged();
                     navigate('/');
                     setMyAccountAnchor(null);
                   }}

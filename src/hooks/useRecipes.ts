@@ -1,11 +1,15 @@
 import { useEffect, useState } from 'react';
 import { getRecipeSummaries } from '@/services/recipeService';
 import type { RecipeSummary } from '@/types/recipe';
+import { useAuth } from '@/context/AuthContext';
 
 export function useRecipes() {
+  const { authVersion } = useAuth();
   const [recipes, setRecipes] = useState<RecipeSummary[]>([]);
-  const [recipeOfTheDay, setRecipeOfTheDay] =
-    useState<RecipeSummary | null>(null);
+  const [recipeOfTheDay, setRecipeOfTheDay] = useState<RecipeSummary | null>(
+    null
+  );
+
 
   async function loadRecipes() {
     const recipes = await getRecipeSummaries();
@@ -16,7 +20,7 @@ export function useRecipes() {
 
   useEffect(() => {
     loadRecipes();
-  }, []);
+  }, [authVersion]);
 
   return {
     recipes,

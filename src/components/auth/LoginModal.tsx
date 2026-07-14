@@ -16,6 +16,7 @@ import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { setToken } from '@/services/tokenService';
 import { emailValid } from '@/utils/validation';
+import { useAuth } from '@/context/AuthContext';
 
 interface LoginModalProps {
   open: boolean;
@@ -30,6 +31,7 @@ export function LoginModal({ open, onLogin, onClose }: LoginModalProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [loginMessage, setLoginMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { authChanged } = useAuth();
 
   const isEmailValid = emailValid.test(email);
 
@@ -44,6 +46,7 @@ export function LoginModal({ open, onLogin, onClose }: LoginModalProps) {
         password,
       });
       setToken(response.accessToken, rememberMe);
+      authChanged();
       onLogin();
       onClose();
     } catch (error: unknown) {

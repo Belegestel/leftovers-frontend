@@ -32,8 +32,10 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
 
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
+  const MIN_PASSWORD_LENGTH = 8;
+
   const canSubmit =
-    emailValid && password.length > 8 && termsAccepted && !loading;
+    emailValid && password.length >= MIN_PASSWORD_LENGTH && termsAccepted && !loading;
 
   const handleSubmit = async () => {
     if (!canSubmit) return;
@@ -110,7 +112,7 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
           type={showPassword ? 'text' : 'password'}
           onChange={(event) => setPassword(event.target.value)}
           fullWidth
-          error={password.length < 8 && password.length > 0}
+          error={password.length < MIN_PASSWORD_LENGTH && password.length > 0 }
           sx={{
             '& .MuiOutlinedInput-root': {
               '& fieldset': {
@@ -126,25 +128,23 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
             input: {
               endAdornment: (
                 <InputAdornment position="end">
-                  {' '}
                   <IconButton
                   aria-label='toggle password visibility'
                     onClick={() => setShowPassword((previous) => !previous)}
                     edge="end"
                   >
-                    {' '}
                     {showPassword ? (
                       <VisibilityOffOutlinedIcon />
                     ) : (
                       <VisibilityOutlinedIcon />
-                    )}{' '}
-                  </IconButton>{' '}
+                    )}
+                  </IconButton>
                 </InputAdornment>
               ),
             },
           }}
         />
-        {password.length < 8 && password.length > 0 && (<Typography sx={{fontSize:12, color:'error.main'}}>Minimum password length is 8</Typography>)}
+        {password.length < MIN_PASSWORD_LENGTH && password.length > 0 && (<Typography sx={{fontSize:12, color:'error.main'}}>Minimum password length is {MIN_PASSWORD_LENGTH}</Typography>)}
 
         <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, justifyContent: 'left'}}>
           <input
@@ -155,7 +155,6 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
           />
 
           <Typography variant="body2">
-            {' '}
             Acceptance of{' '}
             <Link
               href="/tos"

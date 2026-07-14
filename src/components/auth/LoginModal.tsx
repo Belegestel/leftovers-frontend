@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { useSnackbar } from '../common/SnackbarProvider';
-import { register } from '@/services/authService';
+import { login } from '@/services/authService';
 import {
   Box,
   Link,
@@ -15,48 +14,46 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import { setToken } from '@/services/tokenService';
+import { emailValid } from '@/utils/validation';
 
-interface RegisterModalProps {
+interface LoginModalProps {
   open: boolean;
+  onLogin: () => void;
   onClose: () => void;
 }
 
-export function RegisterModal({ open, onClose }: RegisterModalProps) {
-  const showSnackbar = useSnackbar();
-
+export function LoginModal({ open, onLogin, onClose }: LoginModalProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loginMessage, setLoginMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const isEmailValid = emailValid.test(email);
 
-  const MIN_PASSWORD_LENGTH = 8;
-
-  const canSubmit =
-    emailValid && password.length >= MIN_PASSWORD_LENGTH && termsAccepted && !loading;
+  const canSubmit = isEmailValid && password.length > 0 && !isSubmitting;
 
   const handleSubmit = async () => {
     if (!canSubmit) return;
     try {
-      setLoading(true);
-      await register({
+      setIsSubmitting(true);
+      const response = await login({
         email,
         password,
       });
-
-      showSnackbar({
-        message:
-          "You've successfully registered on our website. To complete the registration process, please check your email 📬",
-      });
+      setToken(response.accessToken, rememberMe);
+      onLogin();
       onClose();
-    } catch (error) {
-      showSnackbar({
-        message: 'Registration failed. Please try again.',
-      });
+    } catch (error: unknown) {
+      if (error.response?.status === 401) {
+        setLoginMessage('Login failed - invalid credentials');
+      } else {
+        setLoginMessage('Login failed');
+      }
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -75,19 +72,18 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         <Typography variant="h4" sx={{ font: 'Poppins', fontWeight: 600 }}>
-          Sign up
-        </Typography>
-
-        <Typography variant="body2" color="text.secondary">
-          Create an account for free
+          Log in
         </Typography>
 
         <TextField
           label="E-mail address*"
           placeholder="Enter your email"
           value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          error={!emailValid && email.length > 0}
+          error={!isEmailValid && email.length > 0}
+          onChange={(event) => {
+            setEmail(event.target.value);
+            setLoginMessage('');
+          }}
           fullWidth
           slotProps={{
             inputLabel: { shrink: true },
@@ -103,16 +99,23 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
             },
           }}
         />
-        {(!emailValid && email.length > 0) && (<Typography sx={{fontSize:12, color:'error.main'}}>Enter a valid email</Typography>)}
+
+        {!isEmailValid && email.length > 0 && (
+          <Typography sx={{ fontSize: 12, color: 'error.main' }}>
+            Enter a valid email
+          </Typography>
+        )}
 
         <TextField
           label="Password*"
-          placeholder="Create a password"
+          placeholder="Enter your password"
           value={password}
           type={showPassword ? 'text' : 'password'}
-          onChange={(event) => setPassword(event.target.value)}
+          onChange={(event) => {
+            setPassword(event.target.value);
+            setLoginMessage('');
+          }}
           fullWidth
-          error={password.length < MIN_PASSWORD_LENGTH && password.length > 0 }
           sx={{
             '& .MuiOutlinedInput-root': {
               '& fieldset': {
@@ -128,78 +131,76 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
             input: {
               endAdornment: (
                 <InputAdornment position="end">
+                  {' '}
                   <IconButton
-                  aria-label='toggle password visibility'
+                    aria-label="toggle password visibility"
                     onClick={() => setShowPassword((previous) => !previous)}
                     edge="end"
                   >
+                    {' '}
                     {showPassword ? (
                       <VisibilityOffOutlinedIcon />
                     ) : (
                       <VisibilityOutlinedIcon />
-                    )}
-                  </IconButton>
+                    )}{' '}
+                  </IconButton>{' '}
                 </InputAdornment>
               ),
             },
           }}
         />
-        {password.length < MIN_PASSWORD_LENGTH && password.length > 0 && (<Typography sx={{fontSize:12, color:'error.main'}}>Minimum password length is {MIN_PASSWORD_LENGTH}</Typography>)}
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Link href="#" sx={{ color: 'text.secondary', fontSize: 12 }}>
+            Forgot your password?
+          </Link>
+        </Box>
 
-        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, justifyContent: 'left'}}>
-          <input
-            type="checkbox"
-            checked={termsAccepted}
-            onChange={(event) => setTermsAccepted(event.target.checked)}
-            style={{ marginTop: 4 }}
-          />
-
-          <Typography variant="body2">
-            Acceptance of{' '}
-            <Link
-              href="/tos"
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{ color: 'text.primary', fontWeight: 'bold' }}
-            >
-              Terms & conditions
-            </Link>{' '}
-            and{' '}
-            <Link
-              href="/privacy"
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{ color: 'text.primary', fontWeight: 'bold' }}
-            >
-              Privacy Policy
-            </Link>{' '}
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'flex-start',
+            justifyContent: 'space-between',
+          }}
+        >
+          <Button
+            variant="contained"
+            disabled={!canSubmit}
+            onClick={handleSubmit}
+            sx={{ mt: 1, height: 32, width: 80 }}
+          >
+            {isSubmitting ? (
+              <CircularProgress size={22} color="inherit" />
+            ) : (
+              'Log in'
+            )}
+          </Button>
+          <Typography color="error" sx={{ mt: 1.5 }}>
+            {loginMessage}
           </Typography>
         </Box>
 
-        <Button
-          variant="contained"
-          disabled={!canSubmit}
-          onClick={handleSubmit}
-          sx={{ mt: 1, height: 44 , width: 220}}
-        >
-          {loading ? (
-            <CircularProgress size={22} color="inherit" />
-          ) : (
-            'Create an account'
-          )}
-        </Button>
+        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
+          <input
+            type="checkbox"
+            checked={rememberMe}
+            onChange={(event) => setRememberMe(event.target.checked)}
+            style={{ marginTop: 4 }}
+          />
 
+          <Typography variant="body2">Remember me</Typography>
+        </Box>
         <Typography variant="body2" sx={{ mt: 1, textAlign: 'left' }}>
-          Already have an account?{' '}
+          Don't have an account yet?{' '}
           <Link
-            href={`${location.pathname}?login=true`}
+            href={`${location.pathname}?signup=true`}
             sx={{
               fontWeight: 'bold',
               color: 'text.primary',
             }}
             underline="always"
           >
-            Login
+            Create an account
           </Link>
         </Typography>
       </Box>

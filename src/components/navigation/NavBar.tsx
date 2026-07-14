@@ -13,12 +13,17 @@ import logo from '@/assets/logo.svg';
 import SearchIcon from '@mui/icons-material/Search';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import AddIcon from '@mui/icons-material/Add';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRecipeCategories } from '@/hooks/useRecipeCategories';
-import { isAuthenticated, removeToken } from '@/services/tokenService';
-import { useNavigate, useLocation } from 'react-router';
+import { removeToken } from '@/services/tokenService';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-export function NavBar() {
+interface NavBarProps {
+  authenticated: boolean;
+  onLogout: () => void;
+}
+
+export function NavBar({ authenticated, onLogout}: NavBarProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const [recipesAnchor, setRecipesAnchor] = useState<null | HTMLElement>(null);
@@ -26,8 +31,6 @@ export function NavBar() {
     null
   );
   const [searchQuery, setSearchQuery] = useState('');
-  const [authenticated, setAuthenticated] = useState(false);
-  useEffect(() => setAuthenticated(isAuthenticated()), []);
 
   const { categories } = useRecipeCategories();
 
@@ -131,7 +134,7 @@ export function NavBar() {
                   key="log-out"
                   onClick={() => {
                     removeToken();
-                    setAuthenticated(false);
+                    onLogout();
                     navigate('/');
                     setMyAccountAnchor(null);
                   }}
@@ -142,13 +145,23 @@ export function NavBar() {
             </>
           ) : (
             <>
-              <Button color="primary">Log in</Button>
+              <Button
+                color="primary"
+                onClick={() =>
+                  navigate({
+                    pathname: location.pathname,
+                    search: '?login=true',
+                  })
+                }
+              >
+                Log in
+              </Button>
               <Button
                 variant="contained"
                 onClick={() =>
                   navigate({
                     pathname: location.pathname,
-                    search: '?signup=true'
+                    search: '?signup=true',
                   })
                 }
               >

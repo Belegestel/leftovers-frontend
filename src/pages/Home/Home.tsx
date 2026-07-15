@@ -6,7 +6,10 @@ export default function Home() {
   const { recipes, setRecipes, recipeOfTheDay, setRecipeOfTheDay } =
     useRecipes();
 
-  const { toggleBookmark } = useBookmark(setRecipes, setRecipeOfTheDay);
+  const { toggleBookmark } = useBookmark({
+    mode: 'list',
+    state: { setRecipes, setRecipeOfTheDay },
+  });
 
   return (
     <Container>

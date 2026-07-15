@@ -2,7 +2,7 @@ import { Box, Typography } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { useRecipe } from '@/hooks/useRecipe';
 import { RecipeDetailsCard } from '@/components/recipe/RecipeDetailsCard';
-import { useRecipeBookmark } from '@/hooks/useRecipeBookmark';
+import { useBookmark } from '@/hooks/useBookmark';
 
 export default function RecipeDetails() {
   const { id } = useParams();
@@ -10,7 +10,10 @@ export default function RecipeDetails() {
   const recipeId = id ? Number(id) : undefined;
 
   const { recipe, setRecipe, loading, forbidden, error } = useRecipe(recipeId);
-  const { toggleBookmark } = useRecipeBookmark(recipe, setRecipe);
+  const { toggleBookmark } = useBookmark({
+    mode: 'single',
+    state: { setRecipe },
+  });
 
   if (loading) {
     return <Typography>Loading recipe...</Typography>;

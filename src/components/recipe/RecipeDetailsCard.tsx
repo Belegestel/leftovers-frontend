@@ -6,7 +6,7 @@ import { RecipeRating } from './RecipeRating';
 
 interface RecipeDetailsCardProps {
   recipe: Recipe;
-  onBookmarkToggle: () => void;
+  onBookmarkToggle: (recipe: Recipe) => void;
 }
 
 export function RecipeDetailsCard({
@@ -72,7 +72,7 @@ export function RecipeDetailsCard({
           >
             <SaveRecipeButton
               bookmarked={recipe.isBookmarked}
-              onToggle={onBookmarkToggle}
+              onToggle={() => onBookmarkToggle(recipe)}
               variant="button"
             />
           </Box>

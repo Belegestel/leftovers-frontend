@@ -5,7 +5,7 @@ type RecipeSummariesResponse = {
   recipes: RecipeSummary[];
 };
 type RecipeResponse = {
-  recipes: Recipe[];
+  recipes: Recipe;
 };
 
 export class RecipeCategory {
@@ -33,7 +33,7 @@ export async function getRecipeSummaries(): Promise<RecipeSummary[]> {
 export async function getRecipe(id: number): Promise<Recipe> {
   const response = await httpService.get<RecipeResponse>(`/recipes/${id}`);
 
-  return response.data.recipes[0];
+  return response.data;
 }
 
 export async function bookmarkRecipe(id: number): Promise<void> {

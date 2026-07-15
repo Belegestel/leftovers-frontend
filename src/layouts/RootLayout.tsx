@@ -36,7 +36,7 @@ export function RootLayout() {
   const handleRequireLoginRecipeSaveClose = () => {
     navigate(location.pathname, { replace: true });
   };
-  const handleRequireLoginToSaveLogin = () => {
+  const handleRequireLoginRedirectLogin = () => {
     navigate(`${location.pathname}?login=true`);
   };
   const handleForgotPasswordModal =
@@ -53,6 +53,15 @@ export function RootLayout() {
       },
       { replace: true }
     );
+  };
+  // const handleRateModal = searchParams.get('rate') === 'true';
+  // const handleRateClose = () => {
+  //   navigate(location.pathname, { replace: true });
+  // };
+  const handleRequireLoginRecipeRateModal =
+    searchParams.get('rateLogin') === 'true';
+  const handleRequireLoginRecipeRateClose = () => {
+    navigate(location.pathname, { replace: true });
   };
 
   return (
@@ -79,7 +88,7 @@ export function RootLayout() {
         title="Login to save the recipe"
         message="If you want to save this recipe you need to login or create an account. Don't miss out on the convenience of having your favorite recipes at your fingertips whenever you crave them!"
         onClose={handleRequireLoginRecipeSaveClose}
-        onLogin={handleRequireLoginToSaveLogin}
+        onLogin={handleRequireLoginRedirectLogin}
       />
       <ForgotPasswordModal
         open={handleForgotPasswordModal}
@@ -88,6 +97,13 @@ export function RootLayout() {
       <ResetPasswordModal
         open={handleResetPasswordModal}
         onClose={handleResetPasswordClose}
+      />
+      <RequireLoginModal
+        open={handleRequireLoginRecipeRateModal}
+        title="Login to rate the recipe"
+        message="If you want to rate this recipe you need to login or create an account. Share your opinions and help other users discover great recipes!"
+        onClose={handleRequireLoginRecipeRateClose}
+        onLogin={handleRequireLoginRedirectLogin}
       />
     </Box>
   );

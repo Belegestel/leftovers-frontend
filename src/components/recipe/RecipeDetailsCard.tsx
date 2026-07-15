@@ -3,15 +3,18 @@ import DinnerDiningIcon from '@mui/icons-material/DinnerDining';
 import type { Recipe } from '@/types/recipe';
 import { SaveRecipeButton } from './SaveRecipeButton';
 import { RecipeRating } from './RecipeRating';
+import CheckIcon from '@mui/icons-material/Check';
 
 interface RecipeDetailsCardProps {
   recipe: Recipe;
   onBookmarkToggle: (recipe: Recipe) => void;
+  onRate: () => void;
 }
 
 export function RecipeDetailsCard({
   recipe,
   onBookmarkToggle,
+  onRate,
 }: RecipeDetailsCardProps) {
   const image = recipe.imageLink ? (
     <CardMedia
@@ -77,22 +80,29 @@ export function RecipeDetailsCard({
             />
           </Box>
 
-          <Box sx={{display:'flex',justifyContent:'flex-start', width:'100%'}}>
-          <Link
-            component="button"
-            underline="hover"
+          <Box
             sx={{
-              mt: 2,
-              p: 0,
-              border: 0,
-              background: 'none',
-              color: 'primary.main',
-              fontWeight: 700,
-              mb: 1,
+              display: 'flex',
+              justifyContent: 'flex-start',
+              width: '100%',
             }}
           >
-            Rate the recipe
-          </Link>
+            <Link
+              component="button"
+              underline="hover"
+              onClick={onRate}
+              sx={{
+                mt: 2,
+                p: 0,
+                border: 0,
+                background: 'none',
+                color: 'primary.main',
+                fontWeight: 700,
+                mb: 1,
+              }}
+            >
+              {recipe.userRating ? <> <CheckIcon fontSize='small'/> {'Recipe rated'} </>: 'Rate the recipe'}
+            </Link>
           </Box>
 
           <RecipeRating

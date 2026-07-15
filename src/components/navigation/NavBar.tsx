@@ -47,7 +47,12 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
       <Toolbar>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <Box>
-            <Logo src={logo} alt="Leftovers logo" />
+            <Logo
+              src={logo}
+              alt="Leftovers logo"
+              onClick={() => navigate('/')}
+              sx={{ cursor: 'pointer' }}
+            />
           </Box>
           <SearchBox>
             <SearchInput

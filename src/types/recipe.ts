@@ -18,4 +18,5 @@ export interface Recipe extends RecipeSummary {
   editedAt: string;
   ingredients: string[];
   steps: string[];
+  userRating: number | null;
 }

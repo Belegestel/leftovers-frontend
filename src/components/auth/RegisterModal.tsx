@@ -38,6 +38,7 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
     register: registerField,
     handleSubmit,
     watch,
+    reset,
     formState: { errors, isValid },
   } = useForm<RegisterFormValues>({
     mode: 'onChange',
@@ -58,14 +59,15 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
     try {
       setLoading(true);
       await register({
-        email,
-        password,
+        email: data.email,
+        password: data.password,
       });
 
       showSnackbar({
         message:
           "You've successfully registered on our website. To complete the registration process, please check your email 📬",
       });
+      reset();
       onClose();
     } catch (error) {
       showSnackbar({

@@ -42,6 +42,7 @@ export function LoginModal({ open, onLogin, onClose }: LoginModalProps) {
     register: registerField,
     handleSubmit,
     watch,
+    reset,
     formState: { errors, isValid },
   } = useForm<LoginFormValues>({
     mode: 'onChange',
@@ -64,6 +65,7 @@ export function LoginModal({ open, onLogin, onClose }: LoginModalProps) {
       setToken(response.accessToken, rememberMe);
       authChanged();
       onLogin();
+      reset()
       onClose();
     } catch (error: unknown) {
       if (error.response?.status === 401) {
@@ -85,7 +87,12 @@ export function LoginModal({ open, onLogin, onClose }: LoginModalProps) {
       slotProps={{ paper: { sx: { borderRadius: 1, padding: 3 } } }}
     >
       <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <IconButton onClick={() => onClose()}>
+        <IconButton
+          onClick={() => {
+            reset()
+            onClose();
+          }}
+        >
           <CloseIcon />
         </IconButton>
       </Box>

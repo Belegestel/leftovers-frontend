@@ -12,19 +12,24 @@ import { RecipeRating } from './RecipeRating';
 import { SaveRecipeButton } from './SaveRecipeButton';
 import type { RecipeSummary } from '@/types/recipe';
 import { useNavigate } from 'react-router-dom';
+import CreateIcon from '@mui/icons-material/Create';
+import LockIcon from '@mui/icons-material/Lock';
 
 interface RecipeCardProps {
   recipe: RecipeSummary;
-  variant?: 'default' | 'featured';
+  variant?: 'default' | 'featured' | 'own';
   onBookmarkToggle: () => void;
+  isPrivate?: boolean
 }
 
 export function RecipeCard({
   recipe,
   variant = 'default',
   onBookmarkToggle,
+  isPrivate,
 }: RecipeCardProps) {
   const isFeatured = variant === 'featured';
+  const isOwn = variant === 'own';
   const navigate = useNavigate();
 
   const imageHeight = isFeatured ? { xs: 280, md: 360 } : undefined;
@@ -122,21 +127,11 @@ export function RecipeCard({
               featured
             />
 
-            <Typography
-              variant="h3"
-              sx={{
-                mt: 1,
-              }}
-            >
+            <Typography variant="h3" sx={{ mt: 1 }}>
               {recipe.title}
             </Typography>
 
-            <Typography
-              color="text.secondary"
-              sx={{
-                mt: 2,
-              }}
-            >
+            <Typography color="text.secondary" sx={{ mt: 2 }}>
               {recipe.description}
             </Typography>
 
@@ -193,11 +188,37 @@ export function RecipeCard({
       >
         {image}
 
+        {isOwn && isPrivate && (
+          <Box
+            sx={{
+              position: 'absolute',
+              inset: 0,
+              backgroundColor: 'rgba(0, 0, 0, 0.65)',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              zIndex: 1,
+            }}
+          >
+            <LockIcon sx={{ color: 'white' }} />
+            <Typography
+              variant="h5"
+              sx={{
+                color: 'white',
+                fontWeight: 700,
+              }}
+            >
+              Private
+            </Typography>
+          </Box>
+        )}
+
         <Box
           sx={{
             position: 'absolute',
             top: 16,
             right: 16,
+            zIndex: 2,
           }}
         >
           {saveButton}
@@ -226,6 +247,23 @@ export function RecipeCard({
             ratingCount={recipe.ratingCount}
           />
         </Box>
+
+        {isOwn && (
+          <Box>
+            <Link underline="hover">
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  mt: 2,
+                }}
+              >
+                <Typography>Edit the recipe</Typography>
+                <CreateIcon sx={{ pb: 0.5, fontSize: 32 }} />
+              </Box>
+            </Link>
+          </Box>
+        )}
       </CardContent>
     </Card>
   );

@@ -9,6 +9,7 @@ export interface RecipeSummary {
   category: string;
   imageLink?: string | null;
   isBookmarked: boolean;
+  isPrivate: string;
 }
 
 export interface Recipe extends RecipeSummary {

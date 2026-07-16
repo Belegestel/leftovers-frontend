@@ -82,6 +82,8 @@ export default function Recipes({ mode }: RecipesProps) {
             <RecipeCard
               recipe={recipe}
               onBookmarkToggle={() => toggleBookmark(recipe)}
+              variant={mode === 'my' ? 'own' : 'default'}
+              isPrivate={mode === 'my' ? recipe.isPrivate : false}
             />
           </Grid>
         ))}

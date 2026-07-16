@@ -3,17 +3,37 @@ import { useSearchParams } from 'react-router-dom';
 import { RecipeCard } from '@/components/recipe/RecipeCard';
 import { useRecipes } from '@/hooks/useRecipes';
 import { useBookmark } from '@/hooks/useBookmark';
+import { RecipeFilters } from '@/components/recipe/RecipeFilters';
+import { useRecipeCategories } from '@/hooks/useRecipeCategories';
 
 export default function Recipes() {
   const [searchParams] = useSearchParams();
 
+  const { categories } = useRecipeCategories();
+
   const category = searchParams.get('category') ?? undefined;
 
-  const title = category
-    ? category.replace(/\b\w/g, (char) => char.toUpperCase())
-    : 'All Recipes';
+  const normalizedCategories = category
+    ? category.split(',').map((selectedCategory) => {
+        return (
+          categories.find(
+            (item) => item.name.toLowerCase() === selectedCategory.toLowerCase()
+          )?.name ?? selectedCategory
+        );
+      })
+    : [];
 
-  const { recipes, setRecipes } = useRecipes(category);
+  const title =
+    normalizedCategories.length > 0
+      ? [...new Set(normalizedCategories)]
+          .map((item) => item.replace(/\b\w/g, (char) => char.toUpperCase()))
+          .join(', ')
+      : 'All Recipes';
+
+  const savedParam = searchParams.get('saved');
+  const saved = savedParam === null ? undefined : savedParam === 'true';
+
+  const { recipes, setRecipes } = useRecipes({ category, saved });
 
   const { toggleBookmark } = useBookmark({
     mode: 'list',
@@ -37,6 +57,7 @@ export default function Recipes() {
             mt: 2,
           }}
         />
+        <RecipeFilters />
       </Box>
 
       <Grid container spacing={3}>

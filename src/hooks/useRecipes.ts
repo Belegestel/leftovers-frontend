@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import { getRecipeSummaries } from '@/services/recipeService';
 import type { RecipeSummary } from '@/types/recipe';
 import { useAuth } from '@/context/AuthContext';
+import type { RecipeFilters } from '@/services/recipeService';
 
-export function useRecipes(category?: string) {
+export function useRecipes(filters?: RecipeFilters) {
   const { authVersion } = useAuth();
 
   const [recipes, setRecipes] = useState<RecipeSummary[]>([]);
@@ -12,7 +13,7 @@ export function useRecipes(category?: string) {
   );
 
   async function loadRecipes() {
-    const recipes = await getRecipeSummaries({ category });
+    const recipes = await getRecipeSummaries(filters);
 
     setRecipes(recipes);
     setRecipeOfTheDay(recipes[0] ?? null);
@@ -20,7 +21,7 @@ export function useRecipes(category?: string) {
 
   useEffect(() => {
     loadRecipes();
-  }, [authVersion, category]);
+  }, [authVersion, filters?.category, filters?.saved]);
 
   return {
     recipes,

@@ -143,7 +143,6 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                     removeToken();
                     onLogout();
                     authChanged();
-                    // navigate('/');
                     setMyAccountAnchor(null);
                   }}
                 >

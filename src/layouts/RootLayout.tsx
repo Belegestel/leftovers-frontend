@@ -54,10 +54,6 @@ export function RootLayout() {
       { replace: true }
     );
   };
-  // const handleRateModal = searchParams.get('rate') === 'true';
-  // const handleRateClose = () => {
-  //   navigate(location.pathname, { replace: true });
-  // };
   const handleRequireLoginRecipeRateModal =
     searchParams.get('rateLogin') === 'true';
   const handleRequireLoginRecipeRateClose = () => {

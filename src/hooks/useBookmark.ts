@@ -12,7 +12,7 @@ type BookmarkMode = 'list' | 'single';
 
 interface ListBookmarkState {
   setRecipes: React.Dispatch<React.SetStateAction<RecipeSummary[]>>;
-  setRecipeOfTheDay: React.Dispatch<
+  setRecipeOfTheDay?: React.Dispatch<
     React.SetStateAction<RecipeSummary | null>
   >;
 }
@@ -83,7 +83,7 @@ export function useBookmark({ mode, state }: UseBookmarkProps) {
           )
         );
 
-        state.setRecipeOfTheDay((currentRecipe) =>
+        state.setRecipeOfTheDay?.((currentRecipe) =>
           currentRecipe?.id === recipe.id
             ? (updatedRecipe as RecipeSummary)
             : currentRecipe

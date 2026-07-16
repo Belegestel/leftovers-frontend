@@ -96,6 +96,13 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
               <MenuItem
                 key={category.name}
                 onClick={() => {
+                  navigate({
+                    pathname: '/recipes',
+                    search:
+                      index == 0
+                        ? ''
+                        : `?category=${encodeURIComponent(category.name.slice(2).trim())}`,
+                  });
                   setRecipesAnchor(null);
                 }}
                 sx={{
@@ -171,6 +178,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                     search: '?signup=true',
                   })
                 }
+                sx={{ whiteSpace: 'nowrap' }}
               >
                 Sign up
               </Button>

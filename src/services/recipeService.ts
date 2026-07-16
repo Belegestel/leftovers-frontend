@@ -25,8 +25,17 @@ export async function getRecipeCategories(): Promise<RecipeCategory[]> {
   return response.data.categories.map((val) => new RecipeCategory(val));
 }
 
-export async function getRecipeSummaries(): Promise<RecipeSummary[]> {
-  const response = await httpService.get<RecipeSummariesResponse>('/recipes');
+export interface RecipeFilters {
+  category?: string;
+  saved?: boolean;
+}
+export async function getRecipeSummaries(
+  filters?: RecipeFilters
+): Promise<RecipeSummary[]> {
+  const response = await httpService.get<RecipeSummariesResponse>('/recipes', {
+    params: filters,
+  });
+
   return response.data.recipes;
 }
 

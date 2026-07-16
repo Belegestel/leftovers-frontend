@@ -3,16 +3,16 @@ import { getRecipeSummaries } from '@/services/recipeService';
 import type { RecipeSummary } from '@/types/recipe';
 import { useAuth } from '@/context/AuthContext';
 
-export function useRecipes() {
+export function useRecipes(category?: string) {
   const { authVersion } = useAuth();
+
   const [recipes, setRecipes] = useState<RecipeSummary[]>([]);
   const [recipeOfTheDay, setRecipeOfTheDay] = useState<RecipeSummary | null>(
     null
   );
 
-
   async function loadRecipes() {
-    const recipes = await getRecipeSummaries();
+    const recipes = await getRecipeSummaries({ category });
 
     setRecipes(recipes);
     setRecipeOfTheDay(recipes[0] ?? null);
@@ -20,7 +20,7 @@ export function useRecipes() {
 
   useEffect(() => {
     loadRecipes();
-  }, [authVersion]);
+  }, [authVersion, category]);
 
   return {
     recipes,

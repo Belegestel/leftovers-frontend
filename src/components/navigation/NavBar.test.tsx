@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { NavBar } from './NavBar';
-import { isAuthenticated, removeToken } from '@/services/tokenService';
+import {  isAuthenticated, removeToken } from '@/services/tokenService';
 import { describe, expect, it, vi } from 'vitest';
 import '@testing-library/jest-dom/vitest';
 import { AuthProvider } from '@/context/AuthContext';
@@ -11,6 +11,7 @@ const mockedLocation = vi.fn();
 
 vi.mock('@/services/tokenService', () => ({
   isAuthenticated: vi.fn(),
+  getToken: vi.fn(),
   removeToken: vi.fn(),
 }));
 vi.mock('react-router-dom', () => ({

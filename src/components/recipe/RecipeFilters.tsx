@@ -13,7 +13,7 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import { Controller, useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useRecipeCategories } from '@/hooks/useRecipeCategories';
 
 interface RecipeFilterForm {
@@ -25,6 +25,8 @@ interface RecipeFilterForm {
 
 export function RecipeFilters() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const { categories } = useRecipeCategories();
 
@@ -63,6 +65,9 @@ export function RecipeFilters() {
   const values = watch();
 
   useEffect(() => {
+    if (location.pathname === '/saved' && values.saved.length > 0) {
+      navigate('/recipes', { replace: true });
+    }
     const params = new URLSearchParams(searchParams);
 
     if (values.categories.length === 0) {
@@ -87,9 +92,11 @@ export function RecipeFilters() {
     reset({
       categories:
         searchParams.get('category')?.split(',').map(normalizeCategory) ?? [],
-      saved: searchParams.get('saved')
+      saved: searchParams.has('saved')
         ? [searchParams.get('saved') as string]
-        : [],
+        : values.saved.length === 2
+          ? values.saved
+          : [],
       rating: searchParams.get('rating') ?? 'desc',
       date: searchParams.get('date') ?? 'desc',
     });

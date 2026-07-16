@@ -120,6 +120,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                 variant="contained"
                 endIcon={<KeyboardArrowDownIcon />}
                 onClick={(event) => setMyAccountAnchor(event.currentTarget)}
+                sx={{ whiteSpace: 'nowrap' }}
               >
                 My account
               </Button>
@@ -131,6 +132,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                 <MenuItem
                   key="saved-recipes"
                   onClick={() => {
+                    setMyAccountAnchor(null);
                     navigate('/saved');
                   }}
                 >
@@ -139,6 +141,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                 <MenuItem
                   key="my-recipes"
                   onClick={() => {
+                    setMyAccountAnchor(null);
                     navigate('/my-recipes');
                   }}
                 >

@@ -10,7 +10,8 @@ export const router = createBrowserRouter([
     element: <RootLayout />,
     children: [
       { index: true, element: <Home /> },
-      { path: 'recipes', element: <Recipes /> },
+      { path: 'recipes', element: <Recipes mode={'all'} /> },
+      { path: 'saved', element: <Recipes mode={'saved'} /> },
       { path: 'recipes/:id', element: <RecipeDetails /> },
     ],
   },

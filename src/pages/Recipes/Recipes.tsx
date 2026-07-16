@@ -4,31 +4,17 @@ import { RecipeCard } from '@/components/recipe/RecipeCard';
 import { useRecipes } from '@/hooks/useRecipes';
 import { useBookmark } from '@/hooks/useBookmark';
 import { RecipeFilters } from '@/components/recipe/RecipeFilters';
-import { useRecipeCategories } from '@/hooks/useRecipeCategories';
 
-export default function Recipes() {
+type RecipesProps = {
+  mode: 'all' | 'saved'
+}
+
+export default function Recipes({ mode } : RecipesProps) {
   const [searchParams] = useSearchParams();
 
-  const { categories } = useRecipeCategories();
+  const title = mode == 'all' ? 'All Recipes' : 'Saved recipes';
 
   const category = searchParams.get('category') ?? undefined;
-
-  const normalizedCategories = category
-    ? category.split(',').map((selectedCategory) => {
-        return (
-          categories.find(
-            (item) => item.name.toLowerCase() === selectedCategory.toLowerCase()
-          )?.name ?? selectedCategory
-        );
-      })
-    : [];
-
-  const title =
-    normalizedCategories.length > 0
-      ? [...new Set(normalizedCategories)]
-          .map((item) => item.replace(/\b\w/g, (char) => char.toUpperCase()))
-          .join(', ')
-      : 'All Recipes';
 
   const savedParam = searchParams.get('saved');
   const saved = savedParam === null ? undefined : savedParam === 'true';

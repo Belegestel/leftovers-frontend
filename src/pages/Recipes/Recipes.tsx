@@ -6,13 +6,18 @@ import { useBookmark } from '@/hooks/useBookmark';
 import { RecipeFilters } from '@/components/recipe/RecipeFilters';
 
 type RecipesProps = {
-  mode: 'all' | 'saved'
-}
+  mode: 'all' | 'saved' | 'my';
+};
 
-export default function Recipes({ mode } : RecipesProps) {
+export default function Recipes({ mode }: RecipesProps) {
   const [searchParams] = useSearchParams();
 
-  const title = mode == 'all' ? 'All Recipes' : 'Saved recipes';
+  const title =
+    mode == 'all'
+      ? 'All Recipes'
+      : mode == 'saved'
+        ? 'Saved Recipes'
+        : 'My Recipes';
 
   const category = searchParams.get('category') ?? undefined;
 
@@ -26,11 +31,14 @@ export default function Recipes({ mode } : RecipesProps) {
   const dateParam = searchParams.get('date');
   const dateOrderIncr = dateParam === null ? undefined : dateParam === 'true';
 
+  const authored = mode == 'my';
+
   const { recipes, setRecipes } = useRecipes({
     category,
     saved,
     ratingOrderIncr,
     dateOrderIncr,
+    authored,
   });
 
   const { toggleBookmark } = useBookmark({

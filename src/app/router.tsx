@@ -12,6 +12,7 @@ export const router = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: 'recipes', element: <Recipes mode={'all'} /> },
       { path: 'saved', element: <Recipes mode={'saved'} /> },
+      { path: 'my-recipes', element: <Recipes mode={'my'} /> },
       { path: 'recipes/:id', element: <RecipeDetails /> },
     ],
   },

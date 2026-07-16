@@ -33,7 +33,19 @@ export default function Recipes() {
   const savedParam = searchParams.get('saved');
   const saved = savedParam === null ? undefined : savedParam === 'true';
 
-  const { recipes, setRecipes } = useRecipes({ category, saved });
+  const ratingParam = searchParams.get('rating');
+  const ratingOrderIncr =
+    ratingParam === null ? undefined : ratingParam === 'true';
+
+  const dateParam = searchParams.get('date');
+  const dateOrderIncr = dateParam === null ? undefined : dateParam === 'true';
+
+  const { recipes, setRecipes } = useRecipes({
+    category,
+    saved,
+    ratingOrderIncr,
+    dateOrderIncr,
+  });
 
   const { toggleBookmark } = useBookmark({
     mode: 'list',

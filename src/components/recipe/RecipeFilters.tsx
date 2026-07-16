@@ -28,17 +28,17 @@ export function RecipeFilters() {
 
   const { categories } = useRecipeCategories();
 
-  const normalizeCategory = (category: string) =>
-    categoryNames.find(
-      (item) => item.toLowerCase() === category.toLowerCase()
-    ) ?? category;
-
   const categoryNames = categories.slice(1).map((category) =>
     category.name
       .slice(2)
       .trim()
       .replace(/\b\w/g, (char) => char.toUpperCase())
   );
+
+  const normalizeCategory = (category: string) =>
+    categoryNames.find(
+      (item) => item.toLowerCase() === category.toLowerCase()
+    ) ?? category;
 
   const [filterAnchor, setFilterAnchor] = useState<null | HTMLElement>(null);
   const [ratingAnchor, setRatingAnchor] = useState<null | HTMLElement>(null);
@@ -50,12 +50,13 @@ export function RecipeFilters() {
 
   const { control, watch, reset } = useForm<RecipeFilterForm>({
     defaultValues: {
-      categories: searchParams.get('category')?.split(',') ?? [],
+      categories:
+        searchParams.get('category')?.split(',').map(normalizeCategory) ?? [],
       saved: searchParams.get('saved')
         ? [searchParams.get('saved') as string]
         : [],
-      rating: searchParams.get('rating') ?? '',
-      date: searchParams.get('date') ?? '',
+      rating: searchParams.get('rating') ?? 'desc',
+      date: searchParams.get('date') ?? 'desc',
     },
   });
 
@@ -76,17 +77,8 @@ export function RecipeFilters() {
       params.delete('saved');
     }
 
-    if (values.rating) {
-      params.set('rating', values.rating);
-    } else {
-      params.delete('rating');
-    }
-
-    if (values.date) {
-      params.set('date', values.date);
-    } else {
-      params.delete('date');
-    }
+    params.set('rating', values.rating);
+    params.set('date', values.date);
 
     setSearchParams(params);
   }, [values.categories, values.saved, values.rating, values.date]);
@@ -98,8 +90,8 @@ export function RecipeFilters() {
       saved: searchParams.get('saved')
         ? [searchParams.get('saved') as string]
         : [],
-      rating: searchParams.get('rating') ?? '',
-      date: searchParams.get('date') ?? '',
+      rating: searchParams.get('rating') ?? 'desc',
+      date: searchParams.get('date') ?? 'desc',
     });
   }, [searchParams, reset]);
 
@@ -280,13 +272,13 @@ export function RecipeFilters() {
               sx={{ p: 1 }}
             >
               <FormControlLabel
-                value="desc"
+                value="false"
                 control={<Radio />}
                 label="Highest score first"
               />
 
               <FormControlLabel
-                value="asc"
+                value="true"
                 control={<Radio />}
                 label="Lowest score first"
               />
@@ -310,13 +302,13 @@ export function RecipeFilters() {
               sx={{ p: 1 }}
             >
               <FormControlLabel
-                value="desc"
+                value="false"
                 control={<Radio />}
                 label="Newest first"
               />
 
               <FormControlLabel
-                value="asc"
+                value="true"
                 control={<Radio />}
                 label="Oldest first"
               />

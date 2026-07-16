@@ -28,6 +28,8 @@ export async function getRecipeCategories(): Promise<RecipeCategory[]> {
 export interface RecipeFilters {
   category?: string;
   saved?: boolean;
+  ratingOrderIncr?: boolean;
+  dateOrderIncr?: boolean;
 }
 export async function getRecipeSummaries(
   filters?: RecipeFilters

@@ -21,7 +21,7 @@ export function useRecipes(filters?: RecipeFilters) {
 
   useEffect(() => {
     loadRecipes();
-  }, [authVersion, filters?.category, filters?.saved]);
+  }, [authVersion, filters?.category, filters?.saved, filters?.dateOrderIncr, filters?.ratingOrderIncr]);
 
   return {
     recipes,

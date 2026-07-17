@@ -58,7 +58,7 @@ export function RecipeFilters() {
         ? [searchParams.get('saved') as string]
         : [],
       rating: searchParams.get('rating') ?? 'desc',
-      date: searchParams.get('date') ?? 'desc',
+      date: searchParams.get('date') ?? 'asc',
     },
   });
 
@@ -73,7 +73,10 @@ export function RecipeFilters() {
     if (values.categories.length === 0) {
       params.delete('category');
     } else {
-      params.set('category', values.categories.join(','));
+      params.set(
+        'category',
+        values.categories.map((category) => category.toLowerCase()).join(',')
+      );
     }
 
     if (values.saved.length === 1) {
@@ -98,9 +101,9 @@ export function RecipeFilters() {
           ? values.saved
           : [],
       rating: searchParams.get('rating') ?? 'desc',
-      date: searchParams.get('date') ?? 'desc',
+      date: searchParams.get('date') ?? 'asc',
     });
-  }, [searchParams, reset]);
+  }, [searchParams, reset, categoryNames.length]);
 
   return (
     <>
@@ -279,13 +282,13 @@ export function RecipeFilters() {
               sx={{ p: 1 }}
             >
               <FormControlLabel
-                value="false"
+                value="desc"
                 control={<Radio />}
                 label="Highest score first"
               />
 
               <FormControlLabel
-                value="true"
+                value="asc"
                 control={<Radio />}
                 label="Lowest score first"
               />
@@ -309,13 +312,13 @@ export function RecipeFilters() {
               sx={{ p: 1 }}
             >
               <FormControlLabel
-                value="false"
+                value="asc"
                 control={<Radio />}
                 label="Newest first"
               />
 
               <FormControlLabel
-                value="true"
+                value="desc"
                 control={<Radio />}
                 label="Oldest first"
               />

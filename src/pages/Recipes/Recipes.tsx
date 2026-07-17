@@ -26,10 +26,10 @@ export default function Recipes({ mode }: RecipesProps) {
 
   const ratingParam = searchParams.get('rating');
   const ratingOrderIncr =
-    ratingParam === null ? undefined : ratingParam === 'true';
+    ratingParam === null ? undefined : ratingParam === 'desc';
 
   const dateParam = searchParams.get('date');
-  const dateOrderIncr = dateParam === null ? undefined : dateParam === 'true';
+  const dateOrderIncr = dateParam === null ? undefined : dateParam === 'asc';
 
   const authored = mode == 'my';
 

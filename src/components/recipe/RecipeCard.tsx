@@ -19,7 +19,7 @@ interface RecipeCardProps {
   recipe: RecipeSummary;
   variant?: 'default' | 'featured' | 'own';
   onBookmarkToggle: () => void;
-  isPrivate?: boolean
+  isPrivate?: boolean;
 }
 
 export function RecipeCard({
@@ -250,7 +250,10 @@ export function RecipeCard({
 
         {isOwn && (
           <Box>
-            <Link underline="hover">
+            <Link
+              underline="hover"
+              onClick={(event) => event.stopPropagation()}
+            >
               <Box
                 sx={{
                   display: 'flex',

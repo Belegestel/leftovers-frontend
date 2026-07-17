@@ -13,15 +13,26 @@ export function useRecipes(filters?: RecipeFilters) {
   );
 
   async function loadRecipes() {
-    const recipes = await getRecipeSummaries(filters);
+    try {
+      const recipes = await getRecipeSummaries(filters);
 
-    setRecipes(recipes);
-    setRecipeOfTheDay(recipes[0] ?? null);
+      setRecipes(recipes);
+      setRecipeOfTheDay(recipes[0] ?? null);
+    } catch {
+      setRecipes([]);
+      setRecipeOfTheDay(null);
+    }
   }
 
   useEffect(() => {
     loadRecipes();
-  }, [authVersion, filters?.category, filters?.saved, filters?.dateOrderIncr, filters?.ratingOrderIncr]);
+  }, [
+    authVersion,
+    filters?.category,
+    filters?.saved,
+    filters?.dateOrderIncr,
+    filters?.ratingOrderIncr,
+  ]);
 
   return {
     recipes,

@@ -193,7 +193,7 @@ export function RecipeCard({
             sx={{
               position: 'absolute',
               inset: 0,
-              backgroundColor: 'rgba(0, 0, 0, 0.65)',
+              backgroundColor: 'privateOverlay.main',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',

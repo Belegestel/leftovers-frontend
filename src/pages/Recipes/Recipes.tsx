@@ -22,7 +22,9 @@ export default function Recipes({ mode }: RecipesProps) {
   const category = searchParams.get('category') ?? undefined;
 
   const savedParam = searchParams.get('saved');
-  const saved = savedParam === null ? undefined : savedParam === 'true';
+  const saved =
+    mode == 'saved' ||
+    (savedParam === null ? undefined : savedParam === 'true');
 
   const ratingParam = searchParams.get('rating');
   const ratingOrderIncr =

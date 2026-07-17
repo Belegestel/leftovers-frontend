@@ -49,18 +49,23 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
     return () => URL.revokeObjectURL(url);
   }, [image]);
 
-  const handleImageChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
 
     if (!file) {
       return;
     }
 
-    setValue('image', file, {
-      shouldValidate: true,
-    });
+    if (
+      file.size <= 3 * 1024 * 1024 &&
+      ['image/png', 'image/jpeg', 'image/gif', 'image/svg+xml'].indexOf(
+        file.type
+      ) != -1
+    ) {
+      setValue('image', file, {
+        shouldValidate: true,
+      });
+    }
   };
 
   return (
@@ -103,8 +108,7 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
             cursor: 'pointer',
             gap: 2,
             textAlign: 'center',
-            transition:
-              'background-color 0.2s ease, border-color 0.2s ease',
+            transition: 'background-color 0.2s ease, border-color 0.2s ease',
             '&:hover': {
               backgroundColor: 'upload.light',
               borderColor: 'upload.main',
@@ -166,9 +170,7 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
             mb: 3,
           }}
         >
-          <Typography variant="h6">
-            Add basic information
-          </Typography>
+          <Typography variant="h6">Add basic information</Typography>
 
           <Button
             variant="contained"
@@ -244,9 +246,7 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
             }}
           >
             <FormControl fullWidth>
-              <InputLabel shrink>
-                Category*
-              </InputLabel>
+              <InputLabel shrink>Category*</InputLabel>
 
               <Controller
                 name="category"
@@ -273,10 +273,7 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
                     }}
                   >
                     {categories.map((category) => (
-                      <MenuItem
-                        key={category.name}
-                        value={category.name}
-                      >
+                      <MenuItem key={category.name} value={category.name}>
                         {category.name}
                       </MenuItem>
                     ))}
@@ -286,9 +283,7 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
             </FormControl>
 
             <FormControl fullWidth>
-              <InputLabel shrink>
-                Preparation time*
-              </InputLabel>
+              <InputLabel shrink>Preparation time*</InputLabel>
 
               <Controller
                 name="prepTime"
@@ -304,9 +299,7 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
                     renderValue={(selected) => {
                       if (!selected) {
                         return (
-                          <Typography color="secondary">
-                            Choose
-                          </Typography>
+                          <Typography color="secondary">Choose</Typography>
                         );
                       }
 
@@ -315,18 +308,10 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
                         : `Up to ${selected} minutes`;
                     }}
                   >
-                    <MenuItem value={15}>
-                      Up to 15 minutes
-                    </MenuItem>
-                    <MenuItem value={30}>
-                      Up to 30 minutes
-                    </MenuItem>
-                    <MenuItem value={60}>
-                      Up to 60 minutes
-                    </MenuItem>
-                    <MenuItem value={90}>
-                      More than 60 minutes
-                    </MenuItem>
+                    <MenuItem value={15}>Up to 15 minutes</MenuItem>
+                    <MenuItem value={30}>Up to 30 minutes</MenuItem>
+                    <MenuItem value={60}>Up to 60 minutes</MenuItem>
+                    <MenuItem value={90}>More than 60 minutes</MenuItem>
                   </Select>
                 )}
               />

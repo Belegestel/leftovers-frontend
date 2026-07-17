@@ -8,6 +8,8 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { BasicInformation } from '@/components/addRecipe/BasicInformation';
 import type { AddRecipeFormValues } from '@/types/addRecipe';
 import { Ingredients } from '@/components/addRecipe/Ingredients';
+import { PreparationMethod } from '@/components/addRecipe/PreparationMethod';
+import { Publication } from '@/components/addRecipe/Publication';
 
 type AddRecipeStep = 'basic' | 'ingredients' | 'preparation' | 'publication';
 
@@ -49,8 +51,8 @@ export default function AddRecipe() {
       category: '',
       prepTime: 15,
       servings: 1,
-      ingredients: [{ value: '' }],
-      steps: [{ value: '' }],
+      ingredients: [{ value: '' }, { value: '' }, { value: '' }],
+      steps: [{ value: '' }, { value: '' }, { value: '' }],
       image: null,
       isPublic: false,
     },
@@ -136,17 +138,23 @@ export default function AddRecipe() {
         {activeStep === 'basic' && <BasicInformation onNext={goToNextStep} />}
 
         {activeStep === 'ingredients' && (
-          <Typography sx={{ mt: 4 }}>
+          <Box sx={{ mt: 4 }}>
             <Ingredients onNext={goToNextStep} onBack={goToPreviousStep} />
-          </Typography>
+          </Box>
         )}
 
         {activeStep === 'preparation' && (
-          <Typography sx={{ mt: 4 }}>Preparation method step</Typography>
+          <Box sx={{ mt: 4 }}>
+            <PreparationMethod
+              onNext={goToNextStep}
+              onBack={goToPreviousStep}
+            />
+          </Box>
         )}
 
         {activeStep === 'publication' && (
-          <Typography sx={{ mt: 4 }}>Publication step</Typography>
+          <Box sx={{ mt: 4 }}><Publication onBack={goToPreviousStep} onSavePrivate={() => {}} onPublish={() => {}}/></Box>
+          
         )}
       </FormProvider>
     </Container>

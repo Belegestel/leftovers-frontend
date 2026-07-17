@@ -27,6 +27,10 @@ export const theme = createTheme({
     privateOverlay: {
       main: 'rgba(0, 0, 0, 0.65)',
     },
+    upload: {
+      main: 'rgba(3, 148, 242, 1)',
+      light: 'rgba(3, 148, 242, 0.08)',
+    },
   },
   typography: {
     fontFamily: ['Poppins', 'Roboto', 'Arial', 'sans-serif'].join(','),

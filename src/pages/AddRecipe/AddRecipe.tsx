@@ -72,6 +72,8 @@ export default function AddRecipe() {
     },
   });
 
+  const { formState: {isDirty }} = methods;
+
   useEffect(() => {
     if (!recipeId) {
       return;
@@ -171,7 +173,9 @@ export default function AddRecipe() {
     recipeId: number,
     isPrivate: boolean
   ): Promise<void> => {
+    console.log('isPrivate', isPrivate)
     await editRecipe(recipeId, { isPublic: !isPrivate });
+    methods.reset(methods.getValues())
   };
 
   const handleDeleteRecipe = async (recipeId: number): Promise<void> => {
@@ -264,6 +268,7 @@ export default function AddRecipe() {
               onRecipeDelete={handleDeleteRecipe}
               editRecipeId={isEditPublic !== undefined ? recipeId : undefined}
               isPublic={isEditPublic ?? undefined}
+              isDirty={isDirty}
             />
           </Box>
         )}

@@ -1,6 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import AddRecipe from './AddRecipe';
 import { vi, expect, describe, it } from 'vitest';
+import { MemoryRouter } from 'react-router-dom';
 
 vi.mock('@/components/addRecipe/BasicInformation', () => ({
   BasicInformation: ({ onNext }: any) => (
@@ -22,7 +23,11 @@ vi.mock('@/components/addRecipe/Publication', () => ({
 
 describe('AddRecipe', () => {
   it('moves to ingredients after basic step', () => {
-    render(<AddRecipe />);
+    render(
+      <MemoryRouter>
+        <AddRecipe />
+      </MemoryRouter>
+    );
 
     fireEvent.click(screen.getByText('Next Basic'));
 

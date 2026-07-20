@@ -15,6 +15,7 @@ interface PublicationProps {
   onRecipeDelete: (recipeId: number) => Promise<void>;
   editRecipeId?: number;
   isPublic?: boolean;
+  isDirty?: boolean;
 }
 
 export function Publication({
@@ -25,6 +26,7 @@ export function Publication({
   onRecipeDelete,
   editRecipeId,
   isPublic,
+  isDirty,
 }: PublicationProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -50,7 +52,7 @@ export function Publication({
         const recipe = await action();
         setRecipeId(recipe);
       } else {
-        await visibilityAction(recipeId, saved !== 'private');
+        await visibilityAction(recipeId, isPrivate);
       }
     } catch {
       setError('Something went wrong while saving the recipe.');
@@ -152,7 +154,9 @@ export function Publication({
 
           <Button
             variant="secondary"
-            disabled={loading || saved === 'private'}
+            disabled={
+              loading || (saved === 'private' && !isDirty)
+            }
             onClick={() =>
               handleAction(onSavePrivate, onChangeVisibility, true)
             }
@@ -194,7 +198,9 @@ export function Publication({
 
           <Button
             variant="contained"
-            disabled={loading || saved === 'public'}
+            disabled={
+              loading || (saved === 'public' && !isDirty)
+            }
             onClick={() => handleAction(onPublish, onChangeVisibility, false)}
           >
             <PublicIcon sx={{ mr: 1 }} />

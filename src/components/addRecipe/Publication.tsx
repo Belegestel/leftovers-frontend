@@ -3,31 +3,59 @@ import { Box, Button, Divider, Typography } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import PublicIcon from '@mui/icons-material/Public';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
+import { useSnackbar } from '../common/SnackbarProvider';
 
 interface PublicationProps {
   onBack: () => void;
-  onSavePrivate: () => Promise<void>;
-  onPublish: () => Promise<void>;
+  onSavePrivate: () => Promise<number>;
+  onPublish: () => Promise<number>;
+  onChangeVisibility: (recipeId: number, isPrivate: boolean) => Promise<void>;
 }
 
 export function Publication({
   onBack,
   onSavePrivate,
   onPublish,
+  onChangeVisibility,
 }: PublicationProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [saved, setSaved] = useState<'private' | 'public' | null>(null);
+  const [recipeId, setRecipeId] = useState<number | null>(null);
 
-  const handleAction = async (action: () => Promise<void>) => {
+  const showSnackbar = useSnackbar();
+
+  const handleAction = async (
+    action: () => Promise<number>,
+    visibilityAction: (recipeId: number, isPrivate: boolean) => Promise<void>,
+    isPrivate: boolean
+  ) => {
     try {
       setLoading(true);
       setError(null);
 
-      await action();
+      if (recipeId === null) {
+        const recipe = await action();
+        setRecipeId(recipe);
+      } else {
+        await visibilityAction(recipeId, saved !== 'private');
+      }
     } catch {
       setError('Something went wrong while saving the recipe.');
     } finally {
       setLoading(false);
+    }
+    if (isPrivate) {
+      setSaved('private');
+      showSnackbar({
+        message:
+          '🔒 Your recipe has been saved as private. You can find it in your profile.',
+      });
+    } else {
+      setSaved('public');
+      showSnackbar({
+        message: '👏 Congratulations! Your recipe has been published!',
+      });
     }
   };
 
@@ -50,7 +78,7 @@ export function Publication({
         <Button
           variant="secondary"
           onClick={onBack}
-          disabled={loading}
+          sx={{ border: '1px solid', borderColor: 'currentColor' }}
         >
           &lt; Back
         </Button>
@@ -89,8 +117,10 @@ export function Publication({
 
           <Button
             variant="secondary"
-            disabled={loading}
-            onClick={() => handleAction(onSavePrivate)}
+            disabled={loading || saved === 'private'}
+            onClick={() =>
+              handleAction(onSavePrivate, onChangeVisibility, true)
+            }
             sx={{
               borderColor: 'currentColor',
               border: '1px solid',
@@ -98,7 +128,11 @@ export function Publication({
           >
             <LockIcon sx={{ fontSize: 20, mr: 1 }} />
             <Typography sx={{ fontWeight: 600 }}>
-              {loading ? 'Saving...' : 'Save as private'}
+              {loading
+                ? 'Saving...'
+                : saved === 'private'
+                  ? 'Recipe saved'
+                  : 'Save as private'}
             </Typography>
           </Button>
         </Box>
@@ -125,13 +159,17 @@ export function Publication({
 
           <Button
             variant="contained"
-            disabled={loading}
-            onClick={() => handleAction(onPublish)}
+            disabled={loading || saved === 'public'}
+            onClick={() => handleAction(onPublish, onChangeVisibility, false)}
           >
             <PublicIcon sx={{ mr: 1 }} />
 
             <Typography>
-              {loading ? 'Publishing...' : 'Publish the recipe'}
+              {loading
+                ? 'Publishing...'
+                : saved === 'public'
+                  ? 'Recipe published'
+                  : 'Publish the recipe'}
             </Typography>
           </Button>
         </Box>

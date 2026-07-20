@@ -112,3 +112,18 @@ export async function createRecipeWithImage(
 
   return createdRecipe;
 }
+
+type EditRecipeRequest = {
+  title?: string;
+  description?: string;
+  category?: string;
+  prepTime?: number;
+  servings?: number;
+  ingredients?: string[];
+  steps?: string[];
+  isPublic?: boolean;
+};
+export async function editRecipe(id: number, recipe: EditRecipeRequest): Promise<void> {
+  const resp = await httpService.post(`/recipes/${id}/edit`, recipe);
+  console.log(resp)
+}

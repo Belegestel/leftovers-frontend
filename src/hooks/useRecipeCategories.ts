@@ -1,29 +1,13 @@
 import { useEffect, useState } from 'react';
 import { getRecipeCategories, RecipeCategory } from '@/services/recipeService';
 
-let cachedCategories: RecipeCategory[] | null = null;
-
-let categoriesPromise: Promise<RecipeCategory[]> | null = null;
-
 export function useRecipeCategories() {
-  const [recipeCategories, setRecipeCategories] = useState<RecipeCategory[]>(
-    cachedCategories ?? []
-  );
-
-  const [loading, setLoading] = useState(cachedCategories === null);
+  const [recipeCategories, setRecipeCategories] = useState<RecipeCategory[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (cachedCategories) {
-      return;
-    }
-
-    if (!categoriesPromise) {
-      categoriesPromise = getRecipeCategories();
-    }
-
-    categoriesPromise
+    getRecipeCategories()
       .then((categories) => {
-        cachedCategories = categories;
         setRecipeCategories(categories);
       })
       .finally(() => {
@@ -32,15 +16,8 @@ export function useRecipeCategories() {
   }, []);
 
   const categories = [
-    ...recipeCategories.map(
-      (category) =>
-        new RecipeCategory(
-          category.name
-            .slice(2)
-            .trim()
-            .replace(/\b\w/g, (c) => c.toUpperCase())
-        )
-    ),
+    new RecipeCategory('🍽 All recipes'),
+    ...recipeCategories.map((category) => new RecipeCategory(category.name)),
   ];
 
   return {

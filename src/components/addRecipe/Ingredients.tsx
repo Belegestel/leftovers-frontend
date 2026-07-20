@@ -51,7 +51,7 @@ export function Ingredients({ onBack, onNext }: IngredientsProps) {
             gap: 2,
           }}
         >
-          <Button variant="secondary" onClick={onBack}>
+          <Button variant="secondary" onClick={onBack} sx={{border: '1px solid', borderColor:'currentColor'}}>
             &lt; Back
           </Button>
 

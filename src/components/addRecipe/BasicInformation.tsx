@@ -273,8 +273,11 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
                     }}
                   >
                     {categories.map((category) => (
-                      <MenuItem key={category.name} value={category.name}>
-                        {category.name}
+                      <MenuItem key={category.name} value={category.name.slice(2).trim()}>
+                        {category.name
+                          .slice(2)
+                          .trim()
+                          .replace(/\b\w/g, (c) => c.toUpperCase())}
                       </MenuItem>
                     ))}
                   </Select>

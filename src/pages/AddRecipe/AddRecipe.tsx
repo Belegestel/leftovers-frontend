@@ -10,7 +10,7 @@ import type { AddRecipeFormValues } from '@/types/addRecipe';
 import { Ingredients } from '@/components/addRecipe/Ingredients';
 import { PreparationMethod } from '@/components/addRecipe/PreparationMethod';
 import { Publication } from '@/components/addRecipe/Publication';
-import { createRecipeWithImage } from '@/services/recipeService';
+import { createRecipeWithImage, editRecipe } from '@/services/recipeService';
 
 type AddRecipeStep = 'basic' | 'ingredients' | 'preparation' | 'publication';
 
@@ -79,24 +79,33 @@ export default function AddRecipe() {
     });
   };
 
-  const handleSaveRecipe = async (isPublic: boolean) => {
+  const handleSaveRecipe = async (isPublic: boolean): Promise<number> => {
     const values = methods.getValues();
 
-    await createRecipeWithImage(
+    const recipe = await createRecipeWithImage(
       {
         title: values.title,
         description: values.description,
-        category: values.category.toUpperCase(),
+        category:
+          values.category.toLowerCase() === 'breakfasts'
+            ? 'BREAKFAST'
+            : values.category.toUpperCase(),
         prepTime: values.prepTime ?? 0,
         servings: values.servings,
-        ingredients: values.ingredients.map(
-          (ingredient) => ingredient.value
-        ),
+        ingredients: values.ingredients.map((ingredient) => ingredient.value),
         steps: values.steps.map((step) => step.value),
         isPublic,
       },
       values.image
     );
+    return recipe.id;
+  };
+
+  const handleEditVisibility = async (
+    recipeId: number,
+    isPrivate: boolean
+  ): Promise<void> => {
+    await editRecipe(recipeId, { isPublic: !isPrivate });
   };
 
   return (
@@ -179,6 +188,7 @@ export default function AddRecipe() {
               onBack={goToPreviousStep}
               onSavePrivate={() => handleSaveRecipe(false)}
               onPublish={() => handleSaveRecipe(true)}
+              onChangeVisibility={(recipeId: number, isPrivate: boolean) => handleEditVisibility(recipeId, isPrivate) }
             />
           </Box>
         )}

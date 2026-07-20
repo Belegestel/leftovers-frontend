@@ -10,7 +10,7 @@ import type { AddRecipeFormValues } from '@/types/addRecipe';
 import { Ingredients } from '@/components/addRecipe/Ingredients';
 import { PreparationMethod } from '@/components/addRecipe/PreparationMethod';
 import { Publication } from '@/components/addRecipe/Publication';
-import { createRecipeWithImage, editRecipe } from '@/services/recipeService';
+import { createRecipeWithImage, deleteRecipe, editRecipe } from '@/services/recipeService';
 
 type AddRecipeStep = 'basic' | 'ingredients' | 'preparation' | 'publication';
 
@@ -108,6 +108,12 @@ export default function AddRecipe() {
     await editRecipe(recipeId, { isPublic: !isPrivate });
   };
 
+  const handleDeleteRecipe = async (
+    recipeId: number,
+  ): Promise<void> => {
+    await deleteRecipe(recipeId);
+  }
+
   return (
     <Container>
       <FormProvider {...methods}>
@@ -189,6 +195,7 @@ export default function AddRecipe() {
               onSavePrivate={() => handleSaveRecipe(false)}
               onPublish={() => handleSaveRecipe(true)}
               onChangeVisibility={(recipeId: number, isPrivate: boolean) => handleEditVisibility(recipeId, isPrivate) }
+              onRecipeDelete={handleDeleteRecipe}
             />
           </Box>
         )}

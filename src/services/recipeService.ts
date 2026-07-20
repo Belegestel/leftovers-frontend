@@ -124,6 +124,9 @@ type EditRecipeRequest = {
   isPublic?: boolean;
 };
 export async function editRecipe(id: number, recipe: EditRecipeRequest): Promise<void> {
-  const resp = await httpService.post(`/recipes/${id}/edit`, recipe);
-  console.log(resp)
+  await httpService.post(`/recipes/${id}/edit`, recipe);
+}
+
+export async function deleteRecipe(id: number): Promise<void> {
+  await httpService.post(`/recipes/${id}/delete`);
 }

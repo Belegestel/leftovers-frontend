@@ -10,6 +10,7 @@ interface PublicationProps {
   onSavePrivate: () => Promise<number>;
   onPublish: () => Promise<number>;
   onChangeVisibility: (recipeId: number, isPrivate: boolean) => Promise<void>;
+  onRecipeDelete: (recipeId: number) => Promise<void>;
 }
 
 export function Publication({
@@ -17,6 +18,7 @@ export function Publication({
   onSavePrivate,
   onPublish,
   onChangeVisibility,
+  onRecipeDelete,
 }: PublicationProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -57,6 +59,27 @@ export function Publication({
         message: '👏 Congratulations! Your recipe has been published!',
       });
     }
+  };
+
+  const handleDelete = async () => {
+    try {
+      if (recipeId === null) {
+        return;
+      }
+      setLoading(true);
+      setError(null);
+
+      await onRecipeDelete(recipeId);
+    } catch {
+      setError('Something went wrong while saving the recipe.');
+    } finally {
+      setLoading(false);
+      setRecipeId(null);
+      setSaved(null);
+    }
+    showSnackbar({
+      message: '🗑️ Your recipe has been deleted!',
+    });
   };
 
   return (
@@ -196,7 +219,8 @@ export function Publication({
 
           <Button
             variant="secondary"
-            disabled={loading}
+            disabled={loading || recipeId === null}
+            onClick={handleDelete}
             sx={{
               border: '1px solid',
               color: 'warning.main',
@@ -206,14 +230,12 @@ export function Publication({
             <DeleteForeverOutlinedIcon
               sx={{
                 mr: 1,
-                color: 'warning.main',
               }}
             />
 
             <Typography
               sx={{
                 fontWeight: 500,
-                color: 'warning.main',
               }}
             >
               Delete the recipe

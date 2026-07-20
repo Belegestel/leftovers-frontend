@@ -200,6 +200,7 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
             {...register('title', {
               required: true,
               maxLength: 100,
+              minLength: 3,
             })}
           />
 
@@ -273,7 +274,13 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
                     }}
                   >
                     {categories.map((category) => (
-                      <MenuItem key={category.name} value={category.name.slice(2).trim()}>
+                      <MenuItem
+                        key={category.name}
+                        value={category.name
+                          .slice(2)
+                          .trim()
+                          .replace(/\b\w/g, (c) => c.toUpperCase())}
+                      >
                         {category.name
                           .slice(2)
                           .trim()

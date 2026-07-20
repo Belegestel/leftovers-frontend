@@ -10,7 +10,11 @@ import type { AddRecipeFormValues } from '@/types/addRecipe';
 import { Ingredients } from '@/components/addRecipe/Ingredients';
 import { PreparationMethod } from '@/components/addRecipe/PreparationMethod';
 import { Publication } from '@/components/addRecipe/Publication';
-import { createRecipeWithImage, deleteRecipe, editRecipe } from '@/services/recipeService';
+import {
+  createRecipeWithImage,
+  deleteRecipe,
+  editRecipe,
+} from '@/services/recipeService';
 
 type AddRecipeStep = 'basic' | 'ingredients' | 'preparation' | 'publication';
 
@@ -108,11 +112,9 @@ export default function AddRecipe() {
     await editRecipe(recipeId, { isPublic: !isPrivate });
   };
 
-  const handleDeleteRecipe = async (
-    recipeId: number,
-  ): Promise<void> => {
+  const handleDeleteRecipe = async (recipeId: number): Promise<void> => {
     await deleteRecipe(recipeId);
-  }
+  };
 
   return (
     <Container>
@@ -170,35 +172,38 @@ export default function AddRecipe() {
             );
           })}
         </Box>
+        <Box sx={{mt: 4, p: 5, pt: 1, backgroundColor: 'background.default', borderRadius: 3}}>
+          {activeStep === 'basic' && <BasicInformation onNext={goToNextStep} />}
 
-        {activeStep === 'basic' && <BasicInformation onNext={goToNextStep} />}
+          {activeStep === 'ingredients' && (
+            <Box sx={{ mt: 4 }}>
+              <Ingredients onNext={goToNextStep} onBack={goToPreviousStep} />
+            </Box>
+          )}
 
-        {activeStep === 'ingredients' && (
-          <Box sx={{ mt: 4 }}>
-            <Ingredients onNext={goToNextStep} onBack={goToPreviousStep} />
-          </Box>
-        )}
+          {activeStep === 'preparation' && (
+            <Box sx={{ mt: 4 }}>
+              <PreparationMethod
+                onNext={goToNextStep}
+                onBack={goToPreviousStep}
+              />
+            </Box>
+          )}
 
-        {activeStep === 'preparation' && (
-          <Box sx={{ mt: 4 }}>
-            <PreparationMethod
-              onNext={goToNextStep}
-              onBack={goToPreviousStep}
-            />
-          </Box>
-        )}
-
-        {activeStep === 'publication' && (
-          <Box sx={{ mt: 4 }}>
-            <Publication
-              onBack={goToPreviousStep}
-              onSavePrivate={() => handleSaveRecipe(false)}
-              onPublish={() => handleSaveRecipe(true)}
-              onChangeVisibility={(recipeId: number, isPrivate: boolean) => handleEditVisibility(recipeId, isPrivate) }
-              onRecipeDelete={handleDeleteRecipe}
-            />
-          </Box>
-        )}
+          {activeStep === 'publication' && (
+            <Box sx={{ mt: 4 }}>
+              <Publication
+                onBack={goToPreviousStep}
+                onSavePrivate={() => handleSaveRecipe(false)}
+                onPublish={() => handleSaveRecipe(true)}
+                onChangeVisibility={(recipeId: number, isPrivate: boolean) =>
+                  handleEditVisibility(recipeId, isPrivate)
+                }
+                onRecipeDelete={handleDeleteRecipe}
+              />
+            </Box>
+          )}
+        </Box>
       </FormProvider>
     </Container>
   );

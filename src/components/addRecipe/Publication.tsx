@@ -5,7 +5,6 @@ import PublicIcon from '@mui/icons-material/Public';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import { useSnackbar } from '../common/SnackbarProvider';
 import { ConfirmModal } from '../common/ConfirmationModal';
-import { useNavigate } from 'react-router-dom';
 
 interface PublicationProps {
   onBack: () => void;
@@ -27,8 +26,6 @@ export function Publication({
   const [saved, setSaved] = useState<'private' | 'public' | null>(null);
   const [recipeId, setRecipeId] = useState<number | null>(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-
-  const navigate = useNavigate();
 
   const showSnackbar = useSnackbar();
 
@@ -81,7 +78,7 @@ export function Publication({
       setLoading(false);
       setRecipeId(null);
       setSaved(null);
-      navigate('/');
+      setDeleteModalOpen(false);
     }
     showSnackbar({
       message: '🗑️ Your recipe has been deleted!',

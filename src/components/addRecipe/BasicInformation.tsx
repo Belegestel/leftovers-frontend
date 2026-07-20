@@ -43,6 +43,11 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
       return;
     }
 
+    if (typeof image === 'string') {
+      setImagePreview(image);
+      return;
+    }
+
     const url = URL.createObjectURL(image);
     setImagePreview(url);
 
@@ -273,20 +278,22 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
                       return selected;
                     }}
                   >
-                    {categories.filter((_, index) => index != 0).map((category) => (
-                      <MenuItem
-                        key={category.name}
-                        value={category.name
-                          .slice(2)
-                          .trim()
-                          .replace(/\b\w/g, (c) => c.toUpperCase())}
-                      >
-                        {category.name
-                          .slice(2)
-                          .trim()
-                          .replace(/\b\w/g, (c) => c.toUpperCase())}
-                      </MenuItem>
-                    ))}
+                    {categories
+                      .filter((_, index) => index != 0)
+                      .map((category) => (
+                        <MenuItem
+                          key={category.name}
+                          value={category.name
+                            .slice(2)
+                            .trim()
+                            .replace(/\b\w/g, (c) => c.toUpperCase())}
+                        >
+                          {category.name
+                            .slice(2)
+                            .trim()
+                            .replace(/\b\w/g, (c) => c.toUpperCase())}
+                        </MenuItem>
+                      ))}
                   </Select>
                 )}
               />

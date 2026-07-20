@@ -6,6 +6,6 @@ export interface AddRecipeFormValues {
   servings: number;
   ingredients: {value: string}[];
   steps: {value: string}[];
-  image: File | null;
+  image: File | string | null;
   isPublic: boolean;
 }

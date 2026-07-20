@@ -19,7 +19,8 @@ export const router = createBrowserRouter([
         children: [
           { path: 'saved', element: <Recipes mode={'saved'} /> },
           { path: 'my-recipes', element: <Recipes mode={'my'} /> },
-          { path: 'add-recipe', element: <AddRecipe />}
+          { path: 'add-recipe', element: <AddRecipe />},
+          { path: 'edit-recipe/:recipe', element: <AddRecipe />}
         ],
       },
     ],

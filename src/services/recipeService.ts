@@ -5,9 +5,7 @@ import { uploadService } from './uploadService';
 type RecipeSummariesResponse = {
   recipes: RecipeSummary[];
 };
-type RecipeResponse = {
-  recipes: Recipe;
-};
+type RecipeResponse = Recipe;
 
 export class RecipeCategory {
   name: string;
@@ -123,7 +121,10 @@ type EditRecipeRequest = {
   steps?: string[];
   isPublic?: boolean;
 };
-export async function editRecipe(id: number, recipe: EditRecipeRequest): Promise<void> {
+export async function editRecipe(
+  id: number,
+  recipe: EditRecipeRequest
+): Promise<void> {
   await httpService.post(`/recipes/${id}/edit`, recipe);
 }
 

@@ -5,6 +5,7 @@ import PublicIcon from '@mui/icons-material/Public';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import { useSnackbar } from '../common/SnackbarProvider';
 import { ConfirmModal } from '../common/ConfirmationModal';
+import { useNavigate } from 'react-router-dom';
 
 interface PublicationProps {
   onBack: () => void;
@@ -12,6 +13,8 @@ interface PublicationProps {
   onPublish: () => Promise<number>;
   onChangeVisibility: (recipeId: number, isPrivate: boolean) => Promise<void>;
   onRecipeDelete: (recipeId: number) => Promise<void>;
+  editRecipeId?: number;
+  isPublic?: boolean;
 }
 
 export function Publication({
@@ -20,14 +23,19 @@ export function Publication({
   onPublish,
   onChangeVisibility,
   onRecipeDelete,
+  editRecipeId,
+  isPublic,
 }: PublicationProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [saved, setSaved] = useState<'private' | 'public' | null>(null);
-  const [recipeId, setRecipeId] = useState<number | null>(null);
+  const [saved, setSaved] = useState<'private' | 'public' | null>(
+    isPublic === undefined ? null : isPublic === true ? 'public' : 'private'
+  );
+  const [recipeId, setRecipeId] = useState<number | null>(editRecipeId ?? null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const showSnackbar = useSnackbar();
+  const navigate = useNavigate();
 
   const handleAction = async (
     action: () => Promise<number>,
@@ -79,6 +87,7 @@ export function Publication({
       setRecipeId(null);
       setSaved(null);
       setDeleteModalOpen(false);
+      navigate('/');
     }
     showSnackbar({
       message: '🗑️ Your recipe has been deleted!',
@@ -222,7 +231,7 @@ export function Publication({
 
           <Button
             variant="secondary"
-            disabled={loading || recipeId === null}
+            disabled={loading}
             onClick={() => setDeleteModalOpen(true)}
             sx={{
               border: '1px solid',

@@ -11,8 +11,7 @@ describe('Publication', () => {
         <SnackbarProvider>
           <Publication
             onBack={vi.fn()}
-            onSavePrivate={vi.fn().mockResolvedValue(1)}
-            onPublish={vi.fn().mockResolvedValue(1)}
+            onSave={vi.fn().mockResolvedValue(1)}
             onChangeVisibility={vi.fn()}
             onRecipeDelete={vi.fn()}
             {...props}
@@ -25,7 +24,7 @@ describe('Publication', () => {
     const savePrivate = vi.fn().mockResolvedValue(5);
 
     renderComponent({
-      onSavePrivate: savePrivate,
+      onSave: savePrivate,
     });
 
     fireEvent.click(screen.getByText('Save as private'));
@@ -41,7 +40,7 @@ describe('Publication', () => {
     const deleteRecipe = vi.fn();
 
     renderComponent({
-      onSavePrivate: vi.fn().mockResolvedValue(10),
+      onSave: vi.fn().mockResolvedValue(10),
       onRecipeDelete: deleteRecipe,
     });
 

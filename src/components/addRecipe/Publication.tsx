@@ -4,6 +4,8 @@ import LockIcon from '@mui/icons-material/Lock';
 import PublicIcon from '@mui/icons-material/Public';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import { useSnackbar } from '../common/SnackbarProvider';
+import { ConfirmModal } from '../common/ConfirmationModal';
+import { useNavigate } from 'react-router-dom';
 
 interface PublicationProps {
   onBack: () => void;
@@ -24,6 +26,9 @@ export function Publication({
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState<'private' | 'public' | null>(null);
   const [recipeId, setRecipeId] = useState<number | null>(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   const showSnackbar = useSnackbar();
 
@@ -76,6 +81,7 @@ export function Publication({
       setLoading(false);
       setRecipeId(null);
       setSaved(null);
+      navigate('/');
     }
     showSnackbar({
       message: '🗑️ Your recipe has been deleted!',
@@ -220,7 +226,7 @@ export function Publication({
           <Button
             variant="secondary"
             disabled={loading || recipeId === null}
-            onClick={handleDelete}
+            onClick={() => setDeleteModalOpen(true)}
             sx={{
               border: '1px solid',
               color: 'warning.main',
@@ -243,6 +249,14 @@ export function Publication({
           </Button>
         </Box>
       </Box>
+      <ConfirmModal
+        open={deleteModalOpen}
+        title="Are you sure you want to delete the recipe?"
+        message="If you want to delete it, press the delete button."
+        confirmButton="Delete"
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteModalOpen(false)}
+      />
     </Box>
   );
 }

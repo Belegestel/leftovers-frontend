@@ -273,7 +273,7 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
                       return selected;
                     }}
                   >
-                    {categories.map((category) => (
+                    {categories.filter((_, index) => index != 0).map((category) => (
                       <MenuItem
                         key={category.name}
                         value={category.name

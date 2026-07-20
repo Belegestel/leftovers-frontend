@@ -9,8 +9,7 @@ import { useNavigate } from 'react-router-dom';
 
 interface PublicationProps {
   onBack: () => void;
-  onSavePrivate: () => Promise<number>;
-  onPublish: () => Promise<number>;
+  onSave: (isPublic: boolean, isEdit?: boolean) => Promise<number>;
   onChangeVisibility: (recipeId: number, isPrivate: boolean) => Promise<void>;
   onRecipeDelete: (recipeId: number) => Promise<void>;
   editRecipeId?: number;
@@ -20,8 +19,7 @@ interface PublicationProps {
 
 export function Publication({
   onBack,
-  onSavePrivate,
-  onPublish,
+  onSave,
   onChangeVisibility,
   onRecipeDelete,
   editRecipeId,
@@ -40,8 +38,6 @@ export function Publication({
   const navigate = useNavigate();
 
   const handleAction = async (
-    action: () => Promise<number>,
-    visibilityAction: (recipeId: number, isPrivate: boolean) => Promise<void>,
     isPrivate: boolean
   ) => {
     try {
@@ -49,10 +45,14 @@ export function Publication({
       setError(null);
 
       if (recipeId === null) {
-        const recipe = await action();
+        const recipe = await onSave(isPrivate);
         setRecipeId(recipe);
       } else {
-        await visibilityAction(recipeId, isPrivate);
+        if (isDirty) {
+          onSave(isPrivate, true);
+        } else {
+          await onChangeVisibility(recipeId, isPrivate);
+        }
       }
     } catch {
       setError('Something went wrong while saving the recipe.');
@@ -154,12 +154,8 @@ export function Publication({
 
           <Button
             variant="secondary"
-            disabled={
-              loading || (saved === 'private' && !isDirty)
-            }
-            onClick={() =>
-              handleAction(onSavePrivate, onChangeVisibility, true)
-            }
+            disabled={loading || (saved === 'private' && !isDirty)}
+            onClick={() => handleAction(true)}
             sx={{
               borderColor: 'currentColor',
               border: '1px solid',
@@ -198,10 +194,8 @@ export function Publication({
 
           <Button
             variant="contained"
-            disabled={
-              loading || (saved === 'public' && !isDirty)
-            }
-            onClick={() => handleAction(onPublish, onChangeVisibility, false)}
+            disabled={loading || (saved === 'public' && !isDirty)}
+            onClick={() => handleAction(false)}
           >
             <PublicIcon sx={{ mr: 1 }} />
 

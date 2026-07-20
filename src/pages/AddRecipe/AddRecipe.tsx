@@ -72,7 +72,9 @@ export default function AddRecipe() {
     },
   });
 
-  const { formState: {isDirty }} = methods;
+  const {
+    formState: { isDirty },
+  } = methods;
 
   useEffect(() => {
     if (!recipeId) {
@@ -84,10 +86,7 @@ export default function AddRecipe() {
         const recipe = await getRecipe(recipeId);
 
         if (!recipe) {
-          console.log('here');
           navigate('/add-recipe');
-        } else {
-          console.log('what', recipe);
         }
 
         methods.reset({
@@ -109,7 +108,6 @@ export default function AddRecipe() {
         });
         setIsEditPublic(recipe.isPublic);
       } catch (error) {
-        console.log(error);
         showSnackbar({ message: '❌ Failed to edit the recipe' });
         navigate('/');
       }
@@ -138,7 +136,10 @@ export default function AddRecipe() {
     });
   };
 
-  const handleSaveRecipe = async (isPublic: boolean): Promise<number> => {
+  const handleSaveRecipe = async (
+    isPublic: boolean,
+    isEdit?: boolean
+  ): Promise<number> => {
     const values = methods.getValues();
 
     const data = {
@@ -164,18 +165,30 @@ export default function AddRecipe() {
       throw new Error('Something went wrong');
     }
 
-    const recipe = await createRecipeWithImage(data, values.image);
-
-    return recipe.id;
+    if (isEdit && recipeId !== undefined) {
+      await editRecipe(recipeId, {
+        title: values.title,
+        description: values.description ?? undefined,
+        category: values.category ?? undefined,
+        prepTime: values.prepTime ?? undefined,
+        servings: values.servings ?? undefined,
+        ingredients: values.ingredients.map(({ value }) => value) ?? undefined,
+        steps: values.steps.map(({ value }) => value) ?? undefined,
+        isPublic: values.isPublic ?? undefined,
+      });
+      return recipeId;
+    } else {
+      const recipe = await createRecipeWithImage(data, values.image);
+      return recipe.id;
+    }
   };
 
   const handleEditVisibility = async (
     recipeId: number,
     isPrivate: boolean
   ): Promise<void> => {
-    console.log('isPrivate', isPrivate)
     await editRecipe(recipeId, { isPublic: !isPrivate });
-    methods.reset(methods.getValues())
+    methods.reset(methods.getValues());
   };
 
   const handleDeleteRecipe = async (recipeId: number): Promise<void> => {
@@ -260,8 +273,7 @@ export default function AddRecipe() {
           <Box sx={{ mt: 4 }}>
             <Publication
               onBack={goToPreviousStep}
-              onSavePrivate={() => handleSaveRecipe(false)}
-              onPublish={() => handleSaveRecipe(true)}
+              onSave={handleSaveRecipe}
               onChangeVisibility={(recipeId: number, isPrivate: boolean) =>
                 handleEditVisibility(recipeId, isPrivate)
               }

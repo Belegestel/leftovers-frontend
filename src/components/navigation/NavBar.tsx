@@ -78,7 +78,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                 }
               }}
             />
-            <IconButton size="small" onClick={handleSearch}>
+            <IconButton size="small" onClick={handleSearch} aria-label='search'>
               <SearchIcon fontSize="small" />
             </IconButton>
           </SearchBox>

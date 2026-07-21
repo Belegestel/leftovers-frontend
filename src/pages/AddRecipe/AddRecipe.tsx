@@ -50,7 +50,8 @@ const steps: {
 
 export default function AddRecipe() {
   const [activeStep, setActiveStep] = useState<AddRecipeStep>('basic');
-  const [isEditPublic, setIsEditPublic] = useState<null | boolean>();
+  const [savedRecipeId, setSavedRecipeId] = useState<number | undefined>();
+  const [savedIsPublic, setSavedIsPublic] = useState<boolean | undefined>();
 
   const showSnackbar = useSnackbar();
   const navigate = useNavigate();
@@ -106,7 +107,8 @@ export default function AddRecipe() {
           image: recipe.imageLink,
           isPublic: recipe.isPublic,
         });
-        setIsEditPublic(recipe.isPublic);
+        setSavedRecipeId(recipe.id);
+        setSavedIsPublic(recipe.isPublic);
       } catch (error) {
         showSnackbar({ message: '❌ Failed to edit the recipe' });
         navigate('/');
@@ -136,10 +138,7 @@ export default function AddRecipe() {
     });
   };
 
-  const handleSaveRecipe = async (
-    isPublic: boolean,
-    isEdit?: boolean
-  ): Promise<number> => {
+  const handleSaveRecipe = async (isPublic: boolean): Promise<number> => {
     const values = methods.getValues();
 
     const data = {
@@ -158,6 +157,9 @@ export default function AddRecipe() {
 
     if (recipeId) {
       await editRecipe(recipeId, data);
+      setSavedRecipeId(recipeId);
+      setSavedIsPublic(isPublic);
+      methods.reset(methods.getValues());
       return recipeId;
     }
 
@@ -165,22 +167,13 @@ export default function AddRecipe() {
       throw new Error('Something went wrong');
     }
 
-    if (isEdit && recipeId !== undefined) {
-      await editRecipe(recipeId, {
-        title: values.title,
-        description: values.description ?? undefined,
-        category: values.category ?? undefined,
-        prepTime: values.prepTime ?? undefined,
-        servings: values.servings ?? undefined,
-        ingredients: values.ingredients.map(({ value }) => value) ?? undefined,
-        steps: values.steps.map(({ value }) => value) ?? undefined,
-        isPublic: values.isPublic ?? undefined,
-      });
-      return recipeId;
-    } else {
-      const recipe = await createRecipeWithImage(data, values.image);
-      return recipe.id;
-    }
+    const recipe = await createRecipeWithImage(data, values.image);
+
+    setSavedRecipeId(recipe.id);
+    setSavedIsPublic(isPublic);
+
+    methods.reset(methods.getValues());
+    return recipe.id;
   };
 
   const handleEditVisibility = async (
@@ -188,6 +181,8 @@ export default function AddRecipe() {
     isPrivate: boolean
   ): Promise<void> => {
     await editRecipe(recipeId, { isPublic: !isPrivate });
+    setSavedRecipeId(recipeId);
+    setSavedIsPublic(!isPrivate);
     methods.reset(methods.getValues());
   };
 
@@ -278,8 +273,8 @@ export default function AddRecipe() {
                 handleEditVisibility(recipeId, isPrivate)
               }
               onRecipeDelete={handleDeleteRecipe}
-              editRecipeId={isEditPublic !== undefined ? recipeId : undefined}
-              isPublic={isEditPublic ?? undefined}
+              recipeId={savedRecipeId}
+              isPublic={savedIsPublic}
               isDirty={isDirty}
             />
           </Box>

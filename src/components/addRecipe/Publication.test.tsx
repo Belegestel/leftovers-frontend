@@ -4,6 +4,14 @@ import { SnackbarProvider } from '../common/SnackbarProvider';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, it, vi, expect } from 'vitest';
 
+vi.mock('../common/SnackbarProvider', () => ({
+  useSnackbar: () => vi.fn(),
+}));
+
+vi.mock('react-router-dom', () => ({
+  useNavigate: () => vi.fn(),
+}));
+
 describe('Publication', () => {
   const renderComponent = (props = {}) =>
     render(
@@ -61,5 +69,63 @@ describe('Publication', () => {
     await waitFor(() => {
       expect(deleteRecipe).toHaveBeenCalledWith(10);
     });
+  });
+});
+describe('Publication', () => {
+
+  const props = {
+    onBack: vi.fn(),
+    onSavePrivate: vi.fn(),
+    onPublish: vi.fn(),
+    onChangeVisibility: vi.fn(),
+    onRecipeDelete: vi.fn(),
+  };
+
+
+  it('disables publish buttons when editing and nothing changed', () => {
+
+    render(
+      <Publication
+        {...props}
+        editRecipeId={10}
+        isPublic={true}
+        onSave={vi.fn()}
+        isDirty={false}
+      />
+    );
+
+
+    expect(
+      screen.getByRole('button', {
+        name: /publish the recipe/i,
+      })
+    ).toBeDisabled();
+
+
+    expect(
+      screen.getByRole('button', {
+        name: /save as private/i,
+      })
+    ).toBeDisabled();
+
+  });
+
+
+  it('enables buttons after form changes', () => {
+    render(
+      <Publication
+        {...props}
+        editRecipeId={10}
+        onSave={vi.fn()}
+        isPublic={true}
+        isDirty={true}
+      />
+    );
+
+    expect(
+      screen.getByRole('button', {
+        name: /publish the recipe/i,
+      })
+    ).not.toBeDisabled();
   });
 });

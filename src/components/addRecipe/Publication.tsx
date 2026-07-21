@@ -9,10 +9,10 @@ import { useNavigate } from 'react-router-dom';
 
 interface PublicationProps {
   onBack: () => void;
-  onSave: (isPublic: boolean, isEdit?: boolean) => Promise<number>;
+  onSave: (isPublic: boolean) => Promise<number>;
   onChangeVisibility: (recipeId: number, isPrivate: boolean) => Promise<void>;
   onRecipeDelete: (recipeId: number) => Promise<void>;
-  editRecipeId?: number;
+  recipeId?: number;
   isPublic?: boolean;
   isDirty?: boolean;
 }
@@ -22,62 +22,56 @@ export function Publication({
   onSave,
   onChangeVisibility,
   onRecipeDelete,
-  editRecipeId,
+  recipeId,
   isPublic,
   isDirty,
 }: PublicationProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [saved, setSaved] = useState<'private' | 'public' | null>(
-    isPublic === undefined ? null : isPublic === true ? 'public' : 'private'
-  );
-  const [recipeId, setRecipeId] = useState<number | null>(editRecipeId ?? null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const showSnackbar = useSnackbar();
   const navigate = useNavigate();
 
-  const handleAction = async (
-    isPrivate: boolean
-  ) => {
+  const saved =
+    isPublic === undefined ? null : isPublic ? 'public' : 'private';
+
+  const handleAction = async (isPrivate: boolean) => {
     try {
       setLoading(true);
       setError(null);
 
-      if (recipeId === null) {
-        const recipe = await onSave(isPrivate);
-        setRecipeId(recipe);
+      if (recipeId === undefined) {
+        await onSave(!isPrivate);
+      } else if (isDirty) {
+        await onSave(!isPrivate);
       } else {
-        if (isDirty) {
-          onSave(isPrivate, true);
-        } else {
-          await onChangeVisibility(recipeId, isPrivate);
-        }
+        await onChangeVisibility(recipeId, isPrivate);
+      }
+
+      if (isPrivate) {
+        showSnackbar({
+          message:
+            '🔒 Your recipe has been saved as private. You can find it in your profile.',
+        });
+      } else {
+        showSnackbar({
+          message: '👏 Congratulations! Your recipe has been published!',
+        });
       }
     } catch {
       setError('Something went wrong while saving the recipe.');
     } finally {
       setLoading(false);
     }
-    if (isPrivate) {
-      setSaved('private');
-      showSnackbar({
-        message:
-          '🔒 Your recipe has been saved as private. You can find it in your profile.',
-      });
-    } else {
-      setSaved('public');
-      showSnackbar({
-        message: '👏 Congratulations! Your recipe has been published!',
-      });
-    }
   };
 
   const handleDelete = async () => {
     try {
-      if (recipeId === null) {
+      if (recipeId === undefined) {
         return;
       }
+
       setLoading(true);
       setError(null);
 
@@ -86,11 +80,10 @@ export function Publication({
       setError('Something went wrong while saving the recipe.');
     } finally {
       setLoading(false);
-      setRecipeId(null);
-      setSaved(null);
       setDeleteModalOpen(false);
       navigate('/');
     }
+
     showSnackbar({
       message: '🗑️ Your recipe has been deleted!',
     });
@@ -154,7 +147,7 @@ export function Publication({
 
           <Button
             variant="secondary"
-            disabled={loading || (saved === 'private' && !isDirty)}
+            disabled={loading || (saved === 'private' && !(isDirty ?? false))}
             onClick={() => handleAction(true)}
             sx={{
               borderColor: 'currentColor',
@@ -165,7 +158,7 @@ export function Publication({
             <Typography sx={{ fontWeight: 600 }}>
               {loading
                 ? 'Saving...'
-                : saved === 'private'
+                : saved === 'private' && !(isDirty ?? false)
                   ? 'Recipe saved'
                   : 'Save as private'}
             </Typography>
@@ -202,7 +195,7 @@ export function Publication({
             <Typography>
               {loading
                 ? 'Publishing...'
-                : saved === 'public'
+                : saved === 'public' && !isDirty
                   ? 'Recipe published'
                   : 'Publish the recipe'}
             </Typography>
@@ -255,6 +248,7 @@ export function Publication({
           </Button>
         </Box>
       </Box>
+
       <ConfirmModal
         open={deleteModalOpen}
         title="Are you sure you want to delete the recipe?"

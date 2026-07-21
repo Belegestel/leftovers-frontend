@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Box, Container, Typography } from '@mui/material';
+import { Box, Container, Skeleton, Typography } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import LunchDiningOutlinedIcon from '@mui/icons-material/LunchDiningOutlined';
 import RestaurantMenuOutlinedIcon from '@mui/icons-material/RestaurantMenuOutlined';
@@ -19,7 +19,8 @@ import {
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSnackbar } from '@/components/common/SnackbarProvider';
 
-type AddRecipeStep = 'basic' | 'ingredients' | 'preparation' | 'publication';
+type AddRecipeStep =
+  'basic' | 'ingredients' | 'preparation' | 'publication' | 'loading';
 
 const steps: {
   value: AddRecipeStep;
@@ -87,6 +88,7 @@ export default function AddRecipe() {
     setCurrentRecipeId(recipeIdFromRoute);
 
     const loadRecipe = async () => {
+      setActiveStep('loading');
       try {
         const recipe = await getRecipe(recipeIdFromRoute);
 
@@ -117,6 +119,8 @@ export default function AddRecipe() {
       } catch {
         showSnackbar({ message: '❌ Failed to edit the recipe' });
         navigate('/');
+      } finally {
+        setActiveStep('basic');
       }
     };
 
@@ -207,7 +211,7 @@ export default function AddRecipe() {
             mb: 3,
           }}
         >
-          Add Recipe
+          {recipeIdFromRoute ? 'Edit Recipe' : 'Add Recipe'}
         </Typography>
 
         <Box
@@ -253,6 +257,13 @@ export default function AddRecipe() {
             );
           })}
         </Box>
+
+        {activeStep === 'loading' && (
+          <Skeleton
+            variant="rectangular"
+            sx={{ mt: 5, width: '100%', height: 350 }}
+          />
+        )}
 
         {activeStep === 'basic' && <BasicInformation onNext={goToNextStep} />}
 

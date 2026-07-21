@@ -13,10 +13,10 @@ import logo from '@/assets/logo.svg';
 import SearchIcon from '@mui/icons-material/Search';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import AddIcon from '@mui/icons-material/Add';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRecipeCategories } from '@/hooks/useRecipeCategories';
 import { removeToken } from '@/services/tokenService';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 
 interface NavBarProps {
@@ -33,13 +33,19 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
   );
   const [searchQuery, setSearchQuery] = useState('');
   const { authChanged } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const { categories } = useRecipeCategories();
 
-  const handleSearch = () => {
-    if (!searchQuery.trim()) {
-      return;
+  useEffect(() => {
+    const query = searchParams.get('search') ?? '';
+    if (query.trim()) {
+      setSearchQuery(query.trim());
     }
+  }, []);
+
+  const handleSearch = () => {
+    navigate(`/recipes?${searchParams.toString()}`);
   };
 
   return (
@@ -58,7 +64,14 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
             <SearchInput
               placeholder="Search"
               value={searchQuery}
-              onChange={(event) => setSearchQuery(event.target.value)}
+              onChange={(event) => {
+                setSearchQuery(event.target.value);
+                searchParams.set(
+                  'search',
+                  event.target.value
+                );
+                setSearchParams(searchParams);
+              }}
               onKeyDown={(event) => {
                 if (event.key === 'Enter') {
                   handleSearch();

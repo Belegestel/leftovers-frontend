@@ -1,12 +1,11 @@
 import { httpService } from './httpService';
 import type { Recipe, RecipeSummary } from '@/types/recipe';
+import { uploadService } from './uploadService';
 
 type RecipeSummariesResponse = {
   recipes: RecipeSummary[];
 };
-type RecipeResponse = {
-  recipes: Recipe;
-};
+type RecipeResponse = Recipe;
 
 export class RecipeCategory {
   name: string;
@@ -60,4 +59,77 @@ export async function unbookmarkRecipe(id: number): Promise<void> {
 
 export async function rateRecipe(id: number, value: number): Promise<void> {
   await httpService.post(`/recipes/${id}/rate`, { value });
+}
+
+type CreateRecipeRequest = {
+  title: string;
+  description: string;
+  category: string;
+  prepTime: number;
+  servings: number;
+  ingredients: string[];
+  steps: string[];
+  isPublic: boolean;
+};
+type CreateRecipeResponse = Recipe;
+type ImageUploadUrlResponse = {
+  url: string;
+  key: string;
+};
+
+export async function createRecipeWithImage(
+  recipe: CreateRecipeRequest,
+  image: File | null
+): Promise<CreateRecipeResponse> {
+  const createResponse = await httpService.post<CreateRecipeResponse>(
+    '/recipes',
+    recipe
+  );
+
+  const createdRecipe = createResponse.data;
+  if (!image) {
+    return createdRecipe;
+  }
+  const uploadUrlResponse = await httpService.post<ImageUploadUrlResponse>(
+    `/recipes/${createdRecipe.id}/image-upload-url`,
+    {
+      fileName: image.name,
+      fileType: image.type,
+    }
+  );
+
+  const { url, key } = uploadUrlResponse.data;
+
+  await uploadService.put(url, image, {
+    headers: {
+      'Content-Type': image.type,
+    },
+  });
+
+  await httpService.post(`/recipes/${createdRecipe.id}/image-confirm`, {
+    key,
+  });
+
+  return createdRecipe;
+}
+
+type EditRecipeRequest = {
+  title?: string;
+  description?: string;
+  category?: string;
+  prepTime?: number;
+  servings?: number;
+  ingredients?: string[];
+  steps?: string[];
+  isPublic?: boolean;
+};
+export async function editRecipe(
+  id: number,
+  recipe: EditRecipeRequest
+): Promise<void> {
+  await httpService.post(`/recipes/${id}/edit`, recipe);
+}
+
+export async function deleteRecipe(id: number): Promise<void> {
+  await httpService.post(`/recipes/${id}/delete`);
 }

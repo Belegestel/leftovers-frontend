@@ -92,7 +92,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           {authenticated && (
-            <Button color="primary" startIcon={<AddIcon />}>
+            <Button color="primary" startIcon={<AddIcon />} onClick={() => navigate('/add-recipe')}>
               Add recipe
             </Button>
           )}

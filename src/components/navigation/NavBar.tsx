@@ -70,6 +70,10 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                   'search',
                   event.target.value
                 );
+                if (event.target.value.trim()) {
+                  searchParams.delete('category')
+                  searchParams.delete('saved')
+                }
                 setSearchParams(searchParams);
               }}
               onKeyDown={(event) => {

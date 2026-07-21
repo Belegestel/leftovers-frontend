@@ -9,6 +9,7 @@ import { AuthProvider } from '@/context/AuthContext';
 const mockedNavigate = vi.fn();
 const mockedLocation = vi.fn();
 const mockedSetSearchParams = vi.fn();
+const mockedSearchParams = { get: vi.fn(), set: vi.fn(), delete: vi.fn() };
 
 vi.mock('@/services/tokenService', () => ({
   isAuthenticated: vi.fn(),
@@ -18,7 +19,7 @@ vi.mock('@/services/tokenService', () => ({
 vi.mock('react-router-dom', () => ({
   useNavigate: () => mockedNavigate,
   useLocation: () => mockedLocation,
-  useSearchParams: () => [new URLSearchParams(), mockedSetSearchParams],
+  useSearchParams: () => [mockedSearchParams, mockedSetSearchParams],
 }));
 vi.mock('@/hooks/useRecipeCategories', () => ({
   useRecipeCategories: () => ({
@@ -101,7 +102,22 @@ describe('NavBar', () => {
     await userEvent.type(screen.getByRole('textbox'), 'tasty recipe');
     await userEvent.click(screen.getByRole('button', { name: /search/i }));
     expect(mockedSetSearchParams).toHaveBeenCalled();
-    expect(mockedSetSearchParams.mock.calls.at(-1)?.[0].get('search')).toBe('tasty recipe')
-    expect(mockedNavigate).toHaveBeenCalledWith('/recipes?');
+    expect(mockedSearchParams.set).toHaveBeenCalled()
+    expect(mockedSetSearchParams).toHaveBeenCalledWith(mockedSearchParams);
+    expect(mockedNavigate).toHaveBeenCalled();
   });
+
+  it('removes category filtering when searching a query', async () => {
+    render(
+      <AuthProvider>
+        <NavBar authenticated={false} onLogout={() => {}} />
+      </AuthProvider>
+    );
+
+    await userEvent.type(screen.getByRole('textbox'), '            ');
+    await userEvent.type(screen.getByRole('textbox'), 'tasty recipe');
+    expect(mockedSearchParams.delete).toHaveBeenCalledWith('category');
+    expect(mockedSearchParams.delete).toHaveBeenCalledWith('saved');
+    expect(screen.queryByText('Filters')).not.toBeInTheDocument();
+  })
 });

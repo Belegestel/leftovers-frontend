@@ -50,13 +50,14 @@ const steps: {
 
 export default function AddRecipe() {
   const [activeStep, setActiveStep] = useState<AddRecipeStep>('basic');
-  const [savedRecipeId, setSavedRecipeId] = useState<number | undefined>();
+  const [currentRecipeId, setCurrentRecipeId] = useState<number | undefined>();
   const [savedIsPublic, setSavedIsPublic] = useState<boolean | undefined>();
 
   const showSnackbar = useSnackbar();
   const navigate = useNavigate();
   const { recipe } = useParams();
-  const recipeId = recipe ? Number(recipe) : undefined;
+
+  const recipeIdFromRoute = recipe ? Number(recipe) : undefined;
 
   const methods = useForm<AddRecipeFormValues>({
     mode: 'onChange',
@@ -75,22 +76,26 @@ export default function AddRecipe() {
 
   const {
     formState: { isDirty },
+    reset,
   } = methods;
 
   useEffect(() => {
-    if (!recipeId) {
+    if (!recipeIdFromRoute) {
       return;
     }
 
+    setCurrentRecipeId(recipeIdFromRoute);
+
     const loadRecipe = async () => {
       try {
-        const recipe = await getRecipe(recipeId);
+        const recipe = await getRecipe(recipeIdFromRoute);
 
         if (!recipe) {
           navigate('/add-recipe');
+          return;
         }
 
-        methods.reset({
+        reset({
           title: recipe.title,
           description: recipe.description,
           category: recipe.category
@@ -107,16 +112,16 @@ export default function AddRecipe() {
           image: recipe.imageLink,
           isPublic: recipe.isPublic,
         });
-        setSavedRecipeId(recipe.id);
+
         setSavedIsPublic(recipe.isPublic);
-      } catch (error) {
+      } catch {
         showSnackbar({ message: '❌ Failed to edit the recipe' });
         navigate('/');
       }
     };
 
     loadRecipe();
-  }, [recipeId, methods]);
+  }, [recipeIdFromRoute, reset, navigate, showSnackbar]);
 
   const goToNextStep = () => {
     setActiveStep((currentStep) => {
@@ -155,12 +160,11 @@ export default function AddRecipe() {
       isPublic,
     };
 
-    if (recipeId) {
-      await editRecipe(recipeId, data);
-      setSavedRecipeId(recipeId);
+    if (currentRecipeId) {
+      await editRecipe(currentRecipeId, data);
       setSavedIsPublic(isPublic);
-      methods.reset(methods.getValues());
-      return recipeId;
+      reset(methods.getValues());
+      return currentRecipeId;
     }
 
     if (typeof values.image === 'string') {
@@ -169,10 +173,11 @@ export default function AddRecipe() {
 
     const recipe = await createRecipeWithImage(data, values.image);
 
-    setSavedRecipeId(recipe.id);
+    setCurrentRecipeId(recipe.id);
     setSavedIsPublic(isPublic);
 
-    methods.reset(methods.getValues());
+    reset(methods.getValues());
+
     return recipe.id;
   };
 
@@ -181,9 +186,11 @@ export default function AddRecipe() {
     isPrivate: boolean
   ): Promise<void> => {
     await editRecipe(recipeId, { isPublic: !isPrivate });
-    setSavedRecipeId(recipeId);
+
+    setCurrentRecipeId(recipeId);
     setSavedIsPublic(!isPrivate);
-    methods.reset(methods.getValues());
+
+    reset(methods.getValues());
   };
 
   const handleDeleteRecipe = async (recipeId: number): Promise<void> => {
@@ -273,7 +280,7 @@ export default function AddRecipe() {
                 handleEditVisibility(recipeId, isPrivate)
               }
               onRecipeDelete={handleDeleteRecipe}
-              recipeId={savedRecipeId}
+              recipeId={currentRecipeId}
               isPublic={savedIsPublic}
               isDirty={isDirty}
             />

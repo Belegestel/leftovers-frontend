@@ -49,7 +49,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
   };
 
   return (
-    <StyledAppBar position="static">
+    <StyledAppBar position="sticky">
       <Toolbar>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <Box>

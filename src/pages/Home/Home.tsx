@@ -1,10 +1,22 @@
-import { Box, Container, Divider, Grid, Typography } from '@mui/material';
+import {
+  Box,
+  Container,
+  Divider,
+  Grid,
+  Skeleton,
+  Typography,
+} from '@mui/material';
 import { RecipeCard } from '@/components/recipe/RecipeCard';
 import { useRecipes } from '@/hooks/useRecipes';
 import { useBookmark } from '@/hooks/useBookmark';
 export default function Home() {
-  const { recipes, setRecipes, recipeOfTheDay, setRecipeOfTheDay } =
-    useRecipes();
+  const {
+    recipes,
+    setRecipes,
+    recipeOfTheDay,
+    setRecipeOfTheDay,
+    recipesLoading,
+  } = useRecipes();
 
   const { toggleBookmark } = useBookmark({
     mode: 'list',
@@ -12,13 +24,17 @@ export default function Home() {
   });
 
   return (
-    <Container>
-      {recipeOfTheDay && (
-        <RecipeCard
-          recipe={recipeOfTheDay}
-          variant="featured"
-          onBookmarkToggle={() => toggleBookmark(recipeOfTheDay)}
-        />
+    <Container sx={{ mt: 5 }}>
+      {recipesLoading ? (
+        <Skeleton variant="rectangular" width="100%" height={360} />
+      ) : (
+        recipeOfTheDay && (
+          <RecipeCard
+            recipe={recipeOfTheDay}
+            variant="featured"
+            onBookmarkToggle={() => toggleBookmark(recipeOfTheDay)}
+          />
+        )
       )}
 
       <Box
@@ -37,25 +53,33 @@ export default function Home() {
       </Box>
 
       <Grid container spacing={3}>
-        {recipes.map((recipe) => (
-          <Grid
-            key={recipe.id}
-            size={{
-              xs: 12,
-              sm: 6,
-              md: 4,
-            }}
-            sx={{
-              display: 'flex',
-              justifyContent: 'flex-start',
-            }}
-          >
-            <RecipeCard
-              recipe={recipe}
-              onBookmarkToggle={() => toggleBookmark(recipe)}
-            />
-          </Grid>
-        ))}
+        {recipesLoading ? (
+          [...Array(8).keys()].map((n) => (
+            <Grid key={n} size={{xs:12,sm:6,md:3}}>
+            <Skeleton variant='rectangular' width={250} height={300} />
+            </Grid>
+          ))
+        ) : (
+          recipes.map((recipe) => (
+            <Grid
+              key={recipe.id}
+              size={{
+                xs: 12,
+                sm: 6,
+                md: 3,
+              }}
+              sx={{
+                display: 'flex',
+                justifyContent: 'flex-start',
+              }}
+            >
+              <RecipeCard
+                recipe={recipe}
+                onBookmarkToggle={() => toggleBookmark(recipe)}
+              />
+            </Grid>
+          ))
+        )}
       </Grid>
     </Container>
   );

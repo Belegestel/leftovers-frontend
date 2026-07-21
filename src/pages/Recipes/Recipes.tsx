@@ -1,4 +1,11 @@
-import { Box, Container, Divider, Grid, Typography } from '@mui/material';
+import {
+  Box,
+  Container,
+  Divider,
+  Grid,
+  Skeleton,
+  Typography,
+} from '@mui/material';
 import { useSearchParams } from 'react-router-dom';
 import { RecipeCard } from '@/components/recipe/RecipeCard';
 import { useRecipes } from '@/hooks/useRecipes';
@@ -21,7 +28,7 @@ export default function Recipes({ mode }: RecipesProps) {
         ? 'Saved Recipes'
         : mode == 'my'
           ? 'My Recipes'
-          : searchWord ?? '';
+          : (searchWord ?? '');
 
   const category = searchParams.get('category') ?? undefined;
 
@@ -41,7 +48,7 @@ export default function Recipes({ mode }: RecipesProps) {
 
   const authored = mode == 'my';
 
-  const { recipes, setRecipes } = useRecipes({
+  const { recipes, setRecipes, recipesLoading } = useRecipes({
     category,
     saved,
     ratingOrderIncr,
@@ -50,7 +57,6 @@ export default function Recipes({ mode }: RecipesProps) {
     title: textSearch,
     description: textSearch,
   });
-
   const { toggleBookmark } = useBookmark({
     mode: 'list',
     state: {
@@ -67,9 +73,13 @@ export default function Recipes({ mode }: RecipesProps) {
         }}
       >
         {searchWord && (
-          <Typography sx={{color: 'text.secondary'}}>Search results for</Typography>
+          <Typography sx={{ color: 'text.secondary' }}>
+            Search results for
+          </Typography>
         )}
-        <Typography variant="h5">{searchWord?.trim() ? searchWord : title}</Typography>
+        <Typography variant="h5">
+          {searchWord?.trim() ? searchWord : title}
+        </Typography>
 
         <Divider
           sx={{
@@ -80,26 +90,42 @@ export default function Recipes({ mode }: RecipesProps) {
       </Box>
 
       <Grid container spacing={3}>
-        {recipes.map((recipe) => (
-          <Grid
-            key={recipe.id}
-            size={{
-              xs: 12,
-              sm: 6,
-              md: 3,
-            }}
-            sx={{
-              display: 'flex',
-            }}
-          >
-            <RecipeCard
-              recipe={recipe}
-              onBookmarkToggle={() => toggleBookmark(recipe)}
-              variant={mode === 'my' ? 'own' : 'default'}
-              isPrivate={mode === 'my' ? recipe.isPrivate : false}
-            />
-          </Grid>
-        ))}
+        {recipesLoading
+          ? [...Array(8).keys()].map((n) => (
+              <Grid
+                key={n}
+                size={{
+                  xs: 12,
+                  sm: 6,
+                  md: 3,
+                }}
+                sx={{
+                  display: 'flex',
+                }}
+              >
+                <Skeleton variant="rectangular" width={300} height={300}/>
+              </Grid>
+            ))
+          : recipes.map((recipe) => (
+              <Grid
+                key={recipe.id}
+                size={{
+                  xs: 12,
+                  sm: 6,
+                  md: 3,
+                }}
+                sx={{
+                  display: 'flex',
+                }}
+              >
+                <RecipeCard
+                  recipe={recipe}
+                  onBookmarkToggle={() => toggleBookmark(recipe)}
+                  variant={mode === 'my' ? 'own' : 'default'}
+                  isPrivate={mode === 'my' ? recipe.isPrivate : false}
+                />
+              </Grid>
+            ))}
       </Grid>
     </Container>
   );

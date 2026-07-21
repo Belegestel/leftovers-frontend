@@ -11,8 +11,10 @@ export function useRecipes(filters?: RecipeFilters) {
   const [recipeOfTheDay, setRecipeOfTheDay] = useState<RecipeSummary | null>(
     null
   );
+  const [recipesLoading, setRecipesLoading] = useState(true);
 
   async function loadRecipes() {
+    setRecipesLoading(true);
     try {
       const recipes = await getRecipeSummaries(filters);
 
@@ -21,6 +23,8 @@ export function useRecipes(filters?: RecipeFilters) {
     } catch {
       setRecipes([]);
       setRecipeOfTheDay(null);
+    } finally {
+      setRecipesLoading(false);
     }
   }
 
@@ -42,5 +46,6 @@ export function useRecipes(filters?: RecipeFilters) {
     recipeOfTheDay,
     setRecipeOfTheDay,
     reloadRecipes: loadRecipes,
+    recipesLoading,
   };
 }

@@ -35,7 +35,16 @@ export function RecipeCard({
 
   const imageHeight = isFeatured ? { xs: 280, md: 360 } : undefined;
 
-  const { t } = useTranslation();
+  const { t , i18n} = useTranslation();
+
+
+console.log(
+  i18n.getResource(
+    'fr',
+    'translation',
+    'recipeCard.recipeOfTheDay'
+  )
+);
 
   const image = recipe.imageLink ? (
     <CardMedia
@@ -153,7 +162,7 @@ export function RecipeCard({
               <Divider orientation="vertical" flexItem />
 
               <Typography>
-                {t('recipeCard.servings', { servings: recipe.servings })}
+                {t('recipeCard.servings', { count: recipe.servings })}
               </Typography>
             </Box>
 

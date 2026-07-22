@@ -1,11 +1,10 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { RootLayout } from '@/layouts/RootLayout';
 import Home from '@/pages/Home/Home';
 import RecipeDetails from '@/pages/RecipeDetails/RecipeDetails';
 import Recipes from '@/pages/Recipes/Recipes';
 import { ProtectedRoute } from './ProtectedRoute';
 import AddRecipe from '@/pages/AddRecipe/AddRecipe';
-import { LanguageLayout } from '@/layouts/LanguageLayout';
+import { RootLayout } from '@/layouts/RootLayout';
 
 const children = [
   { index: true, element: <Home /> },
@@ -24,13 +23,8 @@ const children = [
 
 export const router = createBrowserRouter([
   {
-    path: '/:lang',
+    path: '/:lang?',
     element: <RootLayout />,
-    children,
-  },
-  {
-    path: '/',
-    element: <LanguageLayout />,
     children,
   },
 ]);

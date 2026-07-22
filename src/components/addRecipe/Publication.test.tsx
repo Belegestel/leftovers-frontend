@@ -43,21 +43,21 @@ describe('Publication', () => {
       </MemoryRouter>
     );
 
-it('saves recipe as private', async () => {
-  const savePrivate = vi.fn().mockResolvedValue(5);
+  it('saves recipe as private', async () => {
+    const savePrivate = vi.fn().mockResolvedValue(5);
 
-  renderComponent({
-    onSave: savePrivate,
+    renderComponent({
+      onSave: savePrivate,
+    });
+
+    fireEvent.click(screen.getByText('Save as private'));
+
+    await waitFor(() => {
+      expect(savePrivate).toHaveBeenCalledTimes(1);
+    });
+
+    expect(savePrivate).toHaveBeenCalledWith(false);
   });
-
-  fireEvent.click(screen.getByText('Save as private'));
-
-  await waitFor(() => {
-    expect(savePrivate).toHaveBeenCalledTimes(1);
-  });
-
-  expect(savePrivate).toHaveBeenCalledWith(false);
-});
   it('opens delete modal and deletes recipe after confirmation', async () => {
     const deleteRecipe = vi.fn();
 

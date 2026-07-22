@@ -15,13 +15,12 @@ import { ResetPasswordModal } from '@/components/auth/ResetPasswordModal';
 import { useEffect, useState } from 'react';
 import { isAuthenticated } from '@/services/tokenService';
 import { RequireLoginModal } from '@/components/auth/RequireLoginModal';
-import i18n, { supportedLanguages } from '@/i18n';
 import { useTranslation } from 'react-i18next';
+import i18n, { supportedLanguages } from '@/i18n';
 
 export function RootLayout() {
   const [authenticated, setAuthenticated] = useState(isAuthenticated());
-  const [searchParams, setSearchParams] = useSearchParams();
-  const { lang } = useParams();
+  const [searchParams] = useSearchParams();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -66,9 +65,12 @@ export function RootLayout() {
     navigate(location.pathname, { replace: true });
   };
 
-  if (lang && !supportedLanguages.includes(lang)) {
-    throw new Error("Language not found")
-  }
+  const { lang } = useParams();
+  useEffect(() => {
+    const language = supportedLanguages.includes(lang ?? '') ? lang : 'en';
+    i18n.changeLanguage(language);
+  }, [lang]);
+  if (i18n.language !== lang && lang !== undefined) { return null; }
 
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>

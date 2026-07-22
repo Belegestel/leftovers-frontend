@@ -202,7 +202,7 @@ export function RecipeDetailsCard({
               mb: 3,
             }}
           >
-            {t('recipeCard.preparation')}
+            {t('recipeCard.prep')}
           </Typography>
 
           {recipe.steps.map((step, index) => (

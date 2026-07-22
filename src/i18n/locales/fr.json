@@ -12,6 +12,10 @@
       "all": "Toutes les recettes",
       "saved": "Recettes enregistrées",
       "my": "Mes recettes"
+    },
+    "snackbar": {
+      "saved": "La recette a été ajoutée aux recettes enregistrées dans votre profil.",
+      "unsaved": "La recette a été retirée des recettes enregistrées dans votre profil."
     }
   },
   "addRecipe": {

@@ -11,10 +11,10 @@ import DinnerDiningIcon from '@mui/icons-material/DinnerDining';
 import { RecipeRating } from './RecipeRating';
 import { SaveRecipeButton } from './SaveRecipeButton';
 import type { RecipeSummary } from '@/types/recipe';
-import { useNavigate } from 'react-router-dom';
 import CreateIcon from '@mui/icons-material/Create';
 import LockIcon from '@mui/icons-material/Lock';
 import { useTranslation } from 'react-i18next';
+import { useLocalizedNavigate } from '@/hooks/useLocalizedNavigate';
 
 interface RecipeCardProps {
   recipe: RecipeSummary;
@@ -31,20 +31,11 @@ export function RecipeCard({
 }: RecipeCardProps) {
   const isFeatured = variant === 'featured';
   const isOwn = variant === 'own';
-  const navigate = useNavigate();
+  const navigate = useLocalizedNavigate();
 
   const imageHeight = isFeatured ? { xs: 280, md: 360 } : undefined;
 
   const { t , i18n} = useTranslation();
-
-
-console.log(
-  i18n.getResource(
-    'fr',
-    'translation',
-    'recipeCard.recipeOfTheDay'
-  )
-);
 
   const image = recipe.imageLink ? (
     <CardMedia

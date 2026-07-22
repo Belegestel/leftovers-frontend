@@ -16,9 +16,10 @@ import AddIcon from '@mui/icons-material/Add';
 import { useState } from 'react';
 import { useRecipeCategories } from '@/hooks/useRecipeCategories';
 import { removeToken } from '@/services/tokenService';
-import { useNavigate, useLocation } from 'react-router-dom';
+import {  useLocation } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { useTranslation } from 'react-i18next';
+import { useLocalizedNavigate } from '@/hooks/useLocalizedNavigate';
 
 interface NavBarProps {
   authenticated: boolean;
@@ -26,7 +27,7 @@ interface NavBarProps {
 }
 
 export function NavBar({ authenticated, onLogout }: NavBarProps) {
-  const navigate = useNavigate();
+  const navigate = useLocalizedNavigate();
   const location = useLocation();
   const [recipesAnchor, setRecipesAnchor] = useState<null | HTMLElement>(null);
   const [myAccountAnchor, setMyAccountAnchor] = useState<null | HTMLElement>(

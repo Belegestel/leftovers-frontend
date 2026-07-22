@@ -12,6 +12,10 @@
       "all": "All Recipes",
       "saved": "Saved Recipes",
       "my": "My Recipes"
+    },
+    "snackbar": {
+      "saved": "The recipe was added to Saved Recipes in your profile.",
+      "unsaved": "The recipe was removed from Saved Recipes in your profile."
     }
   },
   "addRecipe": {

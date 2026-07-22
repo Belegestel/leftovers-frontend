@@ -1,7 +1,6 @@
 import {
   Outlet,
   useLocation,
-  useNavigate,
   useParams,
   useSearchParams,
 } from 'react-router-dom';
@@ -17,12 +16,13 @@ import { isAuthenticated } from '@/services/tokenService';
 import { RequireLoginModal } from '@/components/auth/RequireLoginModal';
 import { useTranslation } from 'react-i18next';
 import i18n, { supportedLanguages } from '@/i18n';
+import { useLocalizedNavigate } from '@/hooks/useLocalizedNavigate';
 
 export function RootLayout() {
   const [authenticated, setAuthenticated] = useState(isAuthenticated());
   const [searchParams] = useSearchParams();
   const location = useLocation();
-  const navigate = useNavigate();
+  const navigate = useLocalizedNavigate();
 
   const { t } = useTranslation();
 

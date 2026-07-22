@@ -16,9 +16,10 @@ import {
   editRecipe,
   getRecipe,
 } from '@/services/recipeService';
-import { useNavigate, useParams } from 'react-router-dom';
+import {  useParams } from 'react-router-dom';
 import { useSnackbar } from '@/components/common/SnackbarProvider';
 import { useTranslation } from 'react-i18next';
+import { useLocalizedNavigate } from '@/hooks/useLocalizedNavigate';
 
 type AddRecipeStep = 'basic' | 'ingredients' | 'preparation' | 'publication';
 
@@ -30,7 +31,7 @@ export default function AddRecipe() {
   const { t } = useTranslation();
 
   const showSnackbar = useSnackbar();
-  const navigate = useNavigate();
+  const navigate = useLocalizedNavigate();
   const { recipe } = useParams();
 
   const recipeIdFromRoute = recipe ? Number(recipe) : undefined;

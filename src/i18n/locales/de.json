@@ -12,6 +12,10 @@
       "all": "Alle Rezepte",
       "saved": "Gespeicherte Rezepte",
       "my": "Meine Rezepte"
+    },
+    "snackbar": {
+      "saved": "Das Rezept wurde zu den gespeicherten Rezepten in deinem Profil hinzugefügt.",
+      "unsaved": "Das Rezept wurde aus den gespeicherten Rezepten in deinem Profil entfernt."
     }
   },
   "addRecipe": {

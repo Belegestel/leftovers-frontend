@@ -13,9 +13,10 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import { Controller, useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation,  useSearchParams } from 'react-router-dom';
 import { useRecipeCategories } from '@/hooks/useRecipeCategories';
 import { useTranslation } from 'react-i18next';
+import { useLocalizedNavigate } from '@/hooks/useLocalizedNavigate';
 
 interface RecipeFilterForm {
   categories: string[];
@@ -27,7 +28,7 @@ interface RecipeFilterForm {
 export function RecipeFilters() {
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
-  const navigate = useNavigate();
+  const navigate = useLocalizedNavigate();
 
   const { categories } = useRecipeCategories();
 

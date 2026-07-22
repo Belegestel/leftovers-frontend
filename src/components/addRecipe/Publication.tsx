@@ -5,8 +5,8 @@ import PublicIcon from '@mui/icons-material/Public';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import { useSnackbar } from '../common/SnackbarProvider';
 import { ConfirmModal } from '../common/ConfirmationModal';
-import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useLocalizedNavigate } from '@/hooks/useLocalizedNavigate';
 
 interface PublicationProps {
   onBack: () => void;
@@ -32,7 +32,7 @@ export function Publication({
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const showSnackbar = useSnackbar();
-  const navigate = useNavigate();
+  const navigate = useLocalizedNavigate();
 
   const saved = isPublic === undefined ? null : isPublic ? 'public' : 'private';
 

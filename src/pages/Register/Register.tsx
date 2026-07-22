@@ -1,8 +1,8 @@
 import { RegisterModal } from '@/components/auth/RegisterModal';
-import { useNavigate } from 'react-router-dom';
+import { useLocalizedNavigate } from '@/hooks/useLocalizedNavigate';
 
 export default function Register() {
-  const navigate = useNavigate();
+  const navigate = useLocalizedNavigate();
 
   return (
     <RegisterModal 

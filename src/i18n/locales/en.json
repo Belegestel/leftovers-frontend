@@ -7,9 +7,9 @@
     "switch": "Switch",
     "names": {
       "en": "English",
-      "fr": "Français",
-      "de": "Deutsch",
-      "pl": "Polski"
+      "fr": "French/Français",
+      "de": "German/Deutsch",
+      "pl": "Polish/Polski"
     }
   },
   "recipeDetails": {

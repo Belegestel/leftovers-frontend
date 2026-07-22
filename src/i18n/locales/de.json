@@ -2,6 +2,16 @@
   "home": {
     "newRecipes": "Neue Rezepte"
   },
+  "language": {
+    "switchPrompt": "Diese Seite ist auch auf {{language}} verfügbar.",
+    "switch": "Wechseln",
+    "names": {
+      "en": "Englisch/English",
+      "fr": "Französisch/",
+      "de": "Deutsch",
+      "pl": "Polnisch/Polski"
+    }
+  },
   "recipeDetails": {
     "loading": "Rezept wird geladen...",
     "notExist": "Das Rezept existiert nicht",

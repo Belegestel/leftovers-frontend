@@ -2,11 +2,16 @@
   "home": {
     "newRecipes": "Nouvelles recettes"
   },
-  "recipeDetails": {
-    "loading": "Chargement de la recette...",
-    "notExist": "La recette n'existe pas",
-    "unable": "Impossible de charger la recette."
-  },
+"language": {
+  "switchPrompt": "Cette page est également disponible en {{language}}.",
+  "switch": "Changer",
+  "names": {
+    "en": "anglais/English",
+    "fr": "français",
+    "de": "allemand/Deutsch",
+    "pl": "polonais/Polski"
+  }
+},
   "recipes": {
     "titles": {
       "all": "Toutes les recettes",

@@ -21,6 +21,9 @@ export const theme = createTheme({
     error: {
       main: '#ff5555'
     },
+    rating: {
+      main: "#fdd835"
+    }
   },
   typography: {
     fontFamily: ['Poppins', 'Roboto', 'Arial', 'sans-serif'].join(','),

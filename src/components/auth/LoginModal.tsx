@@ -17,6 +17,7 @@ import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { setToken } from '@/services/tokenService';
 import { useForm } from 'react-hook-form';
 import { emailValid } from '@/utils/validation';
+import { useAuth } from '@/context/AuthContext';
 import { Link as RouterLink } from 'react-router-dom';
 
 interface LoginModalProps {
@@ -35,6 +36,7 @@ export function LoginModal({ open, onLogin, onClose }: LoginModalProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [loginMessage, setLoginMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { authChanged } = useAuth();
 
   const {
     register: registerField,
@@ -60,6 +62,7 @@ export function LoginModal({ open, onLogin, onClose }: LoginModalProps) {
         password: data.password,
       });
       setToken(response.accessToken, rememberMe);
+      authChanged();
       onLogin();
       onClose();
     } catch (error: unknown) {

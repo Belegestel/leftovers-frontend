@@ -13,6 +13,7 @@ import { ForgotPasswordModal } from '@/components/auth/ForgotPasswordModal';
 import { ResetPasswordModal } from '@/components/auth/ResetPasswordModal';
 import { useState } from 'react';
 import { isAuthenticated } from '@/services/tokenService';
+import { RequireLoginModal } from '@/components/auth/RequireLoginModal';
 
 export function RootLayout() {
   const [authenticated, setAuthenticated] = useState(isAuthenticated());
@@ -30,6 +31,14 @@ export function RootLayout() {
   const handleLoginClose = () => {
     navigate(location.pathname, { replace: true });
   };
+  const handleRequireLoginRecipeSaveModal =
+    searchParams.get('saveLogin') === 'true';
+  const handleRequireLoginRecipeSaveClose = () => {
+    navigate(location.pathname, { replace: true });
+  };
+  const handleRequireLoginToSaveLogin = () => {
+    navigate(`${location.pathname}?login=true`);
+  };
   const handleForgotPasswordModal =
     searchParams.get('forgot-password') === 'true';
   const handleForgotPasswordClose = () =>
@@ -38,10 +47,13 @@ export function RootLayout() {
     searchParams.get('reset-password') === 'true';
   const handleResetPasswordClose = (isPwdChanged: boolean | undefined) => {
     navigate(
-      { pathname: location.pathname, search: isPwdChanged ? '?login=true' : ''},
-      {replace:true}
-    )
-  }
+      {
+        pathname: location.pathname,
+        search: isPwdChanged ? '?login=true' : '',
+      },
+      { replace: true }
+    );
+  };
 
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -61,6 +73,13 @@ export function RootLayout() {
         open={handleLoginOpenModal}
         onLogin={handleLogin}
         onClose={handleLoginClose}
+      />
+      <RequireLoginModal
+        open={handleRequireLoginRecipeSaveModal}
+        title="Login to save the recipe"
+        message="If you want to save this recipe you need to login or create an account. Don't miss out on the convenience of having your favorite recipes at your fingertips whenever you crave them!"
+        onClose={handleRequireLoginRecipeSaveClose}
+        onLogin={handleRequireLoginToSaveLogin}
       />
       <ForgotPasswordModal
         open={handleForgotPasswordModal}

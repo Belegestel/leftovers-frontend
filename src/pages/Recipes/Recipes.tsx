@@ -32,10 +32,10 @@ export default function Recipes({ mode }: RecipesProps) {
 
   const ratingParam = searchParams.get('rating');
   const ratingOrderIncr =
-    ratingParam === null ? undefined : ratingParam === 'desc';
+    ratingParam === null ? undefined : ratingParam === 'asc';
 
   const dateParam = searchParams.get('date');
-  const dateOrderIncr = dateParam === null ? undefined : dateParam === 'asc';
+  const dateOrderIncr = dateParam === null ? undefined : dateParam === 'desc';
 
   const textSearch = searchParams.get('search') ?? undefined;
 

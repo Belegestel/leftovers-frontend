@@ -4,9 +4,7 @@ import type { Recipe, RecipeSummary } from '@/types/recipe';
 type RecipeSummariesResponse = {
   recipes: RecipeSummary[];
 };
-type RecipeResponse = {
-  recipes: Recipe;
-};
+type RecipeResponse = Recipe;
 
 export class RecipeCategory {
   name: string;

@@ -12,7 +12,7 @@ import { isAuthenticated } from '@/services/tokenService';
 import { RateRecipeModal } from '@/components/recipe/RateRecipeModal';
 
 export default function RecipeDetails() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const { id } = useParams();
 

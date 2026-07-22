@@ -29,7 +29,7 @@ export function RecipeCard({
   isPrivate,
 }: RecipeCardProps) {
   const isFeatured = variant === 'featured';
-  const isOwn = variant === 'own';
+  const isOwnedByUser = variant === 'own';
   const navigate = useNavigate();
 
   const imageHeight = isFeatured ? { xs: 280, md: 360 } : undefined;
@@ -188,7 +188,7 @@ export function RecipeCard({
       >
         {image}
 
-        {isOwn && isPrivate && (
+        {isOwnedByUser && isPrivate && (
           <Box
             sx={{
               position: 'absolute',
@@ -248,7 +248,7 @@ export function RecipeCard({
           />
         </Box>
 
-        {isOwn && (
+        {isOwnedByUser && (
           <Box>
             <Link
               underline="hover"

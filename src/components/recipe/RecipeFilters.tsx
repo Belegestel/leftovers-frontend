@@ -312,13 +312,13 @@ export function RecipeFilters() {
               sx={{ p: 1 }}
             >
               <FormControlLabel
-                value="asc"
+                value="desc"
                 control={<Radio />}
                 label="Newest first"
               />
 
               <FormControlLabel
-                value="desc"
+                value="asc"
                 control={<Radio />}
                 label="Oldest first"
               />

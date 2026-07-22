@@ -182,8 +182,8 @@
   "recipeCard": {
     "recipeOfTheDay": "Recipe of the day",
     "prepTime": "Preparation time: {{time}} minutes",
-    "servings_one": "{{servings}} serving",
-    "servings_other": "{{servings}} servings",
+    "servings_one": "{{count}} serving",
+    "servings_other": "{{count}} servings",
     "view": "View the recipe",
     "private": "Private",
     "edit": "Edit the recipe",

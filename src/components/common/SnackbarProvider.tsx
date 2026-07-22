@@ -1,4 +1,4 @@
-import { Typography, Paper, Snackbar } from '@mui/material';
+import { Typography, Paper, Snackbar, Box } from '@mui/material';
 import React, { createContext, useContext, useState } from 'react';
 import { IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 type SnackbarState = {
   message: string;
+  action?: React.ReactNode;
 };
 
 const SnackbarContext = createContext<(state: SnackbarState) => void>(() => {});
@@ -47,6 +48,11 @@ export function SnackbarProvider({ children }: { children: React.ReactNode }) {
             >
               {snackbar.message}
             </Typography>
+            {snackbar?.action && (
+              <Box sx={{mr:1}}>
+                {snackbar.action}
+              </Box>
+            )}
 
             <IconButton
               size="small"

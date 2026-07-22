@@ -17,12 +17,15 @@ import { RequireLoginModal } from '@/components/auth/RequireLoginModal';
 import { useTranslation } from 'react-i18next';
 import i18n, { supportedLanguages } from '@/i18n';
 import { useLocalizedNavigate } from '@/hooks/useLocalizedNavigate';
+import { useLanguageSuggestion } from '@/hooks/useLanguageSuggestion';
 
 export function RootLayout() {
   const [authenticated, setAuthenticated] = useState(isAuthenticated());
   const [searchParams] = useSearchParams();
   const location = useLocation();
   const navigate = useLocalizedNavigate();
+
+  useLanguageSuggestion();
 
   const { t } = useTranslation();
 

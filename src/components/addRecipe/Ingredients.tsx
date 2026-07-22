@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import type { AddRecipeFormValues } from '@/types/addRecipe';
+import { useTranslation } from 'react-i18next';
 
 interface IngredientsProps {
   onBack: () => void;
@@ -18,6 +19,8 @@ interface IngredientsProps {
 export function Ingredients({ onBack, onNext }: IngredientsProps) {
   const { control, register, getValues } =
     useFormContext<AddRecipeFormValues>();
+
+  const { t } = useTranslation();
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -43,7 +46,9 @@ export function Ingredients({ onBack, onNext }: IngredientsProps) {
           mb: 3,
         }}
       >
-        <Typography variant="h6">Add ingredients</Typography>
+        <Typography variant="h6">
+          {t('addRecipe.pages.ingredients.title')}
+        </Typography>
 
         <Box
           sx={{
@@ -51,8 +56,12 @@ export function Ingredients({ onBack, onNext }: IngredientsProps) {
             gap: 2,
           }}
         >
-          <Button variant="secondary" onClick={onBack} sx={{border: '1px solid', borderColor:'currentColor'}}>
-            &lt; Back
+          <Button
+            variant="secondary"
+            onClick={onBack}
+            sx={{ border: '1px solid', borderColor: 'currentColor' }}
+          >
+            &lt; {t('addRecipe.back')}
           </Button>
 
           <Button
@@ -60,7 +69,7 @@ export function Ingredients({ onBack, onNext }: IngredientsProps) {
             disabled={!ingredientsValid}
             onClick={onNext}
           >
-            Next &gt;
+            {t('addRecipe.next')} &gt;
           </Button>
         </Box>
       </Box>
@@ -76,8 +85,10 @@ export function Ingredients({ onBack, onNext }: IngredientsProps) {
           <TextField
             key={field.id}
             fullWidth
-            label={`Ingredient #${index + 1}`}
-            placeholder="Enter ingredient"
+            label={t('addRecipe.pages.ingredients.ingredientCounter', {
+              index: index + 1,
+            })}
+            placeholder={t('addRecipe.pages.ingredients.ingredientCounterPlaceholder')}
             slotProps={{
               inputLabel: {
                 shrink: true,
@@ -113,7 +124,7 @@ export function Ingredients({ onBack, onNext }: IngredientsProps) {
             px: 0,
           }}
         >
-          + Add a new ingredient
+          + {t('addRecipe.pages.ingredients.ingredientAdd')}
         </Button>
       </Box>
     </Box>

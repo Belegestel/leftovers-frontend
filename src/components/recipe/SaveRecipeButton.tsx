@@ -1,6 +1,7 @@
 import { Button, IconButton } from '@mui/material';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
+import { useTranslation } from 'react-i18next';
 
 interface SaveRecipeButtonProps {
   bookmarked: boolean;
@@ -13,6 +14,7 @@ export function SaveRecipeButton({
   onToggle,
   variant = 'icon',
 }: SaveRecipeButtonProps) {
+  const { t } = useTranslation();
   const icon = bookmarked ? (
     <BookmarkIcon sx={{ color: 'primary.main' }} />
   ) : (
@@ -29,7 +31,7 @@ export function SaveRecipeButton({
         startIcon={icon}
         variant="outlined"
       >
-        Save
+        {t('recipeCard.save')}
       </Button>
     );
   }

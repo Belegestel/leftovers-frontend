@@ -18,6 +18,7 @@ import { useRecipeCategories } from '@/hooks/useRecipeCategories';
 import { removeToken } from '@/services/tokenService';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 interface NavBarProps {
   authenticated: boolean;
@@ -36,6 +37,8 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
 
   const { categories } = useRecipeCategories();
 
+  const { t } = useTranslation();
+
   const handleSearch = () => {
     if (!searchQuery.trim()) {
       return;
@@ -49,14 +52,14 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
           <Box>
             <Logo
               src={logo}
-              alt="Leftovers logo"
+              alt={t('navbar.logo')}
               onClick={() => navigate('/')}
               sx={{ cursor: 'pointer' }}
             />
           </Box>
           <SearchBox>
             <SearchInput
-              placeholder="Search"
+              placeholder={t('navbar.searchPlaceholder')}
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
               onKeyDown={(event) => {
@@ -75,8 +78,12 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           {authenticated && (
-            <Button color="primary" startIcon={<AddIcon />} onClick={() => navigate('/add-recipe')}>
-              Add recipe
+            <Button
+              color="primary"
+              startIcon={<AddIcon />}
+              onClick={() => navigate('/add-recipe')}
+            >
+              {t('navbar.add')}
             </Button>
           )}
           <Button
@@ -84,7 +91,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
             endIcon={<KeyboardArrowDownIcon />}
             onClick={(event) => setRecipesAnchor(event.currentTarget)}
           >
-            Recipes
+            {t('navbar.recipes')}
           </Button>
           <Menu
             anchorEl={recipesAnchor}
@@ -122,7 +129,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                 onClick={(event) => setMyAccountAnchor(event.currentTarget)}
                 sx={{ whiteSpace: 'nowrap' }}
               >
-                My account
+                {t('navbar.myAcc')}
               </Button>
               <Menu
                 anchorEl={myAccountAnchor}
@@ -136,7 +143,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                     navigate('/saved');
                   }}
                 >
-                  Saved recipes
+                  {t('navbar.saved')}
                 </MenuItem>
                 <MenuItem
                   key="my-recipes"
@@ -145,7 +152,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                     navigate('/my-recipes');
                   }}
                 >
-                  My recipes
+                  {t('navbar.myRecipes')}
                 </MenuItem>
                 <MenuItem
                   key="log-out"
@@ -156,7 +163,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                     setMyAccountAnchor(null);
                   }}
                 >
-                  Log out
+                  {t('navbar.logout')}
                 </MenuItem>
               </Menu>
             </>
@@ -171,7 +178,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                   })
                 }
               >
-                Log in
+                {t('navbar.login')}
               </Button>
               <Button
                 variant="contained"
@@ -183,7 +190,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                 }
                 sx={{ whiteSpace: 'nowrap' }}
               >
-                Sign up
+                {t('navbar.signup')}
               </Button>
             </>
           )}

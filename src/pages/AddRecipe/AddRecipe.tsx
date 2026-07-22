@@ -18,46 +18,49 @@ import {
 } from '@/services/recipeService';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSnackbar } from '@/components/common/SnackbarProvider';
+import { useTranslation } from 'react-i18next';
 
 type AddRecipeStep = 'basic' | 'ingredients' | 'preparation' | 'publication';
-
-const steps: {
-  value: AddRecipeStep;
-  label: string;
-  icon: React.ReactNode;
-}[] = [
-  {
-    value: 'basic',
-    label: 'BASIC INFORMATION',
-    icon: <InfoOutlinedIcon />,
-  },
-  {
-    value: 'ingredients',
-    label: 'INGREDIENTS',
-    icon: <LunchDiningOutlinedIcon />,
-  },
-  {
-    value: 'preparation',
-    label: 'PREPARATION METHOD',
-    icon: <RestaurantMenuOutlinedIcon />,
-  },
-  {
-    value: 'publication',
-    label: 'PUBLICATION',
-    icon: <LibraryBooksOutlinedIcon />,
-  },
-];
 
 export default function AddRecipe() {
   const [activeStep, setActiveStep] = useState<AddRecipeStep>('basic');
   const [currentRecipeId, setCurrentRecipeId] = useState<number | undefined>();
   const [savedIsPublic, setSavedIsPublic] = useState<boolean | undefined>();
 
+  const { t } = useTranslation();
+
   const showSnackbar = useSnackbar();
   const navigate = useNavigate();
   const { recipe } = useParams();
 
   const recipeIdFromRoute = recipe ? Number(recipe) : undefined;
+
+  const steps: {
+    value: AddRecipeStep;
+    label: string;
+    icon: React.ReactNode;
+  }[] = [
+    {
+      value: 'basic',
+      label: t('addRecipe.labels.basic').toUpperCase(),
+      icon: <InfoOutlinedIcon />,
+    },
+    {
+      value: 'ingredients',
+      label: t('addRecipe.labels.ingredients').toUpperCase(),
+      icon: <LunchDiningOutlinedIcon />,
+    },
+    {
+      value: 'preparation',
+      label: t('addRecipe.labels.preparation').toUpperCase(),
+      icon: <RestaurantMenuOutlinedIcon />,
+    },
+    {
+      value: 'publication',
+      label: t('addRecipe.labels.publication').toUpperCase(),
+      icon: <LibraryBooksOutlinedIcon />,
+    },
+  ];
 
   const methods = useForm<AddRecipeFormValues>({
     mode: 'onChange',
@@ -115,7 +118,7 @@ export default function AddRecipe() {
 
         setSavedIsPublic(recipe.isPublic);
       } catch {
-        showSnackbar({ message: '❌ Failed to edit the recipe' });
+        showSnackbar({ message: `❌ ${t('addRecipe.snackbar.editFail')}` });
         navigate('/');
       }
     };
@@ -207,7 +210,7 @@ export default function AddRecipe() {
             mb: 3,
           }}
         >
-          Add Recipe
+          {t('addRecipe.title')}
         </Typography>
 
         <Box

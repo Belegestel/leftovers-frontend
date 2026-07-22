@@ -19,6 +19,7 @@ import { useForm } from 'react-hook-form';
 import { emailValid } from '@/utils/validation';
 import { useAuth } from '@/context/AuthContext';
 import { Link as RouterLink } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 interface LoginModalProps {
   open: boolean;
@@ -37,6 +38,8 @@ export function LoginModal({ open, onLogin, onClose }: LoginModalProps) {
   const [loginMessage, setLoginMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { authChanged } = useAuth();
+
+  const { t } = useTranslation();
 
   const {
     register: registerField,
@@ -65,13 +68,13 @@ export function LoginModal({ open, onLogin, onClose }: LoginModalProps) {
       setToken(response.accessToken, rememberMe);
       authChanged();
       onLogin();
-      reset()
+      reset();
       onClose();
     } catch (error: unknown) {
       if (error.response?.status === 401) {
-        setLoginMessage('Login failed - invalid credentials');
+        setLoginMessage(t('modals.login.failCred'));
       } else {
-        setLoginMessage('Login failed');
+        setLoginMessage(t('modals.login.fail'));
       }
     } finally {
       setIsSubmitting(false);
@@ -89,7 +92,7 @@ export function LoginModal({ open, onLogin, onClose }: LoginModalProps) {
       <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
         <IconButton
           onClick={() => {
-            reset()
+            reset();
             onClose();
           }}
         >
@@ -98,18 +101,18 @@ export function LoginModal({ open, onLogin, onClose }: LoginModalProps) {
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         <Typography variant="h4" sx={{ font: 'Poppins', fontWeight: 600 }}>
-          Log in
+          {t('modals.login.title')}
         </Typography>
 
         <TextField
-          label="E-mail address*"
-          placeholder="Enter your email"
+          label={t('modals.emailLabel')}
+          placeholder={t('modals.emailPlaceholder')}
           error={!!errors.email}
           {...registerField('email', {
             required: true,
             pattern: {
               value: emailValid,
-              message: 'Enter a valid email',
+              message: t('modals.emailFail'),
             },
             onChange: () => setLoginMessage(''),
           })}
@@ -131,13 +134,13 @@ export function LoginModal({ open, onLogin, onClose }: LoginModalProps) {
 
         {errors.email && (
           <Typography sx={{ fontSize: 12, color: 'error.main' }}>
-            Enter a valid email
+            {t('modals.emailFail')}
           </Typography>
         )}
 
         <TextField
-          label="Password*"
-          placeholder="Enter your password"
+          label={`${t('modals.passwordLabel')}*`}
+          placeholder={t('modals.passwordPlaceholder')}
           type={showPassword ? 'text' : 'password'}
           {...registerField('password', {
             required: true,
@@ -161,7 +164,7 @@ export function LoginModal({ open, onLogin, onClose }: LoginModalProps) {
                 <InputAdornment position="end">
                   {' '}
                   <IconButton
-                    aria-label="toggle password visibility"
+                    aria-label={t('modals.passwordVisToggle')}
                     onClick={() => setShowPassword((previous) => !previous)}
                     edge="end"
                   >
@@ -184,7 +187,7 @@ export function LoginModal({ open, onLogin, onClose }: LoginModalProps) {
             underline="always"
             sx={{ color: 'text.secondary', fontSize: 12 }}
           >
-            Forgot your password?
+            {t('modals.login.forgot')}
           </Link>
         </Box>
 
@@ -205,7 +208,7 @@ export function LoginModal({ open, onLogin, onClose }: LoginModalProps) {
             {isSubmitting ? (
               <CircularProgress size={22} color="inherit" />
             ) : (
-              'Log in'
+              t('modals.login.login')
             )}
           </Button>
           <Typography color="error" sx={{ mt: 1.5 }}>
@@ -220,10 +223,10 @@ export function LoginModal({ open, onLogin, onClose }: LoginModalProps) {
             style={{ marginTop: 4 }}
           />
 
-          <Typography variant="body2">Remember me</Typography>
+          <Typography variant="body2">{t('modals.login.rememberMe')}</Typography>
         </Box>
         <Typography variant="body2" sx={{ mt: 1, textAlign: 'left' }}>
-          Don't have an account yet?{' '}
+          {`${t('modals.login.noAccount')} `}
           <Link
             component={RouterLink}
             to="?signup=true"
@@ -233,7 +236,7 @@ export function LoginModal({ open, onLogin, onClose }: LoginModalProps) {
             }}
             underline="always"
           >
-            Create an account
+            {t('modals.login.createAccount')}
           </Link>
         </Typography>
       </Box>

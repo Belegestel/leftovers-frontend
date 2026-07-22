@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import type { AddRecipeFormValues } from '@/types/addRecipe';
+import { useTranslation } from 'react-i18next';
 
 interface PreparationMethodProps {
   onBack: () => void;
@@ -26,6 +27,8 @@ export function PreparationMethod({
     control,
     name: 'steps',
   });
+
+  const { t } = useTranslation();
 
   const steps = getValues('steps');
   const stepsValid =
@@ -46,7 +49,7 @@ export function PreparationMethod({
           mb: 3,
         }}
       >
-        <Typography variant="h6">Enter preparation method</Typography>
+        <Typography variant="h6">{t('addRecipe.pages.preparation.title')}</Typography>
 
         <Box
           sx={{
@@ -55,7 +58,7 @@ export function PreparationMethod({
           }}
         >
           <Button variant="secondary" onClick={onBack} sx={{border: '1px solid', borderColor:'currentColor'}}>
-            &lt; Back
+            &lt; {t('addRecipe.back')}
           </Button>
 
           <Button
@@ -63,7 +66,7 @@ export function PreparationMethod({
             disabled={!stepsValid}
             onClick={onNext}
           >
-            Next &gt;
+            {t('addRecipe.next')} &gt;
           </Button>
         </Box>
       </Box>
@@ -79,8 +82,8 @@ export function PreparationMethod({
           <TextField
             key={field.id}
             fullWidth
-            label={`Step ${index + 1}`}
-            placeholder="Enter preparation step"
+            label={t('addRecipe.pages.preparation.stepLabel')}
+            placeholder={t('addRecipe.pages.preparation.stepPlaceholder')}
             slotProps={{
               inputLabel: {
                 shrink: true,
@@ -116,7 +119,7 @@ export function PreparationMethod({
             px: 0,
           }}
         >
-          + Add a new step
+          + {t('addRecipe.pages.preparation.addStep')}
         </Button>
       </Box>
     </Box>

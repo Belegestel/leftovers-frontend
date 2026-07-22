@@ -6,6 +6,7 @@ import {
   DialogContentText,
   DialogTitle,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 interface ConfirmModalProps {
   open: boolean;
@@ -23,7 +24,8 @@ export function ConfirmModal({
   confirmButton,
   onConfirm,
   onCancel,
-}: ConfirmDialogProps) {
+}: ConfirmModalProps) {
+  const { t } = useTranslation();
   return (
     <Dialog open={open} onClose={onCancel}>
       <DialogTitle>{title}</DialogTitle>
@@ -36,9 +38,14 @@ export function ConfirmModal({
         <Button
           onClick={onCancel}
           variant="secondary"
-          sx={{ border: '1px solid', borderColor: 'currentColor', py: 0.5, px: 2 }}
+          sx={{
+            border: '1px solid',
+            borderColor: 'currentColor',
+            py: 0.5,
+            px: 2,
+          }}
         >
-          Cancel
+          {t('modals.cancel')}
         </Button>
 
         <Button

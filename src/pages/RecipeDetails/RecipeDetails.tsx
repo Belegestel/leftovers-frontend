@@ -10,9 +10,11 @@ import { RecipeDetailsCard } from '@/components/recipe/RecipeDetailsCard';
 import { useBookmark } from '@/hooks/useBookmark';
 import { isAuthenticated } from '@/services/tokenService';
 import { RateRecipeModal } from '@/components/recipe/RateRecipeModal';
+import { useTranslation } from 'react-i18next';
 
 export default function RecipeDetails() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { t } = useTranslation();
 
   const { id } = useParams();
 
@@ -21,7 +23,8 @@ export default function RecipeDetails() {
 
   const recipeId = id ? Number(id) : undefined;
 
-  const { recipe, setRecipe, loading, forbidden, error, reloadRecipe } = useRecipe(recipeId);
+  const { recipe, setRecipe, loading, forbidden, error, reloadRecipe } =
+    useRecipe(recipeId);
 
   const { toggleBookmark } = useBookmark({
     mode: 'single',
@@ -46,7 +49,7 @@ export default function RecipeDetails() {
   }
 
   if (loading) {
-    return <Typography>Loading recipe...</Typography>;
+    return <Typography>{t('recipeDetails.loading')}</Typography>;
   }
 
   if (forbidden) {
@@ -66,14 +69,14 @@ export default function RecipeDetails() {
             mb: 10,
           }}
         >
-          The recipe does not exist
+        {t('recipeDetails.notExist')}
         </Typography>
       </Box>
     );
   }
 
   if (error || !recipe) {
-    return <Typography>Unable to load recipe.</Typography>;
+    return <Typography>{t('recipeDetails.unable')}</Typography>;
   }
 
   return (

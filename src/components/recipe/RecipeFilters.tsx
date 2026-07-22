@@ -15,6 +15,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useRecipeCategories } from '@/hooks/useRecipeCategories';
+import { useTranslation } from 'react-i18next';
 
 interface RecipeFilterForm {
   categories: string[];
@@ -105,6 +106,8 @@ export function RecipeFilters() {
     });
   }, [searchParams, reset, categoryNames.length]);
 
+  const { t } = useTranslation();
+
   return (
     <>
       <Box
@@ -123,7 +126,7 @@ export function RecipeFilters() {
             borderColor: 'currentColor',
           }}
         >
-          Filters
+          {t('recipeCard.filters.filters')}
         </Button>
 
         <Button
@@ -135,7 +138,7 @@ export function RecipeFilters() {
             borderColor: 'currentColor',
           }}
         >
-          Rating
+          {t('recipeCard.filters.rating')}
         </Button>
 
         <Button
@@ -147,7 +150,7 @@ export function RecipeFilters() {
             borderColor: 'currentColor',
           }}
         >
-          Date
+          {t('recipeCard.filters.date')}
         </Button>
       </Box>
 
@@ -170,7 +173,7 @@ export function RecipeFilters() {
               fontWeight: 600,
             }}
           >
-            Dish type
+            {t('recipeCard.filters.dishType')}
           </Typography>
 
           {categoryNames.map((category, index) => (
@@ -212,7 +215,7 @@ export function RecipeFilters() {
               fontWeight: 600,
             }}
           >
-            Saved
+            {t('recipeCard.filters.saved')}
           </Typography>
 
           <Controller
@@ -221,7 +224,7 @@ export function RecipeFilters() {
             render={({ field }) => (
               <>
                 <FormControlLabel
-                  label="Saved recipes"
+                  label={t('recipeCard.filters.savedRecipes')}
                   control={
                     <Checkbox
                       checked={field.value.includes('true')}
@@ -243,7 +246,7 @@ export function RecipeFilters() {
                 <Divider />
 
                 <FormControlLabel
-                  label="Unsaved recipes"
+                  label={t('recipeCard.filters.savedRecipes')}
                   control={
                     <Checkbox
                       checked={field.value.includes('false')}
@@ -284,13 +287,13 @@ export function RecipeFilters() {
               <FormControlLabel
                 value="desc"
                 control={<Radio />}
-                label="Highest score first"
+                label={t('recipeCard.filters.highScore')}
               />
 
               <FormControlLabel
                 value="asc"
                 control={<Radio />}
-                label="Lowest score first"
+                label={t('recipeCard.filters.lowScore')}
               />
             </RadioGroup>
           )}
@@ -314,13 +317,13 @@ export function RecipeFilters() {
               <FormControlLabel
                 value="asc"
                 control={<Radio />}
-                label="Newest first"
+                label={t('recipeCard.filters.newFirst')}
               />
 
               <FormControlLabel
                 value="desc"
                 control={<Radio />}
-                label="Oldest first"
+                label={t('recipeCard.filters.oldFirst')}
               />
             </RadioGroup>
           )}

@@ -15,6 +15,7 @@ import { useSnackbar } from '../common/SnackbarProvider';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
 interface ResetPasswordModalProps {
   open: boolean;
@@ -47,6 +48,8 @@ export function ResetPasswordModal({ open, onClose }: ResetPasswordModalProps) {
   });
   const password = watch('password');
 
+  const { t } = useTranslation();
+
   const submit = async (data: ResetPasswordFormValues) => {
     try {
       setLoading(true);
@@ -60,7 +63,7 @@ export function ResetPasswordModal({ open, onClose }: ResetPasswordModalProps) {
       });
       onClose(true);
     } catch (error: unknown) {
-      showSnackbar({ message: 'Password reset failed' });
+      showSnackbar({ message: t('modals.resetPassword.snackbar.fail') });
     } finally {
       setLoading(false);
     }
@@ -75,23 +78,22 @@ export function ResetPasswordModal({ open, onClose }: ResetPasswordModalProps) {
       slotProps={{ paper: { sx: { borderRadius: 1, padding: 3 } } }}
     >
       <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <IconButton onClick={() => onClose()} aria-label="close">
+        <IconButton onClick={() => onClose()} aria-label={t('modals.close')}>
           <CloseIcon />
         </IconButton>
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         <Typography variant="h4" sx={{ font: 'Poppins', fontWeight: 600 }}>
-          New password
+          {t('modals.resetPassword.title')}
         </Typography>
 
         <Typography sx={{ paddingBottom: 3 }}>
-          Please ensure your password is a minumum of 8 characters long.
-          Ideally, include a mix of both letters and numbers.
+          {t('modals.resetPassword.description')}
         </Typography>
 
         <TextField
-          label="New password*"
-          placeholder="Type new password"
+          label={`${t('modals.resetPassword.newPasswordTitle')}*`}
+          placeholder={t('modals.resetPassword.newPasswordPlaceholder')}
           type={showPassword ? 'text' : 'password'}
           {...registerField('password', {
             required: true,
@@ -115,7 +117,7 @@ export function ResetPasswordModal({ open, onClose }: ResetPasswordModalProps) {
                 <InputAdornment position="end">
                   {' '}
                   <IconButton
-                    aria-label="toggle password visibility"
+                    aria-label={t('modals.passwordVisToggle')}
                     onClick={() => setShowPassword((previous) => !previous)}
                     edge="end"
                   >
@@ -133,13 +135,14 @@ export function ResetPasswordModal({ open, onClose }: ResetPasswordModalProps) {
         />
 
         <TextField
-          label="Repeat new password*"
-          placeholder="Type new password again"
+          label={t('modals.resetPassword.repeatTitle')}
+          placeholder={t('modals.resetPassword.repeatPlaceholder')}
           type={showRepeatPassword ? 'text' : 'password'}
           {...registerField('repeatPassword', {
             required: true,
             validate: (value) =>
-              value === password || 'Both passwords must be the same',
+              value === password ||
+              t('modals.resetPassword.passwordsDontMatch'),
           })}
           fullWidth
           sx={{
@@ -159,7 +162,7 @@ export function ResetPasswordModal({ open, onClose }: ResetPasswordModalProps) {
                 <InputAdornment position="end">
                   {' '}
                   <IconButton
-                    aria-label="toggle password visibility"
+                    aria-label={t('modals.passwordVisToggle')}
                     onClick={() =>
                       setShowRepeatPassword((previous) => !previous)
                     }
@@ -179,7 +182,7 @@ export function ResetPasswordModal({ open, onClose }: ResetPasswordModalProps) {
         />
         {errors.repeatPassword && (
           <Typography color="error" sx={{ fontSize: 12 }}>
-            Both passwords must be the same
+            {t('modals.resetPassword.passwordsDontMatch')}
           </Typography>
         )}
 
@@ -197,7 +200,7 @@ export function ResetPasswordModal({ open, onClose }: ResetPasswordModalProps) {
             onClick={() => onClose()}
             sx={{ mt: 1, height: 32, width: 80 }}
           >
-            Cancel
+            {t('modals.cancel')}
           </Button>
 
           <Button
@@ -209,7 +212,7 @@ export function ResetPasswordModal({ open, onClose }: ResetPasswordModalProps) {
             {loading ? (
               <CircularProgress size={22} color="inherit" />
             ) : (
-              'Reset my password'
+              t('modals.resetPassword.submit')
             )}
           </Button>
         </Box>

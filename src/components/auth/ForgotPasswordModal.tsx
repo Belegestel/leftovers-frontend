@@ -12,6 +12,7 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import { useSnackbar } from '../common/SnackbarProvider';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
 interface ForgotPasswordModalProps {
   open: boolean;
@@ -39,6 +40,8 @@ export function ForgotPasswordModal({
     defaultValues: { email: '' },
   });
 
+  const { t } = useTranslation();
+
   const submit = async (data: ForgotPasswordFormValues) => {
     try {
       setLoading(true);
@@ -46,12 +49,11 @@ export function ForgotPasswordModal({
         email: data.email,
       });
       showSnackbar({
-        message:
-          'Thanks! An e-mail was sent that will ask you to click on a link to verify that you own this account 📬',
+        message: `${t('modals.forgot.snackbar.success')} 📬`,
       });
       onClose();
     } catch (error: unknown) {
-      showSnackbar({ message: 'Password reset failed, verify your e-mail' });
+      showSnackbar({ message: t('modals.forgot.snackbar.fail') });
     } finally {
       setLoading(false);
     }
@@ -66,30 +68,29 @@ export function ForgotPasswordModal({
       slotProps={{ paper: { sx: { borderRadius: 1, padding: 3 } } }}
     >
       <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <IconButton onClick={onClose} aria-label="close">
+        <IconButton onClick={onClose} aria-label={t('modals.close')}>
           <CloseIcon />
         </IconButton>
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         <Typography variant="h4" sx={{ font: 'Poppins', fontWeight: 600 }}>
-          Forgot password
+          {t('modals.forgot.title')}
         </Typography>
 
         <Typography sx={{ paddingBottom: 3 }}>
-          No worries! Enter your email address below, and we'll send you a link
-          to reset your password.
+          {t('modals.forgot.desc')}
         </Typography>
 
         <TextField
-          label="E-mail address*"
-          placeholder="Enter your email"
+          label={`${t('modals.emailLabel')}*`}
+          placeholder={t('modals.emailPlaceholder')}
           error={!!errors.email}
           {...registerField('email', {
             required: true,
             pattern: {
               value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-              message: 'Enter a valid email'
-            }
+              message: t('modals.emailFail'),
+            },
           })}
           fullWidth
           slotProps={{
@@ -110,7 +111,7 @@ export function ForgotPasswordModal({
 
         {errors.email && (
           <Typography sx={{ fontSize: 12, color: 'error.main' }}>
-            Enter a valid email
+            {t('modals.emailFail')}
           </Typography>
         )}
 
@@ -128,7 +129,7 @@ export function ForgotPasswordModal({
             onClick={onClose}
             sx={{ mt: 1, height: 32, width: 80 }}
           >
-            Cancel
+            {t('modals.cancel')}
           </Button>
 
           <Button
@@ -140,7 +141,7 @@ export function ForgotPasswordModal({
             {loading ? (
               <CircularProgress size={22} color="inherit" />
             ) : (
-              'Send e-mail'
+              t('modals.forgot.send')
             )}
           </Button>
         </Box>

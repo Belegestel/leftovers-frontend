@@ -6,6 +6,7 @@ import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined
 import { useSnackbar } from '../common/SnackbarProvider';
 import { ConfirmModal } from '../common/ConfirmationModal';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 interface PublicationProps {
   onBack: () => void;
@@ -33,8 +34,9 @@ export function Publication({
   const showSnackbar = useSnackbar();
   const navigate = useNavigate();
 
-  const saved =
-    isPublic === undefined ? null : isPublic ? 'public' : 'private';
+  const saved = isPublic === undefined ? null : isPublic ? 'public' : 'private';
+
+  const { t } = useTranslation();
 
   const handleAction = async (isPrivate: boolean) => {
     try {
@@ -51,16 +53,15 @@ export function Publication({
 
       if (isPrivate) {
         showSnackbar({
-          message:
-            '🔒 Your recipe has been saved as private. You can find it in your profile.',
+          message: `🔒 ${t('addRecipe.snackbar.savedPrivate')}`,
         });
       } else {
         showSnackbar({
-          message: '👏 Congratulations! Your recipe has been published!',
+          message: `👏 ${t('addRecipe.snackbar.savedPublic')}`,
         });
       }
     } catch {
-      setError('Something went wrong while saving the recipe.');
+      setError(t('addRecipe.pages.publication.error'));
     } finally {
       setLoading(false);
     }
@@ -77,7 +78,7 @@ export function Publication({
 
       await onRecipeDelete(recipeId);
     } catch {
-      setError('Something went wrong while saving the recipe.');
+      setError(t('addRecipe.pages.publication.error'));
     } finally {
       setLoading(false);
       setDeleteModalOpen(false);
@@ -85,7 +86,7 @@ export function Publication({
     }
 
     showSnackbar({
-      message: '🗑️ Your recipe has been deleted!',
+      message: `🗑️ ${t('addRecipe.snackbar.deleted')}`,
     });
   };
 
@@ -103,14 +104,16 @@ export function Publication({
           mb: 4,
         }}
       >
-        <Typography variant="h6">Publication</Typography>
+        <Typography variant="h6">
+          {t('addRecipe.pages.publication.title')}
+        </Typography>
 
         <Button
           variant="secondary"
           onClick={onBack}
           sx={{ border: '1px solid', borderColor: 'currentColor' }}
         >
-          &lt; Back
+          &lt; {t('addRecipe.back')}
         </Button>
       </Box>
 
@@ -136,12 +139,11 @@ export function Publication({
         >
           <Box>
             <Typography sx={{ fontWeight: 500, fontSize: 20 }}>
-              Save recipe as private
+              {t('savePrivateTitle')}
             </Typography>
 
             <Typography variant="body2" color="text.secondary">
-              Save your recipe to your account without making it visible to
-              other users. You can publish it later at any time.
+              {t('addRecipe.pages.publication.savePrivateDesc')}
             </Typography>
           </Box>
 
@@ -157,10 +159,10 @@ export function Publication({
             <LockIcon sx={{ fontSize: 20, mr: 1 }} />
             <Typography sx={{ fontWeight: 600 }}>
               {loading
-                ? 'Saving...'
+                ? t('addRecipe.pages.publication.buttons.saving')
                 : saved === 'private' && !(isDirty ?? false)
-                  ? 'Recipe saved'
-                  : 'Save as private'}
+                  ? t('addRecipe.pages.publication.buttons.savedPrivate')
+                  : t('addRecipe.pages.publication.buttons.toSavePrivate')}
             </Typography>
           </Button>
         </Box>
@@ -177,11 +179,11 @@ export function Publication({
         >
           <Box>
             <Typography sx={{ fontWeight: 500, fontSize: 20 }}>
-              Publish your recipe
+              {t('addRecipe.pages.publication.publishTitle')}
             </Typography>
 
             <Typography variant="body2" color="text.secondary">
-              Publish your recipe so that it becomes visible to all users.
+              {t('addRecipe.pages.publication.publishDesc')}
             </Typography>
           </Box>
 
@@ -194,10 +196,10 @@ export function Publication({
 
             <Typography>
               {loading
-                ? 'Publishing...'
+                ? t('addRecipe.pages.publication.buttons.publishing')
                 : saved === 'public' && !isDirty
-                  ? 'Recipe published'
-                  : 'Publish the recipe'}
+                  ? t('addRecipe.pages.publication.buttons.publishing')
+                  : t('addRecipe.pages.publication.buttons.toPublish')}
             </Typography>
           </Button>
         </Box>
@@ -214,11 +216,11 @@ export function Publication({
         >
           <Box>
             <Typography sx={{ fontWeight: 500, fontSize: 20 }}>
-              Delete your recipe
+              {t('addRecipe.pages.publication.deleteTitle')}
             </Typography>
 
             <Typography variant="body2" color="text.secondary">
-              Discard this draft and remove all entered information.
+              {t('addRecipe.pages.publication.deleteDesc')}
             </Typography>
           </Box>
 
@@ -243,7 +245,7 @@ export function Publication({
                 fontWeight: 500,
               }}
             >
-              Delete the recipe
+              {t('addRecipe.pages.publication.buttons.toDelete')}
             </Typography>
           </Button>
         </Box>
@@ -251,9 +253,11 @@ export function Publication({
 
       <ConfirmModal
         open={deleteModalOpen}
-        title="Are you sure you want to delete the recipe?"
-        message="If you want to delete it, press the delete button."
-        confirmButton="Delete"
+        title={t('addRecipe.pages.publication.deleteModal.title')}
+        message={t('addRecipe.pages.publication.deleteModal.message')}
+        confirmButton={t(
+          'addRecipe.pages.publication.deleteModal.confirmButton'
+        )}
         onConfirm={handleDelete}
         onCancel={() => setDeleteModalOpen(false)}
       />

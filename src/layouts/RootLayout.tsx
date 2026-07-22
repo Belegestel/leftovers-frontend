@@ -2,6 +2,7 @@ import {
   Outlet,
   useLocation,
   useNavigate,
+  useParams,
   useSearchParams,
 } from 'react-router-dom';
 import { Box, Container } from '@mui/material';
@@ -11,15 +12,20 @@ import { RegisterModal } from '@/components/auth/RegisterModal';
 import { LoginModal } from '@/components/auth/LoginModal';
 import { ForgotPasswordModal } from '@/components/auth/ForgotPasswordModal';
 import { ResetPasswordModal } from '@/components/auth/ResetPasswordModal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { isAuthenticated } from '@/services/tokenService';
 import { RequireLoginModal } from '@/components/auth/RequireLoginModal';
+import i18n, { supportedLanguages } from '@/i18n';
+import { useTranslation } from 'react-i18next';
 
 export function RootLayout() {
   const [authenticated, setAuthenticated] = useState(isAuthenticated());
   const [searchParams, setSearchParams] = useSearchParams();
+  const { lang } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+
+  const { t } = useTranslation();
 
   const handleSignupOpenModal = searchParams.get('signup') === 'true';
   const handleSignupClose = () =>
@@ -60,6 +66,10 @@ export function RootLayout() {
     navigate(location.pathname, { replace: true });
   };
 
+  if (lang && !supportedLanguages.includes(lang)) {
+    throw new Error("Language not found")
+  }
+
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <NavBar
@@ -81,8 +91,8 @@ export function RootLayout() {
       />
       <RequireLoginModal
         open={handleRequireLoginRecipeSaveModal}
-        title="Login to save the recipe"
-        message="If you want to save this recipe you need to login or create an account. Don't miss out on the convenience of having your favorite recipes at your fingertips whenever you crave them!"
+        title={t('modals.requireLogin.saveTitle')}
+        message={t('modals.requireLogin.saveMessage')}
         onClose={handleRequireLoginRecipeSaveClose}
         onLogin={handleRequireLoginRedirectLogin}
       />
@@ -96,8 +106,8 @@ export function RootLayout() {
       />
       <RequireLoginModal
         open={handleRequireLoginRecipeRateModal}
-        title="Login to rate the recipe"
-        message="If you want to rate this recipe you need to login or create an account. Share your opinions and help other users discover great recipes!"
+        title={t('modals.requireLogin.rateTitle')}
+        message={t('modals.requireLogin.rateMessage')}
         onClose={handleRequireLoginRecipeRateClose}
         onLogin={handleRequireLoginRedirectLogin}
       />

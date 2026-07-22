@@ -29,7 +29,7 @@ export function useLanguageSuggestion() {
 
     snackbar({
       message: t('language.switchPrompt', {
-        language: browserLanguage.toUpperCase(),
+        language: t(`language.names.${browserLanguage.toLowerCase()}`),
       }),
       action: (
         <Button

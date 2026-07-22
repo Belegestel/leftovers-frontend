@@ -4,12 +4,18 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { LoginModal } from './LoginModal';
 import userEvent from '@testing-library/user-event';
 import { login } from '@/services/authService';
+import { AuthProvider } from '@/context/AuthContext';
 
 vi.mock('@/services/authService', () => ({
   login: vi.fn(),
 }));
 vi.mock('../common/SnackbarProvider', () => ({
   useSnackbar: vi.fn(),
+}));
+vi.mock('react-router-dom', () => ({
+  Link: ({ children, ...props }: { children: React.ReactNode }) => (
+    <a {...props}>{children}</a>
+  ),
 }));
 
 describe('LoginModal', () => {
@@ -20,7 +26,11 @@ describe('LoginModal', () => {
   });
 
   it('renders login form', () => {
-    render(<LoginModal open={true} onClose={mockClose} onLogin={() => {}}/>);
+    render(
+      <AuthProvider>
+        <LoginModal open={true} onClose={mockClose} onLogin={() => {}} />
+      </AuthProvider>
+    );
 
     expect(screen.getByRole('heading', { name: 'Log in' })).toBeInTheDocument();
     expect(screen.getByLabelText('E-mail address*')).toBeInTheDocument();
@@ -29,13 +39,21 @@ describe('LoginModal', () => {
   });
 
   it('disables login button initially', () => {
-    render(<LoginModal open={true} onClose={mockClose} onLogin={() => {}}/>);
+    render(
+      <AuthProvider>
+        <LoginModal open={true} onClose={mockClose} onLogin={() => {}} />
+      </AuthProvider>
+    );
     expect(screen.getByRole('button', { name: 'Log in' })).toBeDisabled();
   });
 
   it('enables login button after valid email and password', async () => {
     const user = userEvent.setup();
-    render(<LoginModal open={true} onClose={mockClose} onLogin={() => {}}/>);
+    render(
+      <AuthProvider>
+        <LoginModal open={true} onClose={mockClose} onLogin={() => {}} />
+      </AuthProvider>
+    );
 
     await user.type(
       screen.getByLabelText('E-mail address*'),
@@ -47,7 +65,11 @@ describe('LoginModal', () => {
 
   it('shows email verification error for invalid email', async () => {
     const user = userEvent.setup();
-    render(<LoginModal open={true} onClose={mockClose} onLogin={() => {}}/>);
+    render(
+      <AuthProvider>
+        <LoginModal open={true} onClose={mockClose} onLogin={() => {}} />
+      </AuthProvider>
+    );
 
     await user.type(
       screen.getByLabelText('E-mail address*'),
@@ -59,7 +81,11 @@ describe('LoginModal', () => {
 
   it('toggles password visibility', async () => {
     const user = userEvent.setup();
-    render(<LoginModal open={true} onClose={mockClose} onLogin={() => {}}/>);
+    render(
+      <AuthProvider>
+        <LoginModal open={true} onClose={mockClose} onLogin={() => {}} />
+      </AuthProvider>
+    );
     const passwordField = screen.getByLabelText('Password*');
     expect(passwordField).toHaveAttribute('type', 'password');
     await user.click(screen.getByLabelText('toggle password visibility'));
@@ -71,7 +97,11 @@ describe('LoginModal', () => {
     vi.mocked(login).mockResolvedValue({
       accessToken: 'fake-token',
     });
-    render(<LoginModal open={true} onClose={mockClose} onLogin={() => {}}/>);
+    render(
+      <AuthProvider>
+        <LoginModal open={true} onClose={mockClose} onLogin={() => {}} />
+      </AuthProvider>
+    );
 
     await user.type(
       screen.getByLabelText('E-mail address*'),
@@ -95,7 +125,11 @@ describe('LoginModal', () => {
 
   it('allows selecting "Remember me" checkbox', async () => {
     const user = userEvent.setup();
-    render(<LoginModal open={true} onClose={mockClose} onLogin={() => {}}/>);
+    render(
+      <AuthProvider>
+        <LoginModal open={true} onClose={mockClose} onLogin={() => {}} />
+      </AuthProvider>
+    );
 
     const checkbox = screen.getByRole('checkbox');
     expect(checkbox).not.toBeChecked();

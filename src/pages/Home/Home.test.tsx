@@ -9,6 +9,8 @@ import {
   unbookmarkRecipe,
 } from '@/services/recipeService';
 import { isAuthenticated } from '@/services/tokenService';
+import { AuthProvider } from '@/context/AuthContext';
+import { AppProviders } from '@/app/providers';
 
 vi.mock('@/services/recipeService', () => ({
   getRecipeSummaries: vi.fn(),
@@ -63,7 +65,9 @@ describe('Home', () => {
   it('loads and displays recipes', async () => {
     render(
       <MemoryRouter>
-        <Home />
+        <AuthProvider>
+          <Home />
+        </AuthProvider>
       </MemoryRouter>
     );
 
@@ -78,7 +82,9 @@ describe('Home', () => {
 
     render(
       <MemoryRouter>
-        <Home />
+        <AuthProvider>
+          <Home />
+        </AuthProvider>
       </MemoryRouter>
     );
 
@@ -98,7 +104,9 @@ describe('Home', () => {
 
     render(
       <MemoryRouter>
-        <Home />
+        <AuthProvider>
+          <Home />
+        </AuthProvider>
       </MemoryRouter>
     );
 
@@ -137,7 +145,9 @@ describe('Home', () => {
 
     render(
       <MemoryRouter>
-        <Home />
+        <AuthProvider>
+          <Home />
+        </AuthProvider>
       </MemoryRouter>
     );
 

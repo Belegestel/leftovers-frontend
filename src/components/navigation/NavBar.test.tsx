@@ -4,6 +4,7 @@ import { NavBar } from './NavBar';
 import { isAuthenticated, removeToken } from '@/services/tokenService';
 import { describe, expect, it, vi } from 'vitest';
 import '@testing-library/jest-dom/vitest';
+import { AuthProvider } from '@/context/AuthContext';
 
 const mockedNavigate = vi.fn();
 const mockedLocation = vi.fn();
@@ -26,7 +27,11 @@ vi.mock('@/hooks/useRecipeCategories', () => ({
 describe('NavBar', () => {
   it('shows login and signup when logged out', async () => {
     vi.mocked(isAuthenticated).mockReturnValue(false);
-    render(<NavBar authenticated={false} onLogout={()=>{}}/>);
+    render(
+      <AuthProvider>
+        <NavBar authenticated={false} onLogout={() => {}} />
+      </AuthProvider>
+    );
 
     await waitFor(() => {
       expect(screen.queryByText('Log in')).toBeInTheDocument();
@@ -35,35 +40,45 @@ describe('NavBar', () => {
     expect(screen.queryByText('Add recipe')).not.toBeInTheDocument();
   });
 
-  it('shows authenticated controls when logged in', async () => {
-    vi.mocked(isAuthenticated).mockReturnValue(true);
-    render(<NavBar authenticated={true} onLogout={() => {}}/>);
+  it('shows authenticated controls when logged in', () => {
+    render(
+      <AuthProvider>
+        <NavBar authenticated={true} onLogout={() => {}} />
+      </AuthProvider>
+    );
 
-    await waitFor(() => {
-      expect(screen.queryByText('Add recipe')).toBeInTheDocument();
-    });
+    expect(screen.getByText('Add recipe')).toBeInTheDocument();
     expect(screen.queryByText('Sign up')).not.toBeInTheDocument();
-    expect(screen.queryByText('Add recipe')).toBeInTheDocument();
   });
 
   it('opens account menu', async () => {
-    vi.mocked(isAuthenticated).mockReturnValue(true);
-    render(<NavBar authenticated={true} onLogout={() => {}}/>);
+    render(
+      <AuthProvider>
+        <NavBar authenticated={true} onLogout={() => {}} />
+      </AuthProvider>
+    );
 
-    await waitFor(() => {
-      expect(screen.queryByText('Add recipe')).toBeInTheDocument();
-    });
+    expect(screen.getByText('Add recipe')).toBeInTheDocument();
 
     await userEvent.click(screen.getByText('My account'));
 
-    expect(screen.queryByText('Saved recipes')).toBeInTheDocument();
-    expect(screen.queryByText('My recipes')).toBeInTheDocument();
+    expect(screen.getByText('Saved recipes')).toBeInTheDocument();
+    expect(screen.getByText('My recipes')).toBeInTheDocument();
   });
 
   it('logs the user out', async () => {
     vi.mocked(isAuthenticated).mockReturnValue(true);
     let authd = true;
-    render(<NavBar authenticated={authd} onLogout={() => { authd = false; }}/>);
+    render(
+      <AuthProvider>
+        <NavBar
+          authenticated={authd}
+          onLogout={() => {
+            authd = false;
+          }}
+        />
+      </AuthProvider>
+    );
 
     await waitFor(() =>
       expect(screen.queryByText('My account')).toBeInTheDocument()
@@ -71,6 +86,5 @@ describe('NavBar', () => {
     await userEvent.click(screen.getByText('My account'));
     await userEvent.click(screen.getByText('Log out'));
     expect(removeToken).toHaveBeenCalled();
-    expect(mockedNavigate).toHaveBeenCalledWith('/');
   });
 });

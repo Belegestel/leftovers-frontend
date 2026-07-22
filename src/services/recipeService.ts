@@ -4,9 +4,7 @@ import type { Recipe, RecipeSummary } from '@/types/recipe';
 type RecipeSummariesResponse = {
   recipes: RecipeSummary[];
 };
-type RecipeResponse = {
-  recipes: Recipe[];
-};
+type RecipeResponse = Recipe;
 
 export class RecipeCategory {
   name: string;
@@ -30,10 +28,10 @@ export async function getRecipeSummaries(): Promise<RecipeSummary[]> {
   return response.data.recipes;
 }
 
-export async function getRecipe(id: number): Promise<Recipe> {
+export async function getRecipe(id: number): Promise<RecipeResponse> {
   const response = await httpService.get<RecipeResponse>(`/recipes/${id}`);
 
-  return response.data.recipes[0];
+  return response.data;
 }
 
 export async function bookmarkRecipe(id: number): Promise<void> {
@@ -42,4 +40,8 @@ export async function bookmarkRecipe(id: number): Promise<void> {
 
 export async function unbookmarkRecipe(id: number): Promise<void> {
   await httpService.post(`/recipes/${id}/unbookmark`);
+}
+
+export async function rateRecipe(id: number, value: number): Promise<void> {
+  await httpService.post(`/recipes/${id}/rate`, { value });
 }

@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Rating, Typography } from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
 
 interface RecipeRatingProps {
@@ -7,8 +7,43 @@ interface RecipeRatingProps {
   featured?: boolean;
 }
 
-export function RecipeRating({ rating, ratingCount, featured = false }: RecipeRatingProps) {
-  const stars = Math.round(rating);
+export function RecipeRating({
+  rating,
+  ratingCount,
+  featured = false,
+}: RecipeRatingProps) {
+  if (featured) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 0.5,
+        }}
+      >
+        <Typography sx={{ mt: 0.4 }}>
+          {rating.toFixed(1)}
+        </Typography>
+
+        <Rating
+          value={rating}
+          readOnly
+          precision={0.5}
+          size="medium"
+          sx={{
+            color: 'rating.main',
+          }}
+        />
+
+        <Typography
+          variant="body2"
+          color="text.secondary"
+        >
+          ({ratingCount})
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
     <Box
@@ -18,25 +53,21 @@ export function RecipeRating({ rating, ratingCount, featured = false }: RecipeRa
         gap: 0.5,
       }}
     >
-      <Typography sx={{mt: 0.4}}>{stars}.0</Typography>
-      {featured ? (
-        Array.from({ length: 5 }).map((_, index) => (
-          <StarIcon
-            key={index}
-            sx={{
-              color: index < stars ? 'rating.main' : 'grey.300',
-            }}
-          />
-        ))
-      ) : (
-        <StarIcon
-          sx={{
-            color: 'rating.main',
-          }}
-        />
-      )}
+      <Typography sx={{ mt: 0.2 }}>
+        {rating.toFixed(1)}
+      </Typography>
 
-      <Typography variant="body2" color="text.secondary">
+      <StarIcon
+        sx={{
+          fontSize: 18,
+          color: 'rating.main',
+        }}
+      />
+
+      <Typography
+        variant="body2"
+        color="text.secondary"
+      >
         ({ratingCount})
       </Typography>
     </Box>

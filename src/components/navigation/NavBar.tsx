@@ -96,6 +96,13 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
               <MenuItem
                 key={category.name}
                 onClick={() => {
+                  navigate({
+                    pathname: '/recipes',
+                    search:
+                      index == 0
+                        ? ''
+                        : `?category=${encodeURIComponent(category.name.slice(2).trim())}`,
+                  });
                   setRecipesAnchor(null);
                 }}
                 sx={{
@@ -113,6 +120,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                 variant="contained"
                 endIcon={<KeyboardArrowDownIcon />}
                 onClick={(event) => setMyAccountAnchor(event.currentTarget)}
+                sx={{ whiteSpace: 'nowrap' }}
               >
                 My account
               </Button>
@@ -124,6 +132,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                 <MenuItem
                   key="saved-recipes"
                   onClick={() => {
+                    setMyAccountAnchor(null);
                     navigate('/saved');
                   }}
                 >
@@ -132,6 +141,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                 <MenuItem
                   key="my-recipes"
                   onClick={() => {
+                    setMyAccountAnchor(null);
                     navigate('/my-recipes');
                   }}
                 >
@@ -171,6 +181,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                     search: '?signup=true',
                   })
                 }
+                sx={{ whiteSpace: 'nowrap' }}
               >
                 Sign up
               </Button>

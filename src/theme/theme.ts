@@ -19,11 +19,14 @@ export const theme = createTheme({
     },
     divider: '#aaaaaa',
     error: {
-      main: '#ff5555'
+      main: '#ff5555',
     },
     rating: {
-      main: "#fdd835"
-    }
+      main: '#fdd835',
+    },
+    privateOverlay: {
+      main: 'rgba(0, 0, 0, 0.65)',
+    },
   },
   typography: {
     fontFamily: ['Poppins', 'Roboto', 'Arial', 'sans-serif'].join(','),

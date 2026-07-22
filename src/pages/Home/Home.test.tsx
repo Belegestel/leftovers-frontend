@@ -10,7 +10,6 @@ import {
 } from '@/services/recipeService';
 import { isAuthenticated } from '@/services/tokenService';
 import { AuthProvider } from '@/context/AuthContext';
-import { AppProviders } from '@/app/providers';
 
 vi.mock('@/services/recipeService', () => ({
   getRecipeSummaries: vi.fn(),
@@ -20,6 +19,7 @@ vi.mock('@/services/recipeService', () => ({
 
 vi.mock('@/services/tokenService', () => ({
   isAuthenticated: vi.fn(),
+  getToken: vi.fn().mockReturnValue('mock-token')
 }));
 
 vi.mock('@/components/recipe/RecipeCard', () => ({
@@ -56,6 +56,7 @@ describe('Home', () => {
         category: 'Italian',
         imageLink: null,
         isBookmarked: false,
+        isPrivate: false,
       },
     ]);
 
@@ -138,6 +139,7 @@ describe('Home', () => {
         category: 'Italian',
         imageLink: null,
         isBookmarked: true,
+        isPrivate: false,
       },
     ]);
 

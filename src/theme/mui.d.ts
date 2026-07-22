@@ -10,9 +10,11 @@ declare module '@mui/material/Button' {
 declare module '@mui/material/styles' {
   interface Palette {
     rating: Palette['primary'];
+    privateOverlay: Palette['primary'];
   }
 
   interface PaletteOptions {
     rating?: PaletteOptions['primary'];
+    privateOverlay?: PaletteOptions['primary']
   }
 }

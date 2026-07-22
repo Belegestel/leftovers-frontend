@@ -1,8 +1,12 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
+import { httpService } from '@/services/httpService';
+import { getToken, removeToken } from '@/services/tokenService';
 
 type AuthContextType = {
   authVersion: number;
   authChanged: () => void;
+  authenticated: boolean;
+  loading: boolean;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -13,9 +17,36 @@ export function AuthProvider({
   children: React.ReactNode;
 }) {
   const [authVersion, setAuthVersion] = useState(0);
+  const [authenticated, setAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  async function checkAuth() {
+    const token = getToken();
+
+    if (!token) {
+      setAuthenticated(false);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      await httpService.post('/auth/me');
+      setAuthenticated(true);
+    } catch {
+      removeToken();
+      setAuthenticated(false);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
 
   function authChanged() {
     setAuthVersion((previous) => previous + 1);
+    checkAuth();
   }
 
   return (
@@ -23,6 +54,8 @@ export function AuthProvider({
       value={{
         authVersion,
         authChanged,
+        authenticated,
+        loading,
       }}
     >
       {children}

@@ -2,6 +2,8 @@ import { createBrowserRouter } from 'react-router-dom';
 import { RootLayout } from '@/layouts/RootLayout';
 import Home from '@/pages/Home/Home';
 import RecipeDetails from '@/pages/RecipeDetails/RecipeDetails';
+import Recipes from '@/pages/Recipes/Recipes';
+import { ProtectedRoute } from './ProtectedRoute';
 
 export const router = createBrowserRouter([
   {
@@ -9,7 +11,15 @@ export const router = createBrowserRouter([
     element: <RootLayout />,
     children: [
       { index: true, element: <Home /> },
+      { path: 'recipes', element: <Recipes mode={'all'} /> },
       { path: 'recipes/:id', element: <RecipeDetails /> },
+      {
+        element: <ProtectedRoute />,
+        children: [
+          { path: 'saved', element: <Recipes mode={'saved'} /> },
+          { path: 'my-recipes', element: <Recipes mode={'my'} /> },
+        ],
+      },
     ],
   },
 ]);

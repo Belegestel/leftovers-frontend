@@ -66,15 +66,14 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
               value={searchQuery}
               onChange={(event) => {
                 setSearchQuery(event.target.value);
-                searchParams.set(
-                  'search',
-                  event.target.value
-                );
-                if (event.target.value.trim()) {
-                  searchParams.delete('category')
-                  searchParams.delete('saved')
+                const newParams = {
+                  ...searchParams,
                 }
-                setSearchParams(searchParams);
+                if (event.target.value.trim()) {
+                  newParams.delete('category');
+                  newParams.delete('saved');
+                }
+                setSearchParams(newParams);
               }}
               onKeyDown={(event) => {
                 if (event.key === 'Enter') {
@@ -82,7 +81,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                 }
               }}
             />
-            <IconButton size="small" onClick={handleSearch} aria-label='search'>
+            <IconButton size="small" onClick={handleSearch} aria-label="search">
               <SearchIcon fontSize="small" />
             </IconButton>
           </SearchBox>

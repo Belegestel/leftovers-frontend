@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import AddRecipe from './AddRecipe';
+import RecipeForm from './RecipeForm';
 
 import { getRecipe, editRecipe } from '@/services/recipeService';
 
@@ -16,23 +16,23 @@ vi.mock('@/components/common/SnackbarProvider', () => ({
   useSnackbar: () => vi.fn(),
 }));
 
-vi.mock('@/components/addRecipe/BasicInformation', () => ({
+vi.mock('@/components/recipeForm/BasicInformation', () => ({
   BasicInformation: () => <div>Basic information</div>,
 }));
 
-vi.mock('@/components/addRecipe/Ingredients', () => ({
+vi.mock('@/components/recipeForm/Ingredients', () => ({
   Ingredients: () => <div>Ingredients</div>,
 }));
 
-vi.mock('@/components/addRecipe/PreparationMethod', () => ({
+vi.mock('@/components/recipeForm/PreparationMethod', () => ({
   PreparationMethod: () => <div>Preparation</div>,
 }));
 
-vi.mock('@/components/addRecipe/Publication', () => ({
+vi.mock('@/components/recipeForm/Publication', () => ({
   Publication: () => <div>Publication</div>,
 }));
 
-describe('AddRecipe edit mode', () => {
+describe('RecipeForm edit mode', () => {
   it('loads recipe data when recipe id exists', async () => {
     vi.mocked(getRecipe).mockResolvedValue({
       id: 1,
@@ -53,7 +53,7 @@ describe('AddRecipe edit mode', () => {
         <Routes>
           <Route
             path="/edit-recipe/:recipe"
-            element={<AddRecipe />}
+            element={<RecipeForm />}
           />
         </Routes>
       </MemoryRouter>

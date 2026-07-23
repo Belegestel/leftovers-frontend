@@ -1,4 +1,4 @@
-export interface AddRecipeFormValues {
+export interface RecipeFormValues {
   title: string;
   description: string;
   category: string;

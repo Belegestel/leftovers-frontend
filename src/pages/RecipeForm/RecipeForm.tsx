@@ -5,11 +5,11 @@ import LunchDiningOutlinedIcon from '@mui/icons-material/LunchDiningOutlined';
 import RestaurantMenuOutlinedIcon from '@mui/icons-material/RestaurantMenuOutlined';
 import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
 import { FormProvider, useForm } from 'react-hook-form';
-import { BasicInformation } from '@/components/addRecipe/BasicInformation';
-import type { AddRecipeFormValues } from '@/types/addRecipe';
-import { Ingredients } from '@/components/addRecipe/Ingredients';
-import { PreparationMethod } from '@/components/addRecipe/PreparationMethod';
-import { Publication } from '@/components/addRecipe/Publication';
+import { BasicInformation } from '@/components/recipeForm/BasicInformation';
+import type { RecipeFormValues } from '@/types/recipeForm';
+import { Ingredients } from '@/components/recipeForm/Ingredients';
+import { PreparationMethod } from '@/components/recipeForm/PreparationMethod';
+import { Publication } from '@/components/recipeForm/Publication';
 import {
   createRecipeWithImage,
   deleteRecipe,
@@ -19,10 +19,10 @@ import {
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSnackbar } from '@/components/common/SnackbarProvider';
 
-type AddRecipeStep = 'basic' | 'ingredients' | 'preparation' | 'publication';
+type RecipeFormStep = 'basic' | 'ingredients' | 'preparation' | 'publication';
 
 const steps: {
-  value: AddRecipeStep;
+  value: RecipeFormStep;
   label: string;
   icon: React.ReactNode;
 }[] = [
@@ -48,8 +48,8 @@ const steps: {
   },
 ];
 
-export default function AddRecipe() {
-  const [activeStep, setActiveStep] = useState<AddRecipeStep>('basic');
+export default function RecipeForm() {
+  const [activeStep, setActiveStep] = useState<RecipeFormStep>('basic');
   const [currentRecipeId, setCurrentRecipeId] = useState<number | undefined>();
   const [savedIsPublic, setSavedIsPublic] = useState<boolean | undefined>();
 
@@ -59,7 +59,7 @@ export default function AddRecipe() {
 
   const recipeIdFromRoute = recipe ? Number(recipe) : undefined;
 
-  const methods = useForm<AddRecipeFormValues>({
+  const methods = useForm<RecipeFormValues>({
     mode: 'onChange',
     defaultValues: {
       title: '',

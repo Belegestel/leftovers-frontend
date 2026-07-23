@@ -12,7 +12,7 @@ import {
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { Controller, useFormContext } from 'react-hook-form';
 import { useRecipeCategories } from '@/hooks/useRecipeCategories';
-import type { AddRecipeFormValues } from '@/types/addRecipe';
+import type { RecipeFormValues } from '@/types/recipeForm';
 
 interface BasicInformationProps {
   onNext: () => void;
@@ -30,7 +30,7 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
     clearErrors,
     watch,
     formState: { touchedFields, isValid, errors },
-  } = useFormContext<AddRecipeFormValues>();
+  } = useFormContext<RecipeFormValues>();
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 

@@ -8,29 +8,26 @@ import {
   Typography,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import type { AddRecipeFormValues } from '@/types/addRecipe';
+import type { RecipeFormValues } from '@/types/recipeForm';
 
-interface PreparationMethodProps {
+interface IngredientsProps {
   onBack: () => void;
   onNext: () => void;
 }
 
-export function PreparationMethod({
-  onBack,
-  onNext,
-}: PreparationMethodProps) {
+export function Ingredients({ onBack, onNext }: IngredientsProps) {
   const { control, register, getValues } =
-    useFormContext<AddRecipeFormValues>();
+    useFormContext<RecipeFormValues>();
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: 'steps',
+    name: 'ingredients',
   });
 
-  const steps = getValues('steps');
-  const stepsValid =
-    steps.length > 0 &&
-    steps.every((step) => step.value.trim().length > 0);
+  const ingredients = getValues('ingredients');
+  const ingredientsValid =
+    ingredients.length > 0 &&
+    ingredients.every((ingredient) => ingredient.value.trim().length > 0);
 
   return (
     <Box
@@ -46,7 +43,7 @@ export function PreparationMethod({
           mb: 3,
         }}
       >
-        <Typography variant="h6">Enter preparation method</Typography>
+        <Typography variant="h6">Add ingredients</Typography>
 
         <Box
           sx={{
@@ -60,7 +57,7 @@ export function PreparationMethod({
 
           <Button
             variant="contained"
-            disabled={!stepsValid}
+            disabled={!ingredientsValid}
             onClick={onNext}
           >
             Next &gt;
@@ -79,8 +76,8 @@ export function PreparationMethod({
           <TextField
             key={field.id}
             fullWidth
-            label={`Step ${index + 1}`}
-            placeholder="Enter preparation step"
+            label={`Ingredient #${index + 1}`}
+            placeholder="Enter ingredient"
             slotProps={{
               inputLabel: {
                 shrink: true,
@@ -97,7 +94,7 @@ export function PreparationMethod({
                 ),
               },
             }}
-            {...register(`steps.${index}.value`, {
+            {...register(`ingredients.${index}.value`, {
               required: true,
               minLength: 1,
             })}
@@ -116,7 +113,7 @@ export function PreparationMethod({
             px: 0,
           }}
         >
-          + Add a new step
+          + Add a new ingredient
         </Button>
       </Box>
     </Box>

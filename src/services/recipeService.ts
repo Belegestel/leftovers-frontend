@@ -12,10 +12,12 @@ type RecipeResponse = {
 export class RecipeCategory {
   emoji: string;
   name: string;
+  id: string;
 
-  constructor(emoji: string, name: string) {
+  constructor(emoji: string, name: string, id: string) {
     this.name = name;
     this.emoji = emoji;
+    this.id = id;
   }
 }
 
@@ -25,6 +27,7 @@ export async function getRecipeCategories(): Promise<RecipeCategory[]> {
   const response = await httpService.get<RecipeCategoriesResponse>(
     '/recipes/categories'
   );
+  console.log('resp', response)
   return response.data.categories;
 }
 
@@ -92,25 +95,33 @@ export async function createRecipeWithImage(
   if (!image) {
     return createdRecipe;
   }
-  const uploadUrlResponse = await httpService.post<ImageUploadUrlResponse>(
-    `/recipes/${createdRecipe.id}/image-upload-url`,
-    {
-      fileName: image.name,
-      fileType: image.type,
+  try {
+    const uploadUrlResponse = await httpService.post<ImageUploadUrlResponse>(
+      `/recipes/${createdRecipe.id}/image-upload-url`,
+      {
+        fileName: image.name,
+        fileType: image.type,
+      }
+    );
+
+    const { url, key } = uploadUrlResponse.data;
+
+    await uploadService.put(url, image, {
+      headers: {
+        'Content-Type': image.type,
+      },
+    });
+
+    await httpService.post(`/recipes/${createdRecipe.id}/image-confirm`, {
+      key,
+    });
+  } catch (error) {
+    try {
+      await httpService.post(`/recipes/${createdRecipe.id}/delete`);
+    } catch {
+      console.error('Failed to clean up after failed recipe image upload');
     }
-  );
-
-  const { url, key } = uploadUrlResponse.data;
-
-  await uploadService.put(url, image, {
-    headers: {
-      'Content-Type': image.type,
-    },
-  });
-
-  await httpService.post(`/recipes/${createdRecipe.id}/image-confirm`, {
-    key,
-  });
+  }
 
   return createdRecipe;
 }
@@ -125,7 +136,10 @@ type EditRecipeRequest = {
   steps?: string[];
   isPublic?: boolean;
 };
-export async function editRecipe(id: number, recipe: EditRecipeRequest): Promise<void> {
+export async function editRecipe(
+  id: number,
+  recipe: EditRecipeRequest
+): Promise<void> {
   await httpService.post(`/recipes/${id}/edit`, recipe);
 }
 

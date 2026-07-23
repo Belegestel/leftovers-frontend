@@ -44,22 +44,22 @@ export function Publication({
       } else {
         await visibilityAction(recipeId, saved !== 'private');
       }
+      if (isPrivate) {
+        setSaved('private');
+        showSnackbar({
+          message:
+            '🔒 Your recipe has been saved as private. You can find it in your profile.',
+        });
+      } else {
+        setSaved('public');
+        showSnackbar({
+          message: '👏 Congratulations! Your recipe has been published!',
+        });
+      }
     } catch {
       setError('Something went wrong while saving the recipe.');
     } finally {
       setLoading(false);
-    }
-    if (isPrivate) {
-      setSaved('private');
-      showSnackbar({
-        message:
-          '🔒 Your recipe has been saved as private. You can find it in your profile.',
-      });
-    } else {
-      setSaved('public');
-      showSnackbar({
-        message: '👏 Congratulations! Your recipe has been published!',
-      });
     }
   };
 
@@ -72,6 +72,10 @@ export function Publication({
       setError(null);
 
       await onRecipeDelete(recipeId);
+
+      showSnackbar({
+        message: '🗑️ Your recipe has been deleted!',
+      });
     } catch {
       setError('Something went wrong while saving the recipe.');
     } finally {
@@ -80,9 +84,6 @@ export function Publication({
       setSaved(null);
       setDeleteModalOpen(false);
     }
-    showSnackbar({
-      message: '🗑️ Your recipe has been deleted!',
-    });
   };
 
   return (

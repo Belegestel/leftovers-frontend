@@ -18,13 +18,18 @@ interface BasicInformationProps {
   onNext: () => void;
 }
 
+const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/gif', 'image/svg+xml'];
+const ALLOWED_FILE_SIZE = 3 * 1024 * 1024;
+
 export function BasicInformation({ onNext }: BasicInformationProps) {
   const {
     control,
     register,
     setValue,
+    setError,
+    clearErrors,
     watch,
-    formState: { isValid, errors },
+    formState: { touchedFields, isValid, errors },
   } = useFormContext<AddRecipeFormValues>();
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -56,16 +61,25 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
       return;
     }
 
-    if (
-      file.size <= 3 * 1024 * 1024 &&
-      ['image/png', 'image/jpeg', 'image/gif', 'image/svg+xml'].indexOf(
-        file.type
-      ) != -1
-    ) {
-      setValue('image', file, {
-        shouldValidate: true,
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      setError('image', {
+        type: 'manual',
+        message: 'Only SVG, PNG, JPG and GIF files are allowed.',
       });
+      return;
     }
+    if (file.size >= ALLOWED_FILE_SIZE) {
+      setError('image', {
+        type: 'manual',
+        message: 'Image must be smaller than 3MB',
+      });
+      return;
+    }
+    clearErrors('image');
+    setValue('image', file, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
   };
 
   return (
@@ -153,6 +167,11 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
             </>
           )}
         </Box>
+        {errors.image && (
+          <Typography sx={{ color: 'error.main' }}>
+            {errors.image.message}
+          </Typography>
+        )}
       </Box>
 
       <Box
@@ -191,7 +210,7 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
           <TextField
             label="Title*"
             placeholder="Enter recipe title"
-            error={!!errors.title && !!title}
+            error={!!errors.title && touchedFields.title}
             slotProps={{
               inputLabel: {
                 shrink: true,
@@ -217,7 +236,7 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
           <TextField
             label="Description*"
             placeholder="Enter recipe description"
-            error={!!errors.description && !!description}
+            error={!!errors.description && touchedFields.description}
             slotProps={{
               inputLabel: {
                 shrink: true,
@@ -262,7 +281,8 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
                     disabled={loadingCategories}
                     label="Category*"
                     renderValue={(selected) => {
-                      if (!selected) {
+                      const category = categories.find((cat) => cat.id === selected);
+                      if (category === undefined) {
                         return (
                           <Typography color="secondary">
                             Choose category
@@ -270,17 +290,12 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
                         );
                       }
 
-                      return selected;
+                      return category.name;
                     }}
                   >
                     {categories.map((category) => (
-                      <MenuItem
-                        key={category.name}
-                        value={category.name
-                          .replace(/\b\w/g, (c) => c.toUpperCase())}
-                      >
-                        {category.name
-                          .replace(/\b\w/g, (c) => c.toUpperCase())}
+                      <MenuItem key={category.id} value={category.id}>
+                        {category.name.replace(/\b\w/g, (c) => c.toUpperCase())}
                       </MenuItem>
                     ))}
                   </Select>

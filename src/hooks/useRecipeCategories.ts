@@ -16,7 +16,7 @@ export function useRecipeCategories(skipAllRecipes?: boolean) {
   }, []);
 
   const categories = skipAllRecipes === false || skipAllRecipes === undefined ? [
-    new RecipeCategory('🍽', 'All Recipes'),
+    new RecipeCategory('🍽', 'All Recipes', ''),
     ...recipeCategories,
   ] : recipeCategories;
 

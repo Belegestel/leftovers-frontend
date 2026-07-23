@@ -58,6 +58,16 @@ export function Publication({
           message: '👏 Congratulations! Your recipe has been published!',
         });
       }
+      if (isPrivate) {
+        showSnackbar({
+          message:
+            '🔒 Your recipe has been saved as private. You can find it in your profile.',
+        });
+      } else {
+        showSnackbar({
+          message: '👏 Congratulations! Your recipe has been published!',
+        });
+      }
     } catch {
       setError('Something went wrong while saving the recipe.');
     } finally {

@@ -8,20 +8,24 @@ type RecipeSummariesResponse = {
 type RecipeResponse = Recipe;
 
 export class RecipeCategory {
+  emoji: string;
   name: string;
+  id: string;
 
-  constructor(name: string) {
+  constructor(emoji: string, name: string, id: string) {
     this.name = name;
+    this.emoji = emoji;
+    this.id = id;
   }
 }
 
-type RecipeCategoriesResponse = { categories: string[] };
+type RecipeCategoriesResponse = { categories: RecipeCategory[] };
 
 export async function getRecipeCategories(): Promise<RecipeCategory[]> {
   const response = await httpService.get<RecipeCategoriesResponse>(
     '/recipes/categories'
   );
-  return response.data.categories.map((val) => new RecipeCategory(val));
+  return response.data.categories;
 }
 
 export interface RecipeFilters {
@@ -110,8 +114,11 @@ export async function createRecipeWithImage(
   if (!image) {
     return createdRecipe;
   }
-  await uploadImage(createdRecipe.id, image);
-
+  try {
+    await uploadImage(createdRecipe.id, image);
+  } catch {
+    console.error('Failed to clean up after failed recipe image upload');
+  }
   return createdRecipe;
 }
 

@@ -15,9 +15,10 @@ import { Controller, useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useRecipeCategories } from '@/hooks/useRecipeCategories';
+import type { RecipeCategory } from '@/services/recipeService';
 
 interface RecipeFilterForm {
-  categories: string[];
+  categories: RecipeCategory[];
   saved: string[];
   rating: string;
   date: string;
@@ -28,9 +29,9 @@ export function RecipeFilters() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { categories } = useRecipeCategories();
+  const { categories } = useRecipeCategories(true);
 
-  const categoryNames = categories.slice(1).map((category) =>
+  const categoryNames = categories.map((category) =>
     category.name
       .slice(2)
       .trim()

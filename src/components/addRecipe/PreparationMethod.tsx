@@ -16,10 +16,7 @@ interface PreparationMethodProps {
   onNext: () => void;
 }
 
-export function PreparationMethod({
-  onBack,
-  onNext,
-}: PreparationMethodProps) {
+export function PreparationMethod({ onBack, onNext }: PreparationMethodProps) {
   const { control, register, getValues } =
     useFormContext<AddRecipeFormValues>();
 
@@ -32,8 +29,7 @@ export function PreparationMethod({
 
   const steps = getValues('steps');
   const stepsValid =
-    steps.length > 0 &&
-    steps.every((step) => step.value.trim().length > 0);
+    steps.length > 0 && steps.every((step) => step.value.trim().length > 0);
 
   return (
     <Box
@@ -49,7 +45,9 @@ export function PreparationMethod({
           mb: 3,
         }}
       >
-        <Typography variant="h6">{t('addRecipe.pages.preparation.title')}</Typography>
+        <Typography variant="h6">
+          {t('addRecipe.pages.preparation.title')}
+        </Typography>
 
         <Box
           sx={{
@@ -57,15 +55,15 @@ export function PreparationMethod({
             gap: 2,
           }}
         >
-          <Button variant="secondary" onClick={onBack} sx={{border: '1px solid', borderColor:'currentColor'}}>
+          <Button
+            variant="secondary"
+            onClick={onBack}
+            sx={{ border: '1px solid', borderColor: 'currentColor' }}
+          >
             &lt; {t('addRecipe.back')}
           </Button>
 
-          <Button
-            variant="contained"
-            disabled={!stepsValid}
-            onClick={onNext}
-          >
+          <Button variant="contained" disabled={!stepsValid} onClick={onNext}>
             {t('addRecipe.next')} &gt;
           </Button>
         </Box>
@@ -82,7 +80,9 @@ export function PreparationMethod({
           <TextField
             key={field.id}
             fullWidth
-            label={t('addRecipe.pages.preparation.stepLabel')}
+            label={t('addRecipe.pages.preparation.stepLabel', {
+              index: index + 1,
+            })}
             placeholder={t('addRecipe.pages.preparation.stepPlaceholder')}
             slotProps={{
               inputLabel: {

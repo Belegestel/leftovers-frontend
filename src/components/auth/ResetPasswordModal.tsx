@@ -135,7 +135,7 @@ export function ResetPasswordModal({ open, onClose }: ResetPasswordModalProps) {
         />
 
         <TextField
-          label={t('modals.resetPassword.repeatTitle')}
+          label={`${t('modals.resetPassword.repeatTitle')}*`}
           placeholder={t('modals.resetPassword.repeatPlaceholder')}
           type={showRepeatPassword ? 'text' : 'password'}
           {...registerField('repeatPassword', {

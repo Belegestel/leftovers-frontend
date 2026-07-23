@@ -105,7 +105,7 @@ export function LoginModal({ open, onLogin, onClose }: LoginModalProps) {
         </Typography>
 
         <TextField
-          label={t('modals.emailLabel')}
+          label={t('modals.emailLabel') + '*'}
           placeholder={t('modals.emailPlaceholder')}
           error={!!errors.email}
           {...registerField('email', {

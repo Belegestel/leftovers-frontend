@@ -71,7 +71,7 @@
       },
       "ingredients": {
         "title": "Add ingredients",
-        "ingredientCounter": "Ingredient {{index}}",
+        "ingredientCounter": "Ingredient #{{index}}",
         "ingredientCounterPlaceholder": "Enter ingredient",
         "ingredientAdd": "Add a new ingredient"
       },
@@ -139,7 +139,7 @@
     "register": {
       "snackbar": {
         "success": "You've successfully registered on our website. To complete the registration process, please check your email",
-        "fail": "Registration failed. Please try again"
+        "fail": "Registration failed. Please try again."
       },
       "title": "Sign up",
       "description": "Create an account for free",

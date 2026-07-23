@@ -198,7 +198,7 @@ export function Publication({
               {loading
                 ? t('addRecipe.pages.publication.buttons.publishing')
                 : saved === 'public' && !isDirty
-                  ? t('addRecipe.pages.publication.buttons.publishing')
+                  ? t('addRecipe.pages.publication.buttons.published')
                   : t('addRecipe.pages.publication.buttons.toPublish')}
             </Typography>
           </Button>

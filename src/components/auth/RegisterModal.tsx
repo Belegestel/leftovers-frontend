@@ -101,7 +101,7 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
         </Typography>
 
         <TextField
-          label={t('modals.emailLabel')}
+          label={`${t('modals.emailLabel')}*`}
           placeholder={t('modals.emailPlaceholder')}
           {...registerField('email', {
             required: true,
@@ -134,7 +134,7 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
         )}
 
         <TextField
-          label={t('modals.passwordLabel')}
+          label={`${t('modals.passwordLabel')}*`}
           placeholder={t('modals.passwordPlaceholder')}
           type={showPassword ? 'text' : 'password'}
           {...registerField('password', {

@@ -10,20 +10,22 @@ type RecipeResponse = {
 };
 
 export class RecipeCategory {
+  emoji: string;
   name: string;
 
-  constructor(name: string) {
+  constructor(emoji: string, name: string) {
     this.name = name;
+    this.emoji = emoji;
   }
 }
 
-type RecipeCategoriesResponse = { categories: string[] };
+type RecipeCategoriesResponse = { categories: RecipeCategory[] };
 
 export async function getRecipeCategories(): Promise<RecipeCategory[]> {
   const response = await httpService.get<RecipeCategoriesResponse>(
     '/recipes/categories'
   );
-  return response.data.categories.map((val) => new RecipeCategory(val));
+  return response.data.categories;
 }
 
 export interface RecipeFilters {

@@ -29,7 +29,7 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const { categories, loading: loadingCategories } = useRecipeCategories();
+  const { categories, loading: loadingCategories } = useRecipeCategories(true);
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
@@ -273,17 +273,13 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
                       return selected;
                     }}
                   >
-                    {categories.filter((_, index) => index != 0).map((category) => (
+                    {categories.map((category) => (
                       <MenuItem
                         key={category.name}
                         value={category.name
-                          .slice(2)
-                          .trim()
                           .replace(/\b\w/g, (c) => c.toUpperCase())}
                       >
                         {category.name
-                          .slice(2)
-                          .trim()
                           .replace(/\b\w/g, (c) => c.toUpperCase())}
                       </MenuItem>
                     ))}

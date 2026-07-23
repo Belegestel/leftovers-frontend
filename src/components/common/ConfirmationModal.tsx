@@ -23,7 +23,7 @@ export function ConfirmModal({
   confirmButton,
   onConfirm,
   onCancel,
-}: ConfirmDialogProps) {
+}: ConfirmModalProps) {
   return (
     <Dialog open={open} onClose={onCancel}>
       <DialogTitle>{title}</DialogTitle>

@@ -75,7 +75,11 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           {authenticated && (
-            <Button color="primary" startIcon={<AddIcon />} onClick={() => navigate('/add-recipe')}>
+            <Button
+              color="primary"
+              startIcon={<AddIcon />}
+              onClick={() => navigate('/add-recipe')}
+            >
               Add recipe
             </Button>
           )}
@@ -101,7 +105,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                     search:
                       index == 0
                         ? ''
-                        : `?category=${encodeURIComponent(category.name.slice(2).trim())}`,
+                        : `?category=${encodeURIComponent(category.name.trim())}`,
                   });
                   setRecipesAnchor(null);
                 }}
@@ -110,7 +114,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                   borderColor: 'divider',
                 }}
               >
-                {category.name.replace(/\b\w/g, (char) => char.toUpperCase())}
+                {`${category.emoji} ${category.name.replace(/\b\w/g, (char) => char.toUpperCase())}`}
               </MenuItem>
             ))}
           </Menu>

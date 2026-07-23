@@ -139,7 +139,7 @@ export function Publication({
         >
           <Box>
             <Typography sx={{ fontWeight: 500, fontSize: 20 }}>
-              {t('savePrivateTitle')}
+              {t('addRecipe.pages.publication.savePrivateTitle')}
             </Typography>
 
             <Typography variant="body2" color="text.secondary">

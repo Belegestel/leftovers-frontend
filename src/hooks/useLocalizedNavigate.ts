@@ -12,22 +12,36 @@ export function useLocalizedNavigate() {
   return (to: To, options?: NavigateOptions) => {
     const language = lang ?? 'en';
 
-    if (typeof to === 'string') {
-      const localizedPath = to.startsWith(`/${language}`)
-        ? to
-        : `/${language}${to.startsWith('/') ? to : `/${to}`}`;
+    if (typeof to !== 'string') {
+      if (!to.pathname) {
+        navigate(to, options);
+        return;
+      }
+      navigate(
+        {
+          ...to,
+          pathname: to.pathname.startsWith(`/${language}`)
+            ? to.pathname
+            : `/${language}${to.pathname.startsWith('/') ? to.pathname : `/${to.pathname}`}`,
+        },
+        options
+      );
+      return;
+    }
 
-      navigate(localizedPath, options);
+    if (to.startsWith('?') || to.startsWith('#')) {
+      navigate(to, options);
+      return;
+    }
+    if (/^https?:\/\//.test(to)) {
+      window.location.href = to;
       return;
     }
 
     navigate(
-      {
-        ...to,
-        pathname: to.pathname?.startsWith(`/${language}`)
-          ? to.pathname
-          : `/${language}${to.pathname?.startsWith('/') ? to.pathname : `/${to.pathname}`}`,
-      },
+      to.startsWith(`/${language}`)
+        ? to
+        : `/${language}${to.startsWith('/') ? to : `/${to}`}`,
       options
     );
   };

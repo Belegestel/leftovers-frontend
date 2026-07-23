@@ -161,7 +161,13 @@ export default function AddRecipe() {
     };
 
     if (currentRecipeId) {
-      await editRecipe(currentRecipeId, data);
+      await editRecipe(
+        currentRecipeId,
+        data,
+        typeof values.image === 'string'
+          ? undefined
+          : (values.image ?? undefined)
+      );
       setSavedIsPublic(isPublic);
       reset(methods.getValues());
       return currentRecipeId;

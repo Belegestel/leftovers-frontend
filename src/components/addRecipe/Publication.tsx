@@ -33,8 +33,7 @@ export function Publication({
   const showSnackbar = useSnackbar();
   const navigate = useNavigate();
 
-  const saved =
-    isPublic === undefined ? null : isPublic ? 'public' : 'private';
+  const saved = isPublic === undefined ? null : isPublic ? 'public' : 'private';
 
   const handleAction = async (isPrivate: boolean) => {
     try {
@@ -76,17 +75,16 @@ export function Publication({
       setError(null);
 
       await onRecipeDelete(recipeId);
+      navigate('/');
+      showSnackbar({
+        message: '🗑️ Your recipe has been deleted!',
+      });
     } catch {
       setError('Something went wrong while saving the recipe.');
     } finally {
       setLoading(false);
       setDeleteModalOpen(false);
-      navigate('/');
     }
-
-    showSnackbar({
-      message: '🗑️ Your recipe has been deleted!',
-    });
   };
 
   return (
@@ -224,7 +222,7 @@ export function Publication({
 
           <Button
             variant="secondary"
-            disabled={loading}
+            disabled={loading || recipeId === null}
             onClick={() => setDeleteModalOpen(true)}
             sx={{
               border: '1px solid',

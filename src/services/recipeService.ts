@@ -75,21 +75,9 @@ type ImageUploadUrlResponse = {
   key: string;
 };
 
-export async function createRecipeWithImage(
-  recipe: CreateRecipeRequest,
-  image: File | null
-): Promise<CreateRecipeResponse> {
-  const createResponse = await httpService.post<CreateRecipeResponse>(
-    '/recipes',
-    recipe
-  );
-
-  const createdRecipe = createResponse.data;
-  if (!image) {
-    return createdRecipe;
-  }
+async function uploadImage(recipeId: number, image: File) {
   const uploadUrlResponse = await httpService.post<ImageUploadUrlResponse>(
-    `/recipes/${createdRecipe.id}/image-upload-url`,
+    `/recipes/${recipeId}/image-upload-url`,
     {
       fileName: image.name,
       fileType: image.type,
@@ -104,9 +92,25 @@ export async function createRecipeWithImage(
     },
   });
 
-  await httpService.post(`/recipes/${createdRecipe.id}/image-confirm`, {
+  await httpService.post(`/recipes/${recipeId}/image-confirm`, {
     key,
   });
+}
+
+export async function createRecipeWithImage(
+  recipe: CreateRecipeRequest,
+  image: File | null
+): Promise<CreateRecipeResponse> {
+  const createResponse = await httpService.post<CreateRecipeResponse>(
+    '/recipes',
+    recipe
+  );
+
+  const createdRecipe = createResponse.data;
+  if (!image) {
+    return createdRecipe;
+  }
+  await uploadImage(createdRecipe.id, image);
 
   return createdRecipe;
 }
@@ -123,9 +127,13 @@ type EditRecipeRequest = {
 };
 export async function editRecipe(
   id: number,
-  recipe: EditRecipeRequest
+  recipe: EditRecipeRequest,
+  image?: File
 ): Promise<void> {
   await httpService.post(`/recipes/${id}/edit`, recipe);
+  if (image) {
+    await uploadImage(id, image);
+  }
 }
 
 export async function deleteRecipe(id: number): Promise<void> {

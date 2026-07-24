@@ -41,7 +41,7 @@ describe('Publication', () => {
     const deleteRecipe = vi.fn();
 
     renderComponent({
-      onSavePrivate: vi.fn().mockResolvedValue(10),
+      onSavePrivate: vi.fn().mockResolvedValue({ id: 10 }),
       onRecipeDelete: deleteRecipe,
     });
 

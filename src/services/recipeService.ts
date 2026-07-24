@@ -139,8 +139,10 @@ type EditRecipeRequest = {
 export async function editRecipe(
   id: number,
   recipe: EditRecipeRequest
-): Promise<void> {
+): Promise<RecipeResponse> {
   await httpService.post(`/recipes/${id}/edit`, recipe);
+  const response = await httpService.get<RecipeResponse>(`/recipes/${id}`);
+  return response.data;
 }
 
 export async function deleteRecipe(id: number): Promise<void> {

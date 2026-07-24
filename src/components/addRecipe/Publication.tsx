@@ -5,11 +5,12 @@ import PublicIcon from '@mui/icons-material/Public';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import { useSnackbar } from '../common/SnackbarProvider';
 import { ConfirmModal } from '../common/ConfirmationModal';
+import type { Recipe } from '@/types/recipe';
 
 interface PublicationProps {
   onBack: () => void;
-  onSavePrivate: () => Promise<number>;
-  onPublish: () => Promise<number>;
+  onSavePrivate: () => Promise<Recipe>;
+  onPublish: () => Promise<Recipe>;
   onChangeVisibility: (recipeId: number, isPrivate: boolean) => Promise<void>;
   onRecipeDelete: (recipeId: number) => Promise<void>;
 }
@@ -30,7 +31,7 @@ export function Publication({
   const showSnackbar = useSnackbar();
 
   const handleAction = async (
-    action: () => Promise<number>,
+    action: () => Promise<Recipe>,
     visibilityAction: (recipeId: number, isPrivate: boolean) => Promise<void>,
     isPrivate: boolean
   ) => {
@@ -40,7 +41,7 @@ export function Publication({
 
       if (recipeId === null) {
         const recipe = await action();
-        setRecipeId(recipe);
+        setRecipeId(recipe.id);
       } else {
         await visibilityAction(recipeId, saved !== 'private');
       }

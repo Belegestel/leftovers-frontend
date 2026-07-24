@@ -15,6 +15,7 @@ import {
   deleteRecipe,
   editRecipe,
 } from '@/services/recipeService';
+import type { Recipe } from '@/types/recipe';
 
 type AddRecipeStep = 'basic' | 'ingredients' | 'preparation' | 'publication';
 
@@ -83,7 +84,7 @@ export default function AddRecipe() {
     });
   };
 
-  const handleSaveRecipe = async (isPublic: boolean): Promise<number> => {
+  const handleSaveRecipe = async (isPublic: boolean): Promise<Recipe> => {
     const values = methods.getValues();
 
     const recipe = await createRecipeWithImage(
@@ -102,7 +103,7 @@ export default function AddRecipe() {
       },
       values.image
     );
-    return recipe.id;
+    return recipe;
   };
 
   const handleEditVisibility = async (

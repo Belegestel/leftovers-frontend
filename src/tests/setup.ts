@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom';
 import { beforeEach, vi } from 'vitest';
 import en from '../i18n/locales/en.json';
+import '../i18n';
 
 function getNestedValue(obj: any, path: string) {
   return path.split('.').reduce((acc, key) => acc?.[key], obj);

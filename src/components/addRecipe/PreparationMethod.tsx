@@ -1,4 +1,4 @@
-import { useFieldArray, useFormContext } from 'react-hook-form';
+import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import {
   Box,
   Button,
@@ -15,10 +15,7 @@ interface PreparationMethodProps {
   onNext: () => void;
 }
 
-export function PreparationMethod({
-  onBack,
-  onNext,
-}: PreparationMethodProps) {
+export function PreparationMethod({ onBack, onNext }: PreparationMethodProps) {
   const { control, register, getValues } =
     useFormContext<AddRecipeFormValues>();
 
@@ -29,8 +26,7 @@ export function PreparationMethod({
 
   const steps = getValues('steps');
   const stepsValid =
-    steps.length > 0 &&
-    steps.every((step) => step.value.trim().length > 0);
+    steps.length > 0 && steps.every((step) => step.value.trim().length > 0);
 
   return (
     <Box
@@ -54,15 +50,15 @@ export function PreparationMethod({
             gap: 2,
           }}
         >
-          <Button variant="secondary" onClick={onBack} sx={{border: '1px solid', borderColor:'currentColor'}}>
+          <Button
+            variant="secondary"
+            onClick={onBack}
+            sx={{ border: '1px solid', borderColor: 'currentColor' }}
+          >
             &lt; Back
           </Button>
 
-          <Button
-            variant="contained"
-            disabled={!stepsValid}
-            onClick={onNext}
-          >
+          <Button variant="contained" disabled={!stepsValid} onClick={onNext}>
             Next &gt;
           </Button>
         </Box>
@@ -76,31 +72,34 @@ export function PreparationMethod({
         }}
       >
         {fields.map((field, index) => (
-          <TextField
+          <Controller
             key={field.id}
-            fullWidth
-            label={`Step ${index + 1}`}
-            placeholder="Enter preparation step"
-            slotProps={{
-              inputLabel: {
-                shrink: true,
-              },
-              input: {
-                endAdornment: (
-                  <InputAdornment position="end">
-                    {fields.length > 3 && (
-                      <IconButton onClick={() => remove(index)} edge="end">
-                        <CloseIcon />
-                      </IconButton>
-                    )}
-                  </InputAdornment>
-                ),
-              },
-            }}
-            {...register(`steps.${index}.value`, {
-              required: true,
-              minLength: 1,
-            })}
+            name={`steps.${index}.value`}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                fullWidth
+                label={`Step ${index + 1}`}
+                placeholder="Enter preparation step"
+                value={field.value}
+                slotProps={{
+                  inputLabel: {
+                    shrink: true,
+                  },
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        {fields.length > 3 && (
+                          <IconButton onClick={() => remove(index)} edge="end">
+                            <CloseIcon />
+                          </IconButton>
+                        )}
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+              />
+            )}
           />
         ))}
 

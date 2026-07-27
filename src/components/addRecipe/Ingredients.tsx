@@ -1,4 +1,4 @@
-import { useFieldArray, useFormContext } from 'react-hook-form';
+import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import {
   Box,
   Button,
@@ -51,7 +51,11 @@ export function Ingredients({ onBack, onNext }: IngredientsProps) {
             gap: 2,
           }}
         >
-          <Button variant="secondary" onClick={onBack} sx={{border: '1px solid', borderColor:'currentColor'}}>
+          <Button
+            variant="secondary"
+            onClick={onBack}
+            sx={{ border: '1px solid', borderColor: 'currentColor' }}
+          >
             &lt; Back
           </Button>
 
@@ -73,31 +77,36 @@ export function Ingredients({ onBack, onNext }: IngredientsProps) {
         }}
       >
         {fields.map((field, index) => (
-          <TextField
+          <Controller
             key={field.id}
-            fullWidth
-            label={`Ingredient #${index + 1}`}
-            placeholder="Enter ingredient"
-            slotProps={{
-              inputLabel: {
-                shrink: true,
-              },
-              input: {
-                endAdornment: (
-                  <InputAdornment position="end">
-                    {fields.length > 3 && (
-                      <IconButton onClick={() => remove(index)} edge="end">
-                        <CloseIcon />
-                      </IconButton>
-                    )}
-                  </InputAdornment>
-                ),
-              },
-            }}
-            {...register(`ingredients.${index}.value`, {
-              required: true,
-              minLength: 1,
-            })}
+            name={`ingredients.${index}.value`}
+            control={control}
+            rules={{ required: true, minLength: 1 }}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                fullWidth
+                label={`Ingredient #${index + 1}`}
+                placeholder="Enter ingredient"
+                value={field.value || ''}
+                slotProps={{
+                  inputLabel: {
+                    shrink: true,
+                  },
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        {fields.length > 3 && (
+                          <IconButton onClick={() => remove(index)} edge="end">
+                            <CloseIcon />
+                          </IconButton>
+                        )}
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+              />
+            )}
           />
         ))}
 

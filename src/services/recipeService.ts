@@ -137,7 +137,7 @@ export async function editRecipe(
   recipe: EditRecipeRequest,
   image?: File
 ): Promise<void> {
-  await httpService.post(`/recipes/${id}/edit`, recipe);
+  await httpService.patch(`/recipes/${id}/edit`, recipe);
   if (image) {
     await uploadImage(id, image);
   }

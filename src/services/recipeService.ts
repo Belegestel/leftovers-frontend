@@ -28,6 +28,8 @@ export interface RecipeFilters {
   saved?: boolean;
   ratingOrderIncr?: boolean;
   dateOrderIncr?: boolean;
+  description?: string;
+  title?: string;
   authored: boolean;
 }
 export async function getRecipeSummaries(

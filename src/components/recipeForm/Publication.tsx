@@ -6,10 +6,12 @@ import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined
 import { useSnackbar } from '../common/SnackbarProvider';
 import { ConfirmModal } from '../common/ConfirmationModal';
 import { useNavigate } from 'react-router-dom';
+import type { Recipe } from '@/types/recipe';
 
 interface PublicationProps {
   onBack: () => void;
-  onSave: (isPublic: boolean) => Promise<number>;
+  onSavePrivate: () => Promise<Recipe>;
+  onPublish: () => Promise<Recipe>;
   onChangeVisibility: (recipeId: number, isPrivate: boolean) => Promise<void>;
   onRecipeDelete: (recipeId: number) => Promise<void>;
   recipeId?: number;
@@ -19,7 +21,8 @@ interface PublicationProps {
 
 export function Publication({
   onBack,
-  onSave,
+  onSavePrivate,
+  onPublish,
   onChangeVisibility,
   onRecipeDelete,
   recipeId,
@@ -35,17 +38,19 @@ export function Publication({
 
   const saved = isPublic === undefined ? null : isPublic ? 'public' : 'private';
 
-  const handleAction = async (isPrivate: boolean) => {
+  const handleAction = async (
+    action: () => Promise<Recipe>,
+    visibilityAction: (recipeId: number, isPrivate: boolean) => Promise<void>,
+    isPrivate: boolean
+  ) => {
     try {
       setLoading(true);
       setError(null);
 
-      if (recipeId === undefined) {
-        await onSave(!isPrivate);
-      } else if (isDirty) {
-        await onSave(!isPrivate);
+      if (recipeId === undefined || isDirty) {
+        const recipe = await action();
       } else {
-        await onChangeVisibility(recipeId, isPrivate);
+        await visibilityAction(recipeId, isPrivate);
       }
 
       if (isPrivate) {
@@ -156,7 +161,7 @@ export function Publication({
           <Button
             variant="secondary"
             disabled={loading || (saved === 'private' && !(isDirty ?? false))}
-            onClick={() => handleAction(true)}
+            onClick={() => handleAction(onSavePrivate, onChangeVisibility, true)}
             sx={{
               borderColor: 'currentColor',
               border: '1px solid',
@@ -196,7 +201,7 @@ export function Publication({
           <Button
             variant="contained"
             disabled={loading || (saved === 'public' && !isDirty)}
-            onClick={() => handleAction(false)}
+            onClick={() => handleAction(onPublish, onChangeVisibility, false)}
           >
             <PublicIcon sx={{ mr: 1 }} />
 

@@ -18,6 +18,7 @@ import {
 } from '@/services/recipeService';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSnackbar } from '@/components/common/SnackbarProvider';
+import type { Recipe } from '@/types/recipe';
 
 type RecipeFormStep = 'basic' | 'ingredients' | 'preparation' | 'publication';
 
@@ -143,48 +144,26 @@ export default function RecipeForm() {
     });
   };
 
-  const handleSaveRecipe = async (isPublic: boolean): Promise<number> => {
+  const handleSaveRecipe = async (isPublic: boolean): Promise<Recipe> => {
     const values = methods.getValues();
 
-    const data = {
-      title: values.title,
-      description: values.description,
-      category:
-        values.category.toLowerCase() === 'breakfasts'
-          ? 'BREAKFAST'
-          : values.category.toUpperCase(),
-      prepTime: values.prepTime ?? 0,
-      servings: values.servings,
-      ingredients: values.ingredients.map((ingredient) => ingredient.value),
-      steps: values.steps.map((step) => step.value),
-      isPublic,
-    };
-
-    if (currentRecipeId) {
-      await editRecipe(
-        currentRecipeId,
-        data,
-        typeof values.image === 'string'
-          ? undefined
-          : (values.image ?? undefined)
-      );
-      setSavedIsPublic(isPublic);
-      reset(methods.getValues());
-      return currentRecipeId;
-    }
-
-    if (typeof values.image === 'string') {
-      throw new Error('Something went wrong');
-    }
-
-    const recipe = await createRecipeWithImage(data, values.image);
-
-    setCurrentRecipeId(recipe.id);
-    setSavedIsPublic(isPublic);
-
-    reset(methods.getValues());
-
-    return recipe.id;
+    const recipe = await createRecipeWithImage(
+      {
+        title: values.title,
+        description: values.description,
+        category:
+          values.category.toLowerCase() === 'breakfasts'
+            ? 'BREAKFAST'
+            : values.category.toUpperCase(),
+        prepTime: values.prepTime ?? 0,
+        servings: values.servings,
+        ingredients: values.ingredients.map((ingredient) => ingredient.value),
+        steps: values.steps.map((step) => step.value),
+        isPublic,
+      },
+      values.image
+    );
+    return recipe;
   };
 
   const handleEditVisibility = async (
@@ -260,38 +239,49 @@ export default function RecipeForm() {
           })}
         </Box>
 
-        {activeStep === 'basic' && <BasicInformation onNext={goToNextStep} />}
+        <Box
+          sx={{
+            mt: 4,
+            p: 5,
+            pt: 1,
+            backgroundColor: 'background.default',
+            borderRadius: 3,
+          }}
+        >
+          {activeStep === 'basic' && <BasicInformation onNext={goToNextStep} />}
 
-        {activeStep === 'ingredients' && (
-          <Box sx={{ mt: 4 }}>
-            <Ingredients onNext={goToNextStep} onBack={goToPreviousStep} />
-          </Box>
-        )}
+          {activeStep === 'ingredients' && (
+            <Box sx={{ mt: 4 }}>
+              <Ingredients onNext={goToNextStep} onBack={goToPreviousStep} />
+            </Box>
+          )}
 
-        {activeStep === 'preparation' && (
-          <Box sx={{ mt: 4 }}>
-            <PreparationMethod
-              onNext={goToNextStep}
-              onBack={goToPreviousStep}
-            />
-          </Box>
-        )}
+          {activeStep === 'preparation' && (
+            <Box sx={{ mt: 4 }}>
+              <PreparationMethod
+                onNext={goToNextStep}
+                onBack={goToPreviousStep}
+              />
+            </Box>
+          )}
 
-        {activeStep === 'publication' && (
-          <Box sx={{ mt: 4 }}>
-            <Publication
-              onBack={goToPreviousStep}
-              onSave={handleSaveRecipe}
-              onChangeVisibility={(recipeId: number, isPrivate: boolean) =>
-                handleEditVisibility(recipeId, isPrivate)
-              }
-              onRecipeDelete={handleDeleteRecipe}
-              recipeId={currentRecipeId}
-              isPublic={savedIsPublic}
-              isDirty={isDirty}
-            />
-          </Box>
-        )}
+          {activeStep === 'publication' && (
+            <Box sx={{ mt: 4 }}>
+              <Publication
+                onBack={goToPreviousStep}
+                onSavePrivate={() => handleSaveRecipe(false)}
+                onPublish={() => handleSaveRecipe(true)}
+                onChangeVisibility={(recipeId: number, isPrivate: boolean) =>
+                  handleEditVisibility(recipeId, isPrivate)
+                }
+                onRecipeDelete={handleDeleteRecipe}
+                recipeId={currentRecipeId}
+                isPublic={savedIsPublic}
+                isDirty={isDirty}
+              />
+            </Box>
+          )}
+        </Box>
       </FormProvider>
     </Container>
   );

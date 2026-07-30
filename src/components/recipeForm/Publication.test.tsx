@@ -34,7 +34,8 @@ describe('Publication', () => {
         <SnackbarProvider>
           <Publication
             onBack={vi.fn()}
-            onSave={vi.fn().mockResolvedValue(1)}
+            onPublish={vi.fn().mockResolvedValue(1)}
+            onSavePrivate={vi.fn().mockResolvedValue(2)}
             onChangeVisibility={vi.fn()}
             onRecipeDelete={vi.fn()}
             {...props}
@@ -47,7 +48,7 @@ it('saves recipe as private', async () => {
   const savePrivate = vi.fn().mockResolvedValue(5);
 
   renderComponent({
-    onSave: savePrivate,
+    onSavePrivate: savePrivate,
   });
 
   fireEvent.click(screen.getByText('Save as private'));
@@ -55,8 +56,6 @@ it('saves recipe as private', async () => {
   await waitFor(() => {
     expect(savePrivate).toHaveBeenCalledTimes(1);
   });
-
-  expect(savePrivate).toHaveBeenCalledWith(false);
 });
   it('opens delete modal and deletes recipe after confirmation', async () => {
     const deleteRecipe = vi.fn();
@@ -91,7 +90,8 @@ describe('Publication', () => {
         {...props}
         recipeId={10}
         isPublic={true}
-        onSave={vi.fn()}
+        onSavePrivate={vi.fn()}
+        onPublish={vi.fn()}
         isDirty={false}
       />
     );
@@ -108,7 +108,8 @@ describe('Publication', () => {
       <Publication
         {...props}
         recipeId={10}
-        onSave={vi.fn()}
+        onSavePrivate={vi.fn()}
+        onPublish={vi.fn()}
         isPublic={true}
         isDirty={true}
       />

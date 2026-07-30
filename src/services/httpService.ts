@@ -1,19 +1,24 @@
-import axios from "axios";
-import { env } from "@/config/env";
+import axios from 'axios';
+import { env } from '@/config/env';
 import {
   getToken,
   getRefreshToken,
   setToken,
   setRefreshToken,
   clearTokens,
-} from "./tokenService";
+} from './tokenService';
 
 export const httpService = axios.create({
   baseURL: env.apiUrl,
 });
 
+type PendingRequest = {
+  resolve: (token: string) => void;
+  reject: (error: unknown) => void;
+};
+
 let isRefreshing = false;
-let pendingRequests: ((token: string) => void)[] = [];
+let pendingRequests: PendingRequest[] = [];
 
 httpService.interceptors.request.use((config) => {
   const token = getToken();
@@ -33,7 +38,7 @@ httpService.interceptors.response.use(
     if (
       error.response?.status !== 401 ||
       request._retry ||
-      request.url === "/auth/refresh"
+      request.url === '/auth/refresh'
     ) {
       return Promise.reject(error);
     }
@@ -48,10 +53,14 @@ httpService.interceptors.response.use(
     }
 
     if (isRefreshing) {
-      return new Promise((resolve) => {
-        pendingRequests.push((token) => {
-          request.headers.Authorization = `Bearer ${token}`;
-          resolve(httpService(request));
+      return new Promise((resolve, reject) => {
+        pendingRequests.push({
+          resolve: (token) => {
+            request.headers = request.headers ?? {};
+            request.headers.Authorization = `Bearer ${token}`;
+            resolve(httpService(request));
+          },
+          reject,
         });
       });
     }
@@ -63,10 +72,12 @@ httpService.interceptors.response.use(
         token: refreshToken,
       });
 
-      setToken(data.accessToken, true);
-      setRefreshToken(data.refreshToken, true);
+      const rememberMe = localStorage.getItem('refresh_token') !== null;
 
-      pendingRequests.forEach((callback) => callback(data.accessToken));
+      setToken(data.accessToken, rememberMe);
+      setRefreshToken(data.refreshToken, rememberMe);
+
+      pendingRequests.forEach(({ resolve }) => resolve(data.accessToken));
       pendingRequests = [];
 
       request.headers.Authorization = `Bearer ${data.accessToken}`;
@@ -75,9 +86,12 @@ httpService.interceptors.response.use(
     } catch (refreshError) {
       clearTokens();
 
+      pendingRequests.forEach(({ reject }) => reject(refreshError));
+      pendingRequests = [];
+
       return Promise.reject(refreshError);
     } finally {
       isRefreshing = false;
     }
-  },
+  }
 );

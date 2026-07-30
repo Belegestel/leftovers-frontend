@@ -14,7 +14,7 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import { setToken } from '@/services/tokenService';
+import { setRefreshToken, setToken } from '@/services/tokenService';
 import { useForm } from 'react-hook-form';
 import { emailValid } from '@/utils/validation';
 import { useAuth } from '@/context/AuthContext';
@@ -63,6 +63,7 @@ export function LoginModal({ open, onLogin, onClose }: LoginModalProps) {
         password: data.password,
       });
       setToken(response.accessToken, rememberMe);
+      setRefreshToken(response.refreshToken, rememberMe);
       authChanged();
       onLogin();
       reset()

@@ -10,6 +10,7 @@ import {
 
 export const httpService = axios.create({
   baseURL: env.apiUrl,
+  headers: { 'Content-Type': 'application/json' },
 });
 
 type PendingRequest = {
@@ -30,6 +31,15 @@ httpService.interceptors.request.use((config) => {
   return config;
 });
 
+const excludedEndpoints = [
+  '/auth/refresh',
+  '/auth/login',
+  '/auth/register',
+  '/auth/confirm-registration',
+  '/auth/reset-password',
+  '/auth/reset-password/confirm',
+];
+
 httpService.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -38,7 +48,7 @@ httpService.interceptors.response.use(
     if (
       error.response?.status !== 401 ||
       request._retry ||
-      request.url === '/auth/refresh'
+      excludedEndpoints.includes(request.url)
     ) {
       return Promise.reject(error);
     }

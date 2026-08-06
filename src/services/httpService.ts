@@ -59,6 +59,7 @@ httpService.interceptors.response.use(
 
     if (!refreshToken) {
       clearTokens();
+      window.location.href = '/?login=true';
       return Promise.reject(error);
     }
 
@@ -98,6 +99,8 @@ httpService.interceptors.response.use(
 
       pendingRequests.forEach(({ reject }) => reject(refreshError));
       pendingRequests = [];
+
+      window.location.href = '/?login=true';
 
       return Promise.reject(refreshError);
     } finally {

@@ -5,9 +5,7 @@ import { uploadService } from './uploadService';
 type RecipeSummariesResponse = {
   recipes: RecipeSummary[];
 };
-type RecipeResponse = {
-  recipes: Recipe;
-};
+type RecipeResponse = Recipe;
 
 export class RecipeCategory {
   emoji: string;
@@ -27,7 +25,6 @@ export async function getRecipeCategories(): Promise<RecipeCategory[]> {
   const response = await httpService.get<RecipeCategoriesResponse>(
     '/recipes/categories'
   );
-  console.log('resp', response)
   return response.data.categories;
 }
 
@@ -36,6 +33,8 @@ export interface RecipeFilters {
   saved?: boolean;
   ratingOrderIncr?: boolean;
   dateOrderIncr?: boolean;
+  description?: string;
+  title?: string;
   authored: boolean;
 }
 export async function getRecipeSummaries(

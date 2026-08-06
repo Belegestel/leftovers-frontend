@@ -32,6 +32,9 @@ export function useRecipes(filters?: RecipeFilters) {
     filters?.saved,
     filters?.dateOrderIncr,
     filters?.ratingOrderIncr,
+    filters?.title,
+    filters?.description,
+    filters?.authored,
   ]);
 
   return {

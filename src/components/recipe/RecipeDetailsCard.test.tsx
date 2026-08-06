@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 
 import { RecipeDetailsCard } from './RecipeDetailsCard';
+import type { Recipe } from '@/types/recipe';
 
 const recipe = {
   id: 1,
@@ -14,7 +15,7 @@ const recipe = {
   ratingCount: 10,
   userRating: null,
   isBookmarked: false,
-} as any;
+} as Recipe;
 
 describe('RecipeDetailsCard', () => {
   it('renders recipe information', () => {

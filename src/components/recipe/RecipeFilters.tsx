@@ -115,18 +115,19 @@ export function RecipeFilters() {
           mt: 2,
         }}
       >
-        <Button
-          startIcon={<FilterListIcon />}
-          onClick={(event) => setFilterAnchor(event.currentTarget)}
-          color={filterOpen ? 'primary' : 'secondary'}
-          sx={{
-            border: 1,
-            borderColor: 'currentColor',
-          }}
-        >
-          Filters
-        </Button>
-
+        {!(searchParams.get('search') ?? '') && (
+          <Button
+            startIcon={<FilterListIcon />}
+            onClick={(event) => setFilterAnchor(event.currentTarget)}
+            color={filterOpen ? 'primary' : 'secondary'}
+            sx={{
+              border: 1,
+              borderColor: 'currentColor',
+            }}
+          >
+            Filters
+          </Button>
+        )}
         <Button
           startIcon={<SwapVertIcon />}
           onClick={(event) => setRatingAnchor(event.currentTarget)}
@@ -313,13 +314,13 @@ export function RecipeFilters() {
               sx={{ p: 1 }}
             >
               <FormControlLabel
-                value="asc"
+                value="desc"
                 control={<Radio />}
                 label="Newest first"
               />
 
               <FormControlLabel
-                value="desc"
+                value="asc"
                 control={<Radio />}
                 label="Oldest first"
               />

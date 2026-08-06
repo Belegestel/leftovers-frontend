@@ -56,3 +56,10 @@ export function isAuthenticated() {
 
   return token.trim().length > 0;
 }
+
+export function updateTokens(accessToken: string, refreshToken: string) {
+  const rememberMe = localStorage.getItem(REFRESH_TOKEN_KEY) !== null;
+
+  setToken(accessToken, rememberMe);
+  setRefreshToken(refreshToken, rememberMe);
+}

@@ -3,9 +3,8 @@ import { env } from '@/config/env';
 import {
   getToken,
   getRefreshToken,
-  setToken,
-  setRefreshToken,
   clearTokens,
+  updateTokens,
 } from './tokenService';
 
 export const httpService = axios.create({
@@ -83,10 +82,7 @@ httpService.interceptors.response.use(
         token: refreshToken,
       });
 
-      const rememberMe = localStorage.getItem('refresh_token') !== null;
-
-      setToken(data.accessToken, rememberMe);
-      setRefreshToken(data.refreshToken, rememberMe);
+      updateTokens(data.accessToken, data.refreshToken);
 
       pendingRequests.forEach(({ resolve }) => resolve(data.accessToken));
       pendingRequests = [];

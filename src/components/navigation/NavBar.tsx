@@ -8,6 +8,9 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Popover,
+  Typography,
+  Divider,
 } from '@mui/material';
 import logo from '@/assets/logo.svg';
 import SearchIcon from '@mui/icons-material/Search';
@@ -18,6 +21,9 @@ import { useRecipeCategories } from '@/hooks/useRecipeCategories';
 import { removeToken } from '@/services/tokenService';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import { NotificationCard } from '../notification/NotificationCard';
+import { useNotifications } from '@/context/NotificationContext';
 
 interface NavBarProps {
   authenticated: boolean;
@@ -31,6 +37,8 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
   const [myAccountAnchor, setMyAccountAnchor] = useState<null | HTMLElement>(
     null
   );
+  const [notificationsAnchor, setNotificationsAnchor] =
+    useState<null | HTMLElement>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const { authChanged } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -47,7 +55,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
   const handleSearch = () => {
     navigate(`/recipes?${searchParams.toString()}`);
   };
-
+  const { notifications } = useNotifications();
   return (
     <StyledAppBar position="static">
       <Toolbar>
@@ -68,7 +76,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                 setSearchQuery(event.target.value);
                 const newParams = {
                   ...searchParams,
-                }
+                };
                 if (event.target.value.trim()) {
                   newParams.delete('category');
                   newParams.delete('saved');
@@ -132,6 +140,59 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
           </Menu>
           {authenticated ? (
             <>
+              <Button
+                onClick={(event) => setNotificationsAnchor(event.currentTarget)}
+              >
+                <NotificationsIcon />
+              </Button>
+              <Popover
+                anchorEl={notificationsAnchor}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                open={Boolean(notificationsAnchor)}
+                onClose={() => setNotificationsAnchor(null)}
+                slotProps={{
+                  paper: {
+                    sx: {
+                      width: {
+                        xs: 'calc(100vw - 32px)',
+                        sm: 400,
+                      },
+                      maxWidth: '100vw',
+                      maxHeight: 'min(70vh, 600px)',
+                      minHeight: '100px',
+
+                      display: 'flex',
+                      flexDirection: 'column',
+                    },
+                  },
+                }}
+              >
+                <Typography
+                  variant="h4"
+                  sx={{ padding: '5px', textAlign: 'center' }}
+                >
+                  Notifications
+                </Typography>
+                <Divider />
+                <Box
+                  sx={{
+                    overflowY: 'auto',
+                    flex: 1,
+                    px: 2,
+                    pb: 2,
+                  }}
+                >
+                  {notifications.map((notification, index) => (
+                    <>
+                      {index != 0 && <Divider />}
+                      <NotificationCard
+                        key={index}
+                        notification={notification}
+                      />
+                    </>
+                  ))}
+                </Box>
+              </Popover>
               <Button
                 variant="contained"
                 endIcon={<KeyboardArrowDownIcon />}

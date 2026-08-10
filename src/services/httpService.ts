@@ -9,7 +9,6 @@ import {
 
 export const httpService = axios.create({
   baseURL: env.apiUrl,
-  headers: { 'Content-Type': 'application/json' },
 });
 
 type PendingRequest = {

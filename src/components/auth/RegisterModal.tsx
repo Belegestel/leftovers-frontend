@@ -49,9 +49,7 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
     },
   });
 
-  const email = watch('email');
   const password = watch('password');
-  const termsAccepted = watch('termsAccepted');
 
   const MIN_PASSWORD_LENGTH = 8;
 

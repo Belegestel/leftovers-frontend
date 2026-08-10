@@ -5,6 +5,7 @@ import { isAuthenticated, removeToken } from '@/services/tokenService';
 import { describe, expect, it, vi } from 'vitest';
 import '@testing-library/jest-dom/vitest';
 import { AuthProvider } from '@/context/AuthContext';
+import { NotificationProvider } from '@/context/NotificationContext';
 
 const mockedNavigate = vi.fn();
 const mockedLocation = vi.fn();
@@ -33,7 +34,9 @@ describe('NavBar', () => {
     vi.mocked(isAuthenticated).mockReturnValue(false);
     render(
       <AuthProvider>
-        <NavBar authenticated={false} onLogout={() => {}} />
+        <NotificationProvider>
+          <NavBar authenticated={false} onLogout={() => {}} />
+        </NotificationProvider>
       </AuthProvider>
     );
 
@@ -47,7 +50,9 @@ describe('NavBar', () => {
   it('shows authenticated controls when logged in', () => {
     render(
       <AuthProvider>
-        <NavBar authenticated={true} onLogout={() => {}} />
+        <NotificationProvider>
+          <NavBar authenticated={true} onLogout={() => {}} />
+        </NotificationProvider>
       </AuthProvider>
     );
 
@@ -58,7 +63,9 @@ describe('NavBar', () => {
   it('opens account menu', async () => {
     render(
       <AuthProvider>
-        <NavBar authenticated={true} onLogout={() => {}} />
+        <NotificationProvider>
+          <NavBar authenticated={true} onLogout={() => {}} />
+        </NotificationProvider>
       </AuthProvider>
     );
 
@@ -75,12 +82,14 @@ describe('NavBar', () => {
     let authd = true;
     render(
       <AuthProvider>
-        <NavBar
-          authenticated={authd}
-          onLogout={() => {
-            authd = false;
-          }}
-        />
+        <NotificationProvider>
+          <NavBar
+            authenticated={authd}
+            onLogout={() => {
+              authd = false;
+            }}
+          />
+        </NotificationProvider>
       </AuthProvider>
     );
 
@@ -95,14 +104,15 @@ describe('NavBar', () => {
   it('searches a query', async () => {
     render(
       <AuthProvider>
-        <NavBar authenticated={false} onLogout={() => {}} />
+        <NotificationProvider>
+          <NavBar authenticated={false} onLogout={() => {}} />
+        </NotificationProvider>
       </AuthProvider>
     );
 
     await userEvent.type(screen.getByRole('textbox'), 'tasty recipe');
     await userEvent.click(screen.getByRole('button', { name: /search/i }));
     expect(mockedSetSearchParams).toHaveBeenCalled();
-    expect(mockedSearchParams.set).toHaveBeenCalled()
     expect(mockedSetSearchParams).toHaveBeenCalledWith(mockedSearchParams);
     expect(mockedNavigate).toHaveBeenCalled();
   });
@@ -110,7 +120,9 @@ describe('NavBar', () => {
   it('removes category filtering when searching a query', async () => {
     render(
       <AuthProvider>
-        <NavBar authenticated={false} onLogout={() => {}} />
+        <NotificationProvider>
+          <NavBar authenticated={false} onLogout={() => {}} />
+        </NotificationProvider>
       </AuthProvider>
     );
 
@@ -119,5 +131,5 @@ describe('NavBar', () => {
     expect(mockedSearchParams.delete).toHaveBeenCalledWith('category');
     expect(mockedSearchParams.delete).toHaveBeenCalledWith('saved');
     expect(screen.queryByText('Filters')).not.toBeInTheDocument();
-  })
+  });
 });

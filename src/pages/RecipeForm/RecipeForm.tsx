@@ -1,26 +1,29 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, Container, Typography } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import LunchDiningOutlinedIcon from '@mui/icons-material/LunchDiningOutlined';
 import RestaurantMenuOutlinedIcon from '@mui/icons-material/RestaurantMenuOutlined';
 import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
 import { FormProvider, useForm } from 'react-hook-form';
-import { BasicInformation } from '@/components/addRecipe/BasicInformation';
-import type { AddRecipeFormValues } from '@/types/addRecipe';
-import { Ingredients } from '@/components/addRecipe/Ingredients';
-import { PreparationMethod } from '@/components/addRecipe/PreparationMethod';
-import { Publication } from '@/components/addRecipe/Publication';
+import { BasicInformation } from '@/components/recipeForm/BasicInformation';
+import type { RecipeFormValues } from '@/types/recipeForm';
+import { Ingredients } from '@/components/recipeForm/Ingredients';
+import { PreparationMethod } from '@/components/recipeForm/PreparationMethod';
+import { Publication } from '@/components/recipeForm/Publication';
 import {
   createRecipeWithImage,
   deleteRecipe,
   editRecipe,
+  getRecipe,
 } from '@/services/recipeService';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useSnackbar } from '@/components/common/SnackbarProvider';
 import type { Recipe } from '@/types/recipe';
 
-type AddRecipeStep = 'basic' | 'ingredients' | 'preparation' | 'publication';
+type RecipeFormStep = 'basic' | 'ingredients' | 'preparation' | 'publication';
 
 const steps: {
-  value: AddRecipeStep;
+  value: RecipeFormStep;
   label: string;
   icon: React.ReactNode;
 }[] = [
@@ -46,10 +49,18 @@ const steps: {
   },
 ];
 
-export default function AddRecipe() {
-  const [activeStep, setActiveStep] = useState<AddRecipeStep>('basic');
+export default function RecipeForm() {
+  const [activeStep, setActiveStep] = useState<RecipeFormStep>('basic');
+  const [currentRecipeId, setCurrentRecipeId] = useState<number | undefined>();
+  const [savedIsPublic, setSavedIsPublic] = useState<boolean | undefined>();
 
-  const methods = useForm<AddRecipeFormValues>({
+  const showSnackbar = useSnackbar();
+  const navigate = useNavigate();
+  const { recipe } = useParams();
+
+  const recipeIdFromRoute = recipe ? Number(recipe) : undefined;
+
+  const methods = useForm<RecipeFormValues>({
     mode: 'onChange',
     defaultValues: {
       title: '',
@@ -63,6 +74,55 @@ export default function AddRecipe() {
       isPublic: false,
     },
   });
+
+  const {
+    formState: { isDirty },
+    reset,
+  } = methods;
+
+  useEffect(() => {
+    if (!recipeIdFromRoute) {
+      return;
+    }
+
+    setCurrentRecipeId(recipeIdFromRoute);
+
+    const loadRecipe = async () => {
+      try {
+        const recipe = await getRecipe(recipeIdFromRoute);
+
+        if (!recipe) {
+          navigate('/add-recipe');
+          return;
+        }
+
+        reset({
+          title: recipe.title,
+          description: recipe.description,
+          category: recipe.category
+            .toLowerCase()
+            .replace(/\b\w/g, (char) => char.toUpperCase()),
+          prepTime: recipe.prepTime,
+          servings: recipe.servings,
+          ingredients: recipe.ingredients.map((ingredient: string) => ({
+            value: ingredient,
+          })),
+          steps: recipe.steps.map((step: string) => ({
+            value: step,
+          })),
+          image: recipe.imageLink,
+          isPublic: recipe.isPublic,
+        });
+
+        setSavedIsPublic(recipe.isPublic);
+      } catch {
+        showSnackbar({ message: '❌ Failed to edit the recipe' });
+        navigate('/');
+      }
+    };
+
+    loadRecipe();
+  }, [recipeIdFromRoute, reset, navigate, showSnackbar]);
 
   const goToNextStep = () => {
     setActiveStep((currentStep) => {
@@ -111,6 +171,11 @@ export default function AddRecipe() {
     isPrivate: boolean
   ): Promise<void> => {
     await editRecipe(recipeId, { isPublic: !isPrivate });
+
+    setCurrentRecipeId(recipeId);
+    setSavedIsPublic(!isPrivate);
+
+    reset(methods.getValues());
   };
 
   const handleDeleteRecipe = async (recipeId: number): Promise<void> => {
@@ -173,7 +238,16 @@ export default function AddRecipe() {
             );
           })}
         </Box>
-        <Box sx={{mt: 4, p: 5, pt: 1, backgroundColor: 'background.default', borderRadius: 3}}>
+
+        <Box
+          sx={{
+            mt: 4,
+            p: 5,
+            pt: 1,
+            backgroundColor: 'background.default',
+            borderRadius: 3,
+          }}
+        >
           {activeStep === 'basic' && <BasicInformation onNext={goToNextStep} />}
 
           {activeStep === 'ingredients' && (
@@ -201,6 +275,9 @@ export default function AddRecipe() {
                   handleEditVisibility(recipeId, isPrivate)
                 }
                 onRecipeDelete={handleDeleteRecipe}
+                recipeId={currentRecipeId}
+                isPublic={savedIsPublic}
+                isDirty={isDirty}
               />
             </Box>
           )}

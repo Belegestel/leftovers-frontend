@@ -1,4 +1,4 @@
-export interface AddRecipeFormValues {
+export interface RecipeFormValues {
   title: string;
   description: string;
   category: string;
@@ -6,6 +6,6 @@ export interface AddRecipeFormValues {
   servings: number;
   ingredients: {value: string}[];
   steps: {value: string}[];
-  image: File | null;
+  image: File | string | null;
   isPublic: boolean;
 }

@@ -12,7 +12,7 @@ import {
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { Controller, useFormContext } from 'react-hook-form';
 import { useRecipeCategories } from '@/hooks/useRecipeCategories';
-import type { AddRecipeFormValues } from '@/types/addRecipe';
+import type { RecipeFormValues } from '@/types/recipeForm';
 
 interface BasicInformationProps {
   onNext: () => void;
@@ -30,7 +30,7 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
     clearErrors,
     watch,
     formState: { touchedFields, isValid, errors },
-  } = useFormContext<AddRecipeFormValues>();
+  } = useFormContext<RecipeFormValues>();
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -45,6 +45,11 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
   useEffect(() => {
     if (!image) {
       setImagePreview(null);
+      return;
+    }
+
+    if (typeof image === 'string') {
+      setImagePreview(image);
       return;
     }
 
@@ -281,7 +286,9 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
                     disabled={loadingCategories}
                     label="Category*"
                     renderValue={(selected) => {
-                      const category = categories.find((cat) => cat.id === selected);
+                      const category = categories.find(
+                        (cat) => cat.id === selected
+                      );
                       if (category === undefined) {
                         return (
                           <Typography color="secondary">

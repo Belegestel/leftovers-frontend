@@ -8,26 +8,25 @@ import {
   Typography,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import type { AddRecipeFormValues } from '@/types/addRecipe';
+import type { RecipeFormValues } from '@/types/recipeForm';
 
-interface IngredientsProps {
+interface PreparationMethodProps {
   onBack: () => void;
   onNext: () => void;
 }
 
-export function Ingredients({ onBack, onNext }: IngredientsProps) {
+export function PreparationMethod({ onBack, onNext }: PreparationMethodProps) {
   const { control, register, getValues } =
-    useFormContext<AddRecipeFormValues>();
+    useFormContext<RecipeFormValues>();
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: 'ingredients',
+    name: 'steps',
   });
 
-  const ingredients = getValues('ingredients');
-  const ingredientsValid =
-    ingredients.length > 0 &&
-    ingredients.every((ingredient) => ingredient.value.trim().length > 0);
+  const steps = getValues('steps');
+  const stepsValid =
+    steps.length > 0 && steps.every((step) => step.value.trim().length > 0);
 
   return (
     <Box
@@ -43,7 +42,7 @@ export function Ingredients({ onBack, onNext }: IngredientsProps) {
           mb: 3,
         }}
       >
-        <Typography variant="h6">Add ingredients</Typography>
+        <Typography variant="h6">Enter preparation method</Typography>
 
         <Box
           sx={{
@@ -59,11 +58,7 @@ export function Ingredients({ onBack, onNext }: IngredientsProps) {
             &lt; Back
           </Button>
 
-          <Button
-            variant="contained"
-            disabled={!ingredientsValid}
-            onClick={onNext}
-          >
+          <Button variant="contained" disabled={!stepsValid} onClick={onNext}>
             Next &gt;
           </Button>
         </Box>
@@ -79,16 +74,14 @@ export function Ingredients({ onBack, onNext }: IngredientsProps) {
         {fields.map((field, index) => (
           <Controller
             key={field.id}
-            name={`ingredients.${index}.value`}
-            control={control}
-            rules={{ required: true, minLength: 1 }}
+            name={`steps.${index}.value`}
             render={({ field }) => (
               <TextField
                 {...field}
                 fullWidth
-                label={`Ingredient #${index + 1}`}
-                placeholder="Enter ingredient"
-                value={field.value || ''}
+                label={`Step ${index + 1}`}
+                placeholder="Enter preparation step"
+                value={field.value}
                 slotProps={{
                   inputLabel: {
                     shrink: true,
@@ -122,7 +115,7 @@ export function Ingredients({ onBack, onNext }: IngredientsProps) {
             px: 0,
           }}
         >
-          + Add a new ingredient
+          + Add a new step
         </Button>
       </Box>
     </Box>

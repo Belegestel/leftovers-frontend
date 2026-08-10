@@ -81,6 +81,28 @@ type ImageUploadUrlResponse = {
   key: string;
 };
 
+async function uploadImage(recipeId: number, image: File) {
+  const uploadUrlResponse = await httpService.post<ImageUploadUrlResponse>(
+    `/recipes/${recipeId}/image-upload-url`,
+    {
+      fileName: image.name,
+      fileType: image.type,
+    }
+  );
+
+  const { url, key } = uploadUrlResponse.data;
+
+  await uploadService.put(url, image, {
+    headers: {
+      'Content-Type': image.type,
+    },
+  });
+
+  await httpService.post(`/recipes/${recipeId}/image-confirm`, {
+    key,
+  });
+}
+
 export async function createRecipeWithImage(
   recipe: CreateRecipeRequest,
   image: File | null
@@ -95,33 +117,10 @@ export async function createRecipeWithImage(
     return createdRecipe;
   }
   try {
-    const uploadUrlResponse = await httpService.post<ImageUploadUrlResponse>(
-      `/recipes/${createdRecipe.id}/image-upload-url`,
-      {
-        fileName: image.name,
-        fileType: image.type,
-      }
-    );
-
-    const { url, key } = uploadUrlResponse.data;
-
-    await uploadService.put(url, image, {
-      headers: {
-        'Content-Type': image.type,
-      },
-    });
-
-    await httpService.post(`/recipes/${createdRecipe.id}/image-confirm`, {
-      key,
-    });
-  } catch (error) {
-    try {
-      await httpService.post(`/recipes/${createdRecipe.id}/delete`);
-    } catch {
-      console.error('Failed to clean up after failed recipe image upload');
-    }
+    await uploadImage(createdRecipe.id, image);
+  } catch {
+    console.error('Failed to clean up after failed recipe image upload');
   }
-
   return createdRecipe;
 }
 
@@ -137,11 +136,13 @@ type EditRecipeRequest = {
 };
 export async function editRecipe(
   id: number,
-  recipe: EditRecipeRequest
-): Promise<RecipeResponse> {
-  await httpService.post(`/recipes/${id}/edit`, recipe);
-  const response = await httpService.get<RecipeResponse>(`/recipes/${id}`);
-  return response.data;
+  recipe: EditRecipeRequest,
+  image?: File
+): Promise<void> {
+  await httpService.patch(`/recipes/${id}/edit`, recipe);
+  if (image) {
+    await uploadImage(id, image);
+  }
 }
 
 export async function deleteRecipe(id: number): Promise<void> {

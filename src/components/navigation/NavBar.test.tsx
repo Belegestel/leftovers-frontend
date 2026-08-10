@@ -17,18 +17,21 @@ const mockedNotificationContext = vi.hoisted(() => ({
       variant: 'RECIPE_EDIT' as const,
       data: { recipeTitle: 'Pizza' },
       isRead: false,
+      createdAt: new Date(),
     },
     {
       id: 2,
       variant: 'RECIPE_EDIT' as const,
       data: { recipeTitle: 'Pasta' },
       isRead: true,
+      createdAt: new Date(),
     },
     {
       id: 3,
       variant: 'RECIPE_EDIT' as const,
       data: { recipeTitle: 'Salad' },
       isRead: false,
+      createdAt: new Date(),
     },
   ],
 }));
@@ -175,7 +178,9 @@ describe('NavBar', () => {
       </AuthProvider>
     );
 
-    await user.click(screen.getByRole('button', { name: /notifications-button/i }));
+    await user.click(
+      screen.getByRole('button', { name: /notifications-button/i })
+    );
 
     expect(screen.getByText('Notifications')).toBeInTheDocument();
   });
@@ -189,10 +194,18 @@ describe('NavBar', () => {
       </AuthProvider>
     );
 
-    await user.click(screen.getByRole('button', { name: /notifications-button/i }));
+    await user.click(
+      screen.getByRole('button', { name: /notifications-button/i })
+    );
 
-    screen.getAllByText('New recipe edit!').map((component) => expect(component).toBeDefined());
-    screen.getAllByText('A recipe "Pizza" has changed!').map((component) => expect(component).toBeDefined());
-    screen.getAllByText('A recipe "Salad" has changed!').map((component) => expect(component).toBeDefined());
+    screen
+      .getAllByText('New recipe edit!')
+      .map((component) => expect(component).toBeDefined());
+    screen
+      .getAllByText('A recipe "Pizza" has changed!')
+      .map((component) => expect(component).toBeDefined());
+    screen
+      .getAllByText('A recipe "Salad" has changed!')
+      .map((component) => expect(component).toBeDefined());
   });
 });

@@ -3,10 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import '@testing-library/jest-dom/vitest';
 
-import {
-  NotificationProvider,
-  useNotifications,
-} from './NotificationContext';
+import { NotificationProvider, useNotifications } from './NotificationContext';
 import { NotificationCard } from '@/components/notification/NotificationCard';
 import type { Notification } from '@/services/notificationService';
 import { useAuth } from './AuthContext';
@@ -57,6 +54,7 @@ const notifications: Notification[] = [
       recipeTitle: 'Pizza',
     },
     isRead: false,
+    createdAt: new Date(),
   },
   {
     id: 2,
@@ -65,6 +63,7 @@ const notifications: Notification[] = [
       recipeTitle: 'Pasta',
     },
     isRead: true,
+    createdAt: new Date(),
   },
 ];
 
@@ -74,10 +73,7 @@ function NotificationList() {
   return (
     <>
       {notifications.map((notification) => (
-        <NotificationCard
-          key={notification.id}
-          notification={notification}
-        />
+        <NotificationCard key={notification.id} notification={notification} />
       ))}
     </>
   );
@@ -93,25 +89,23 @@ describe('NotificationProvider', () => {
     vi.mocked(getNotifications).mockResolvedValue(notifications);
     vi.mocked(markNotificationAsRead).mockResolvedValue(undefined);
     vi.mocked(getToken).mockReturnValue('test-token');
-    vi.mocked(connectNotificationSocket).mockReturnValue(
-      mockedSocket as any,
-    );
+    vi.mocked(connectNotificationSocket).mockReturnValue(mockedSocket as any);
     vi.mocked(useSnackbar).mockReturnValue(mockedShowSnackbar);
   });
 
   it('loads existing notifications when authenticated', async () => {
     render(
       <NotificationProvider>
-        <NotificationList/>
+        <NotificationList />
       </NotificationProvider>
-    )
+    );
 
     expect(
-      await screen.findByText('A recipe "Pizza" has changed!'),
+      await screen.findByText('A recipe "Pizza" has changed!')
     ).toBeInTheDocument();
 
     expect(
-      screen.getByText('A recipe "Pasta" has changed!'),
+      screen.getByText('A recipe "Pasta" has changed!')
     ).toBeInTheDocument();
 
     expect(getNotifications).toHaveBeenCalled();
@@ -124,16 +118,16 @@ describe('NotificationProvider', () => {
 
     render(
       <NotificationProvider>
-        <NotificationList/>
+        <NotificationList />
       </NotificationProvider>
-    )
+    );
 
     expect(
-      screen.queryByText('A recipe "Pizza" has changed!'),
+      screen.queryByText('A recipe "Pizza" has changed!')
     ).not.toBeInTheDocument();
 
     expect(
-      screen.queryByText('A recipe "Pasta" has changed!'),
+      screen.queryByText('A recipe "Pasta" has changed!')
     ).not.toBeInTheDocument();
 
     expect(disconnectNotificationSocket).toHaveBeenCalled();
@@ -142,71 +136,75 @@ describe('NotificationProvider', () => {
   it('connects to the notification socket when authenticated', async () => {
     render(
       <NotificationProvider>
-        <NotificationList/>
+        <NotificationList />
       </NotificationProvider>
-    )
+    );
 
     await waitFor(() => {
-      expect(connectNotificationSocket).toHaveBeenCalledWith(
-        'test-token',
-      );
+      expect(connectNotificationSocket).toHaveBeenCalledWith('test-token');
     });
   });
 
   it('displays a notification received from the socket', async () => {
     render(
       <NotificationProvider>
-        <NotificationList/>
+        <NotificationList />
       </NotificationProvider>
-    )
+    );
 
     await waitFor(() => {
       expect(mockedSocket.on).toHaveBeenCalledWith(
         'notification',
-        expect.any(Function),
+        expect.any(Function)
       );
     });
 
     const notificationHandler = mockedSocket.on.mock.calls[0][1];
 
-    act(() => notificationHandler({
-      id: 3,
-      variant: 'RECIPE_EDIT',
-      data: {
-        recipeTitle: 'Salad',
-      },
-      isRead: false,
-    }));
+    act(() =>
+      notificationHandler({
+        id: 3,
+        variant: 'RECIPE_EDIT',
+        data: {
+          recipeTitle: 'Salad',
+        },
+        isRead: false,
+        createdAt: new Date(),
+      })
+    );
 
     expect(
-      await screen.findByText('A recipe "Salad" has changed!'),
+      await screen.findByText('A recipe "Salad" has changed!')
     ).toBeInTheDocument();
   });
 
   it('shows a snackbar when a new notification arrives', async () => {
     render(
       <NotificationProvider>
-        <NotificationList/>
+        <NotificationList />
       </NotificationProvider>
-    )
+    );
 
     await waitFor(() => {
       expect(mockedSocket.on).toHaveBeenCalledWith(
         'notification',
-        expect.any(Function),
+        expect.any(Function)
       );
     });
 
     const notificationHandler = mockedSocket.on.mock.calls[0][1];
 
-    act(() => notificationHandler({
-      id: 3,
-      variant: 'RECIPE_EDIT',
-      data: {
-        recipeTitle: 'Salad',
-      },
-      isRead: false,
-    }));
+    act(() =>
+      notificationHandler({
+        id: 3,
+        variant: 'RECIPE_EDIT',
+        data: {
+          recipeTitle: 'Salad',
+        },
+        isRead: false,
+        createdAt: new Date(),
+      })
+    );
 
     expect(mockedShowSnackbar).toHaveBeenCalledWith({
       message: '🔔You have a new notification!🔔',
@@ -218,12 +216,12 @@ describe('NotificationProvider', () => {
 
     render(
       <NotificationProvider>
-        <NotificationList/>
+        <NotificationList />
       </NotificationProvider>
-    )
+    );
 
     const notification = await screen.findByText(
-      'A recipe "Pizza" has changed!',
+      'A recipe "Pizza" has changed!'
     );
 
     await user.click(notification);

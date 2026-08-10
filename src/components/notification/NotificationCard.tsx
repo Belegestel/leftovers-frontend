@@ -15,6 +15,15 @@ export function NotificationCard({ notification }: NotificationCardProps) {
       ? `A recipe "${notification.data.recipeTitle}" has changed!`
       : '';
 
+  const date = notification.createdAt.toLocaleDateString(undefined, {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  });
+
   const { markAsRead } = useNotifications();
 
   return (
@@ -53,6 +62,17 @@ export function NotificationCard({ notification }: NotificationCardProps) {
       >
         <Typography variant="h6">{title}</Typography>
         <Typography>{description}</Typography>
+        <Typography
+          sx={{
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            fontSize: 12,
+            color: 'text.secondary',
+          }}
+        >
+          {date}
+        </Typography>
       </Box>
     </ButtonBase>
   );

@@ -52,6 +52,7 @@ export function NotificationProvider({
       const socket = connectNotificationSocket(token);
 
       socket.on('notification', (notification: Notification) => {
+        notification.createdAt = new Date(notification.createdAt);
         setNotifications((current) => [notification, ...current]);
         showSnackbar({
           message: '🔔You have a new notification!🔔',

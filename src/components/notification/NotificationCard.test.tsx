@@ -25,6 +25,7 @@ describe('NotificationCard', () => {
       recipeTitle: 'Pizza',
     },
     isRead: false,
+    createdAt: new Date(),
   };
 
   it('displays the notification title and description', () => {

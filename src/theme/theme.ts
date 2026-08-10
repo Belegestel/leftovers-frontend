@@ -27,6 +27,9 @@ export const theme = createTheme({
     privateOverlay: {
       main: 'rgba(0, 0, 0, 0.65)',
     },
+    notification: {
+      main: '#ff5555'
+    }
   },
   typography: {
     fontFamily: ['Poppins', 'Roboto', 'Arial', 'sans-serif'].join(','),

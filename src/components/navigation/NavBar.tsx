@@ -11,6 +11,7 @@ import {
   Popover,
   Typography,
   Divider,
+  Badge,
 } from '@mui/material';
 import logo from '@/assets/logo.svg';
 import SearchIcon from '@mui/icons-material/Search';
@@ -56,6 +57,9 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
     navigate(`/recipes?${searchParams.toString()}`);
   };
   const { notifications } = useNotifications();
+  const unreadNotificationsCount = notifications.filter(
+    (notification) => !notification.isRead
+  ).length;
 
   return (
     <StyledAppBar position="static">
@@ -144,7 +148,20 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
               <Button
                 onClick={(event) => setNotificationsAnchor(event.currentTarget)}
               >
-                <NotificationsIcon />
+                <Badge
+                  sx={{
+                    '& .MuiBadge-badge': {
+                      backgroundColor: 'notification.main',
+                      color: 'text.primary',
+                    },
+                  }}
+                  // variant="dot"
+                  badgeContent={unreadNotificationsCount}
+                  anchorOrigin={{ vertical: 'bottom' }}
+                  overlap='circular'
+                >
+                  <NotificationsIcon />
+                </Badge>
               </Button>
               <Popover
                 anchorEl={notificationsAnchor}
@@ -186,9 +203,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                   {notifications.map((notification, index) => (
                     <Box key={index}>
                       {index != 0 && <Divider />}
-                      <NotificationCard
-                        notification={notification}
-                      />
+                      <NotificationCard notification={notification} />
                     </Box>
                   ))}
                 </Box>

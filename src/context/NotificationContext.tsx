@@ -66,7 +66,7 @@ export function NotificationProvider({
     };
   }, [authenticated]);
 
-  async function markAsRead(id: number) {
+  async function markAsRead(id: number): Promise<void> {
     await markNotificationAsRead(id);
 
     setNotifications((current) =>
@@ -74,7 +74,7 @@ export function NotificationProvider({
         notification.id === id
           ? {
               ...notification,
-              read: true,
+              isRead: true,
             }
           : notification
       )

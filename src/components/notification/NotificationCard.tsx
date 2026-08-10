@@ -1,5 +1,8 @@
-import { Box, Typography } from '@mui/material';
-import type { Notification } from '@/services/notificationService';
+import { Box, ButtonBase, Typography } from '@mui/material';
+import {
+  type Notification,
+} from '@/services/notificationService';
+import { useNotifications } from '@/context/NotificationContext';
 
 interface NotificationCardProps {
   notification: Notification;
@@ -14,7 +17,9 @@ export function NotificationCard({ notification }: NotificationCardProps) {
       ? `A recipe "${notification.data.recipeTitle}" has changed!`
       : '';
 
-  return (
+  const { markAsRead } = useNotifications();
+
+  const content = (
     <Box
       sx={
         notification.isRead
@@ -34,11 +39,24 @@ export function NotificationCard({ notification }: NotificationCardProps) {
                 borderRadius: 2,
                 bgcolor: 'primary.main',
               },
+              bgcolor: 'background.paper',
             }
       }
     >
       <Typography variant="h6">{title}</Typography>
       <Typography>{description}</Typography>
     </Box>
+  );
+
+  return notification.isRead ? (
+    content
+  ) : (
+    <ButtonBase
+      component="div"
+      onClick={async () => await markAsRead(notification.id)}
+      sx={{ display: 'block', width: '100%' }}
+    >
+      {content}
+    </ButtonBase>
   );
 }

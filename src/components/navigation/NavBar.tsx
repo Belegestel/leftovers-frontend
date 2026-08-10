@@ -152,13 +152,10 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                   sx={{
                     '& .MuiBadge-badge': {
                       backgroundColor: 'notification.main',
-                      color: 'text.primary',
+                      color: 'background.default',
                     },
                   }}
-                  // variant="dot"
                   badgeContent={unreadNotificationsCount}
-                  anchorOrigin={{ vertical: 'bottom' }}
-                  overlap='circular'
                 >
                   <NotificationsIcon />
                 </Badge>

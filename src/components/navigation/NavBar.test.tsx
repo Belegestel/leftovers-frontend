@@ -5,13 +5,36 @@ import { isAuthenticated, removeToken } from '@/services/tokenService';
 import { describe, expect, it, vi } from 'vitest';
 import '@testing-library/jest-dom/vitest';
 import { AuthProvider } from '@/context/AuthContext';
-import { NotificationProvider } from '@/context/NotificationContext';
 
 const mockedNavigate = vi.fn();
 const mockedLocation = vi.fn();
 const mockedSetSearchParams = vi.fn();
 const mockedSearchParams = { get: vi.fn(), set: vi.fn(), delete: vi.fn() };
-
+const mockedNotificationContext = vi.hoisted(() => ({
+  notifications: [
+    {
+      id: 1,
+      variant: 'RECIPE_EDIT' as const,
+      data: { recipeTitle: 'Pizza' },
+      isRead: false,
+    },
+    {
+      id: 2,
+      variant: 'RECIPE_EDIT' as const,
+      data: { recipeTitle: 'Pasta' },
+      isRead: true,
+    },
+    {
+      id: 3,
+      variant: 'RECIPE_EDIT' as const,
+      data: { recipeTitle: 'Salad' },
+      isRead: false,
+    },
+  ],
+}));
+vi.mock('@/context/NotificationContext', () => ({
+  useNotifications: () => mockedNotificationContext,
+}));
 vi.mock('@/services/tokenService', () => ({
   isAuthenticated: vi.fn(),
   getToken: vi.fn(),
@@ -34,9 +57,7 @@ describe('NavBar', () => {
     vi.mocked(isAuthenticated).mockReturnValue(false);
     render(
       <AuthProvider>
-        <NotificationProvider>
-          <NavBar authenticated={false} onLogout={() => {}} />
-        </NotificationProvider>
+        <NavBar authenticated={false} onLogout={() => {}} />
       </AuthProvider>
     );
 
@@ -50,9 +71,7 @@ describe('NavBar', () => {
   it('shows authenticated controls when logged in', () => {
     render(
       <AuthProvider>
-        <NotificationProvider>
-          <NavBar authenticated={true} onLogout={() => {}} />
-        </NotificationProvider>
+        <NavBar authenticated={true} onLogout={() => {}} />
       </AuthProvider>
     );
 
@@ -63,9 +82,7 @@ describe('NavBar', () => {
   it('opens account menu', async () => {
     render(
       <AuthProvider>
-        <NotificationProvider>
-          <NavBar authenticated={true} onLogout={() => {}} />
-        </NotificationProvider>
+        <NavBar authenticated={true} onLogout={() => {}} />
       </AuthProvider>
     );
 
@@ -82,14 +99,12 @@ describe('NavBar', () => {
     let authd = true;
     render(
       <AuthProvider>
-        <NotificationProvider>
-          <NavBar
-            authenticated={authd}
-            onLogout={() => {
-              authd = false;
-            }}
-          />
-        </NotificationProvider>
+        <NavBar
+          authenticated={authd}
+          onLogout={() => {
+            authd = false;
+          }}
+        />
       </AuthProvider>
     );
 
@@ -104,9 +119,7 @@ describe('NavBar', () => {
   it('searches a query', async () => {
     render(
       <AuthProvider>
-        <NotificationProvider>
-          <NavBar authenticated={false} onLogout={() => {}} />
-        </NotificationProvider>
+        <NavBar authenticated={false} onLogout={() => {}} />
       </AuthProvider>
     );
 
@@ -120,9 +133,7 @@ describe('NavBar', () => {
   it('removes category filtering when searching a query', async () => {
     render(
       <AuthProvider>
-        <NotificationProvider>
-          <NavBar authenticated={false} onLogout={() => {}} />
-        </NotificationProvider>
+        <NavBar authenticated={false} onLogout={() => {}} />
       </AuthProvider>
     );
 
@@ -131,5 +142,57 @@ describe('NavBar', () => {
     expect(mockedSearchParams.delete).toHaveBeenCalledWith('category');
     expect(mockedSearchParams.delete).toHaveBeenCalledWith('saved');
     expect(screen.queryByText('Filters')).not.toBeInTheDocument();
+  });
+
+  it('shows the number of unread notifications when authenticated', () => {
+    render(
+      <AuthProvider>
+        <NavBar authenticated={true} onLogout={() => {}} />
+      </AuthProvider>
+    );
+
+    expect(screen.getByText('2')).toBeInTheDocument();
+  });
+
+  it('does not show notifications when logged out', () => {
+    render(
+      <AuthProvider>
+        <NavBar authenticated={false} onLogout={() => {}} />
+      </AuthProvider>
+    );
+
+    expect(
+      screen.queryByRole('button', { name: /notifications-button/i })
+    ).not.toBeInTheDocument();
+  });
+
+  it('opens the notifications popover', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <AuthProvider>
+        <NavBar authenticated={true} onLogout={() => {}} />
+      </AuthProvider>
+    );
+
+    await user.click(screen.getByRole('button', { name: /notifications-button/i }));
+
+    expect(screen.getByText('Notifications')).toBeInTheDocument();
+  });
+
+  it('displays notifications in the notifications popover', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <AuthProvider>
+        <NavBar authenticated={true} onLogout={() => {}} />
+      </AuthProvider>
+    );
+
+    await user.click(screen.getByRole('button', { name: /notifications-button/i }));
+
+    screen.getAllByText('New recipe edit!').map((component) => expect(component).toBeDefined());
+    screen.getAllByText('A recipe "Pizza" has changed!').map((component) => expect(component).toBeDefined());
+    screen.getAllByText('A recipe "Salad" has changed!').map((component) => expect(component).toBeDefined());
   });
 });

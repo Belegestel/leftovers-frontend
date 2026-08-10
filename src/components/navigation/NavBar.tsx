@@ -147,6 +147,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
             <>
               <Button
                 onClick={(event) => setNotificationsAnchor(event.currentTarget)}
+                aria-label='notifications-button'
               >
                 <Badge
                   sx={{

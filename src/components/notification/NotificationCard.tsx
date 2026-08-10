@@ -19,6 +19,7 @@ export function NotificationCard({ notification }: NotificationCardProps) {
 
   return (
     <ButtonBase
+      aria-label="notification-read-button"
       component="div"
       onClick={async () => await markAsRead(notification.id)}
       sx={{

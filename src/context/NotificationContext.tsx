@@ -10,6 +10,7 @@ import {
   disconnectNotificationSocket,
 } from '@/sockets/NotificationSocket';
 import { getToken } from '@/services/tokenService';
+import { useSnackbar } from '@/components/common/SnackbarProvider';
 
 interface NotificationContextValue {
   notifications: Notification[];
@@ -28,6 +29,7 @@ export function NotificationProvider({
   const { authenticated } = useAuth();
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const showSnackbar = useSnackbar();
 
   useEffect(() => {
     if (!authenticated) {
@@ -51,6 +53,9 @@ export function NotificationProvider({
 
       socket.on('notification', (notification: Notification) => {
         setNotifications((current) => [notification, ...current]);
+        showSnackbar({
+          message: '🔔You have a new notification!🔔',
+        });
       });
     }
 

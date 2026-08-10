@@ -10,9 +10,9 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <AuthProvider>
-        <NotificationProvider>
-          <SnackbarProvider>{children}</SnackbarProvider>
-        </NotificationProvider>
+        <SnackbarProvider>
+          <NotificationProvider>{children}</NotificationProvider>
+        </SnackbarProvider>
       </AuthProvider>
     </ThemeProvider>
   );

@@ -56,6 +56,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
     navigate(`/recipes?${searchParams.toString()}`);
   };
   const { notifications } = useNotifications();
+
   return (
     <StyledAppBar position="static">
       <Toolbar>
@@ -183,13 +184,12 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                   }}
                 >
                   {notifications.map((notification, index) => (
-                    <>
+                    <Box key={index}>
                       {index != 0 && <Divider />}
                       <NotificationCard
-                        key={index}
                         notification={notification}
                       />
-                    </>
+                    </Box>
                   ))}
                 </Box>
               </Popover>

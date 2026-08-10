@@ -4,6 +4,7 @@ import Home from '@/pages/Home/Home';
 import RecipeDetails from '@/pages/RecipeDetails/RecipeDetails';
 import Recipes from '@/pages/Recipes/Recipes';
 import { ProtectedRoute } from './ProtectedRoute';
+import RecipeForm from '@/pages/RecipeForm/RecipeForm';
 
 export const router = createBrowserRouter([
   {
@@ -18,6 +19,8 @@ export const router = createBrowserRouter([
         children: [
           { path: 'saved', element: <Recipes mode={'saved'} /> },
           { path: 'my-recipes', element: <Recipes mode={'my'} /> },
+          { path: 'add-recipe', element: <RecipeForm />},
+          { path: 'edit-recipe/:recipe', element: <RecipeForm />}
         ],
       },
     ],

@@ -12,11 +12,13 @@ declare module '@mui/material/styles' {
     rating: Palette['primary'];
     privateOverlay: Palette['primary'];
     notification: Palette['main'];
+    upload: Palette['primary']
   }
 
   interface PaletteOptions {
     rating?: PaletteOptions['primary'];
     privateOverlay?: PaletteOptions['primary'];
     notification: Palette['main'];
+    upload?: PaletteOptions['primary'];
   }
 }

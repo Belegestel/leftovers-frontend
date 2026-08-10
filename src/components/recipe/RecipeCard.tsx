@@ -252,7 +252,10 @@ export function RecipeCard({
           <Box>
             <Link
               underline="hover"
-              onClick={(event) => event.stopPropagation()}
+              onClick={(event) => {
+                event.stopPropagation();
+                navigate(`/edit-recipe/${recipe.id}`);
+              }}
             >
               <Box
                 sx={{

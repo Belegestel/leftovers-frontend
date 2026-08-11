@@ -22,8 +22,6 @@ import { useRecipeCategories } from '@/hooks/useRecipeCategories';
 import { removeToken } from '@/services/tokenService';
 import {
   useLocation,
-  useNavigate,
-  useLocation,
   useSearchParams,
 } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';

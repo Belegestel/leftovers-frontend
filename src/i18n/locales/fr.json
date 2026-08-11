@@ -2,16 +2,16 @@
   "home": {
     "newRecipes": "Nouvelles recettes"
   },
-"language": {
-  "switchPrompt": "Cette page est également disponible en {{language}}.",
-  "switch": "Changer",
-  "names": {
-    "en": "anglais/English",
-    "fr": "français",
-    "de": "allemand/Deutsch",
-    "pl": "polonais/Polski"
-  }
-},
+  "language": {
+    "switchPrompt": "Cette page est également disponible en {{language}}.",
+    "switch": "Changer",
+    "names": {
+      "en": "anglais/English",
+      "fr": "français",
+      "de": "allemand/Deutsch",
+      "pl": "polonais/Polski"
+    }
+  },
   "recipes": {
     "titles": {
       "all": "Toutes les recettes",
@@ -217,5 +217,11 @@
       "lowScore": "Note la plus basse en premier"
     },
     "save": "Enregistrer"
+  },
+  "notification": {
+    "recipeEdit": {
+      "title": "Nouvelle modification de recette !",
+      "description": "La recette \"{{recipeTitle}}\" a été modifiée !"
+    }
   }
 }

@@ -1,18 +1,25 @@
 import { Box, ButtonBase, Typography } from '@mui/material';
 import { type Notification } from '@/services/notificationService';
 import { useNotifications } from '@/context/NotificationContext';
+import { useTranslation } from 'react-i18next';
 
 interface NotificationCardProps {
   notification: Notification;
 }
 
+const { t } = useTranslation();
+
 export function NotificationCard({ notification }: NotificationCardProps) {
   const title =
-    notification.variant === 'RECIPE_EDIT' ? 'New recipe edit!' : '';
+    notification.variant === 'RECIPE_EDIT'
+      ? t('notification.recipeEdit.title')
+      : '';
 
   const description =
     notification.variant === 'RECIPE_EDIT'
-      ? `A recipe "${notification.data.recipeTitle}" has changed!`
+      ? t('notification.recipeEdit.description', {
+          recipeTitle: notification.data.recipeTitle,
+        })
       : '';
 
   const date = notification.createdAt.toLocaleDateString(undefined, {

@@ -1,0 +1,226 @@
+{
+  "home": {
+    "newRecipes": "Nowe przepisy"
+  },
+  "language": {
+    "switchPrompt": "Ta strona jest również dostępna w języku {{language}}.",
+    "switch": "Zmień",
+    "names": {
+      "en": "angielski/English",
+      "fr": "francuski/Français",
+      "de": "niemiecki/Deutsch",
+      "pl": "polski"
+    }
+  },
+  "recipeDetails": {
+    "loading": "Ładowanie przepisu...",
+    "notExist": "Przepis nie istnieje",
+    "unable": "Nie udało się załadować przepisu."
+  },
+  "recipes": {
+    "titles": {
+      "all": "Wszystkie przepisy",
+      "saved": "Zapisane przepisy",
+      "my": "Moje przepisy"
+    },
+    "snackbar": {
+      "saved": "Przepis został dodany do zapisanych przepisów w Twoim profilu.",
+      "unsaved": "Przepis został usunięty z zapisanych przepisów w Twoim profilu."
+    }
+  },
+  "addRecipe": {
+    "labels": {
+      "basic": "Podstawowe informacje",
+      "ingredients": "Składniki",
+      "preparation": "Sposób przygotowania",
+      "publication": "Publikacja"
+    },
+    "snackbar": {
+      "editFail": "Nie udało się edytować przepisu",
+      "savedPrivate": "Twój przepis został zapisany jako prywatny. Możesz go znaleźć w swoim profilu.",
+      "savedPublic": "Gratulacje! Twój przepis został opublikowany!",
+      "deleted": "Twój przepis został usunięty!"
+    },
+    "title": "Dodaj przepis",
+    "next": "Dalej",
+    "back": "Wstecz",
+    "pages": {
+      "basic": {
+        "photo": "Dodaj zdjęcie",
+        "upload": "Kliknij, aby przesłać",
+        "dragdrop": "lub przeciągnij i upuść",
+        "filetypes": "SVG, PNG, JPG lub GIF",
+        "maxFileSize": "maks. 3 MB",
+        "title": "Dodaj podstawowe informacje",
+        "recipeTitleTitle": "Tytuł",
+        "recipeTitlePlaceholder": "Wpisz tytuł przepisu",
+        "recipeDescriptionTitle": "Opis",
+        "recipeDescriptionPlaceholder": "Wpisz opis przepisu",
+        "recipeCategoryTitle": "Kategoria",
+        "recipeCategoryPlaceholder": "Wybierz kategorię",
+        "recipePrepTimeTitle": "Czas przygotowania",
+        "recipeServingsTitle": "Liczba porcji",
+        "choose": "Wybierz",
+        "prepTime": {
+          "moreThan60": "Ponad 60 minut",
+          "selected": "Do {{selected}} minut"
+        },
+        "errors": {
+          "servings": "Liczba porcji musi być dodatnią liczbą całkowitą"
+        }
+      },
+      "ingredients": {
+        "title": "Dodaj składniki",
+        "ingredientCounter": "Składnik {{index}}",
+        "ingredientCounterPlaceholder": "Wpisz składnik",
+        "ingredientAdd": "Dodaj nowy składnik"
+      },
+      "preparation": {
+        "title": "Wpisz sposób przygotowania",
+        "addStep": "Dodaj nowy krok",
+        "stepLabel": "Krok {{index}}",
+        "stepPlaceholder": "Wpisz krok przygotowania"
+      },
+      "publication": {
+        "error": "Wystąpił błąd podczas zapisywania przepisu.",
+        "title": "Publikacja",
+        "savePrivateTitle": "Zapisz przepis jako prywatny",
+        "savePrivateDesc": "Zapisz swój przepis na koncie bez udostępniania go innym użytkownikom. Możesz opublikować go później w dowolnym momencie.",
+        "publishTitle": "Opublikuj swój przepis",
+        "publishDesc": "Opublikuj swój przepis, aby był widoczny dla wszystkich użytkowników.",
+        "deleteTitle": "Usuń swój przepis",
+        "deleteDesc": "Odrzuć ten szkic i usuń wszystkie wprowadzone informacje.",
+        "buttons": {
+          "saving": "Zapisywanie...",
+          "savedPrivate": "Przepis zapisany",
+          "toSavePrivate": "Zapisz jako prywatny",
+          "publishing": "Publikowanie...",
+          "published": "Przepis opublikowany",
+          "toPublish": "Opublikuj przepis",
+          "toDelete": "Usuń przepis"
+        },
+        "deleteModal": {
+          "title": "Czy na pewno chcesz usunąć przepis?",
+          "message": "Jeśli chcesz go usunąć, naciśnij przycisk usuwania.",
+          "confirmButton": "Usuń"
+        }
+      }
+    }
+  },
+  "modals": {
+    "emailLabel": "Adres e-mail",
+    "emailPlaceholder": "Wpisz swój adres e-mail",
+    "emailFail": "Wpisz poprawny adres e-mail",
+    "passwordLabel": "Hasło",
+    "passwordPlaceholder": "Wpisz swoje hasło",
+    "passwordVisToggle": "Przełącz widoczność hasła",
+    "passwordLength": "Minimalna długość hasła to {{length}} znaków",
+    "cancel": "Anuluj",
+    "close": "Zamknij",
+    "forgot": {
+      "snackbar": {
+        "success": "Dziękujemy! Wysłaliśmy wiadomość e-mail z linkiem, który pozwoli potwierdzić, że jesteś właścicielem tego konta",
+        "fail": "Nie udało się zresetować hasła, sprawdź swój adres e-mail"
+      },
+      "title": "Nie pamiętasz hasła?",
+      "desc": "Bez obaw! Wpisz poniżej swój adres e-mail, a wyślemy Ci link do zresetowania hasła.",
+      "send": "Wyślij e-mail"
+    },
+    "login": {
+      "fail": "Logowanie nie powiodło się",
+      "failCred": "Logowanie nie powiodło się - nieprawidłowe dane logowania",
+      "title": "Zaloguj się",
+      "forgot": "Nie pamiętasz hasła?",
+      "login": "Zaloguj się",
+      "noAccount": "Nie masz jeszcze konta?",
+      "createAccount": "Utwórz konto",
+      "rememberMe": "Zapamiętaj mnie"
+    },
+    "register": {
+      "snackbar": {
+        "success": "Pomyślnie zarejestrowano konto na naszej stronie. Aby dokończyć proces rejestracji, sprawdź swoją skrzynkę e-mail",
+        "fail": "Rejestracja nie powiodła się. Spróbuj ponownie"
+      },
+      "title": "Zarejestruj się",
+      "description": "Utwórz darmowe konto",
+      "terms": "Akceptacja <terms>Regulaminu</terms> i <privacy>Polityki prywatności</privacy>",
+      "submit": "Utwórz konto",
+      "goLoginPrompt": "Masz już konto?",
+      "login": "Zaloguj się"
+    },
+    "requireLogin": {
+      "saveTitle": "Zaloguj się, aby zapisać przepis",
+      "saveMessage": "Jeśli chcesz zapisać ten przepis, musisz się zalogować lub utworzyć konto. Nie przegap możliwości posiadania ulubionych przepisów zawsze pod ręką!",
+      "rateTitle": "Zaloguj się, aby ocenić przepis",
+      "rateMessage": "Jeśli chcesz ocenić ten przepis, musisz się zalogować lub utworzyć konto. Podziel się swoją opinią i pomóż innym użytkownikom odkrywać świetne przepisy!",
+      "login": "Zaloguj się"
+    },
+    "resetPassword": {
+      "snackbar": {
+        "fail": "Nie udało się zresetować hasła"
+      },
+      "title": "Nowe hasło",
+      "description": "Upewnij się, że Twoje hasło ma co najmniej 8 znaków. Najlepiej użyj kombinacji liter i cyfr",
+      "newPasswordTitle": "Nowe hasło",
+      "newPasswordPlaceholder": "Wpisz nowe hasło",
+      "repeatTitle": "Powtórz nowe hasło",
+      "repeatPlaceholder": "Wpisz ponownie nowe hasło",
+      "passwordsDontMatch": "Oba hasła muszą być takie same",
+      "submit": "Zresetuj moje hasło"
+    },
+    "rateRecipe": {
+      "snackbar": {
+        "success": "Dziękujemy za przesłanie oceny!",
+        "fail": "Nie udało się przesłać oceny."
+      },
+      "title": "Jak oceniasz ten przepis?",
+      "description": "Chętnie poznamy Twoją opinię. Twoja ocena pomaga nam ulepszać przepisy i zapewniać lepsze doświadczenia kulinarne.",
+      "cancel": "Nie teraz",
+      "submit": "Wyślij"
+    }
+  },
+  "footer": {
+    "tos": "Regulamin",
+    "policy": "Polityka prywatności"
+  },
+  "navbar": {
+    "logo": "Logo Leftovers",
+    "searchPlaceholder": "Szukaj",
+    "add": "Dodaj przepis",
+    "recipes": "Przepisy",
+    "myAcc": "Moje konto",
+    "saved": "Zapisane przepisy",
+    "myRecipes": "Moje przepisy",
+    "logout": "Wyloguj się",
+    "login": "Zaloguj się",
+    "signup": "Zarejestruj się"
+  },
+  "recipeCard": {
+    "recipeOfTheDay": "Przepis dnia",
+    "prepTime": "Czas przygotowania: {{time}} minut",
+    "servings_one": "{{count}} porcja",
+    "servings_other": "{{count}} porcje",
+    "view": "Zobacz przepis",
+    "private": "Prywatny",
+    "edit": "Edytuj przepis",
+    "rated": "Przepis oceniony",
+    "notRated": "Oceń przepis",
+    "ingredients": "Składniki",
+    "prep": "Przygotowanie",
+    "stepNum": "Krok {{index}}",
+    "filters": {
+      "filters": "Filtry",
+      "rating": "Ocena",
+      "date": "Data",
+      "dishType": "Rodzaj dania",
+      "saved": "Zapisane",
+      "newFirst": "Najnowsze najpierw",
+      "oldFirst": "Najstarsze najpierw",
+      "savedRecipes": "Zapisane przepisy",
+      "unsavedRecipes": "Niezapisane przepisy",
+      "highScore": "Najwyższa ocena najpierw",
+      "lowScore": "Najniższa ocena najpierw"
+    },
+    "save": "Zapisz"
+  }
+}

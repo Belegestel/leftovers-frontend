@@ -111,7 +111,7 @@ describe('ResetPasswordModal', () => {
 
   it('closes without redirecting to login when clicking close', async () => {
     renderModal();
-    await userEvent.click(screen.getByLabelText('close'));
+    await userEvent.click(screen.getByLabelText('Close'));
     expect(onClose).toHaveBeenCalledWith();
   });
 });

@@ -16,8 +16,10 @@ import {
   editRecipe,
   getRecipe,
 } from '@/services/recipeService';
-import { useNavigate, useParams } from 'react-router-dom';
+import {  useParams } from 'react-router-dom';
 import { useSnackbar } from '@/components/common/SnackbarProvider';
+import { useTranslation } from 'react-i18next';
+import { useLocalizedNavigate } from '@/hooks/useLocalizedNavigate';
 import type { Recipe } from '@/types/recipe';
 
 type RecipeFormStep = 'basic' | 'ingredients' | 'preparation' | 'publication';
@@ -54,8 +56,10 @@ export default function RecipeForm() {
   const [currentRecipeId, setCurrentRecipeId] = useState<number | undefined>();
   const [savedIsPublic, setSavedIsPublic] = useState<boolean | undefined>();
 
+  const { t } = useTranslation();
+
   const showSnackbar = useSnackbar();
-  const navigate = useNavigate();
+  const navigate = useLocalizedNavigate();
   const { recipe } = useParams();
 
   const recipeIdFromRoute = recipe ? Number(recipe) : undefined;
@@ -116,7 +120,7 @@ export default function RecipeForm() {
 
         setSavedIsPublic(recipe.isPublic);
       } catch {
-        showSnackbar({ message: '❌ Failed to edit the recipe' });
+        showSnackbar({ message: `❌ ${t('addRecipe.snackbar.editFail')}` });
         navigate('/');
       }
     };
@@ -192,7 +196,7 @@ export default function RecipeForm() {
             mb: 3,
           }}
         >
-          Add Recipe
+          {t('addRecipe.title')}
         </Typography>
 
         <Box

@@ -19,6 +19,7 @@ vi.mock('@/services/tokenService', () => ({
 vi.mock('react-router-dom', () => ({
   useNavigate: () => mockedNavigate,
   useLocation: () => mockedLocation,
+  useParams: () => ({ lang: 'en' }),
   useSearchParams: () => [mockedSearchParams, mockedSetSearchParams],
 }));
 vi.mock('@/hooks/useRecipeCategories', () => ({
@@ -102,7 +103,7 @@ describe('NavBar', () => {
     await userEvent.type(screen.getByRole('textbox'), 'tasty recipe');
     await userEvent.click(screen.getByRole('button', { name: /search/i }));
     expect(mockedSetSearchParams).toHaveBeenCalled();
-    expect(mockedSearchParams.set).toHaveBeenCalled()
+    expect(mockedSearchParams.set).toHaveBeenCalled();
     expect(mockedSetSearchParams).toHaveBeenCalledWith(mockedSearchParams);
     expect(mockedNavigate).toHaveBeenCalled();
   });
@@ -119,5 +120,5 @@ describe('NavBar', () => {
     expect(mockedSearchParams.delete).toHaveBeenCalledWith('category');
     expect(mockedSearchParams.delete).toHaveBeenCalledWith('saved');
     expect(screen.queryByText('Filters')).not.toBeInTheDocument();
-  })
+  });
 });

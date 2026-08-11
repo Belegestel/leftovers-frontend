@@ -12,6 +12,7 @@ import {
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { Controller, useFormContext } from 'react-hook-form';
 import { useRecipeCategories } from '@/hooks/useRecipeCategories';
+import { useTranslation } from 'react-i18next';
 import type { RecipeFormValues } from '@/types/recipeForm';
 
 interface BasicInformationProps {
@@ -31,6 +32,8 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
     watch,
     formState: { touchedFields, isValid, errors },
   } = useFormContext<RecipeFormValues>();
+
+  const { t } = useTranslation();
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -102,7 +105,7 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
             mb: 2,
           }}
         >
-          Add photo
+          {t('addRecipe.pages.basic.photo')}
         </Typography>
 
         <input
@@ -161,13 +164,12 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
                     fontWeight: 600,
                   }}
                 >
-                  Click to upload
+                  {t('addRecipe.pages.basic.upload')}
                 </Box>{' '}
-                or drag and drop
+                {t('addRecipe.pages.basic.dragdrop')}
                 <br />
-                SVG, PNG, JPG or GIF
-                <br />
-                (max. 3MB)
+                {t('addRecipe.pages.basic.filetypes')}
+                <br />({t('addRecipe.pages.basic.maxFileSize')})
               </Typography>
             </>
           )}
@@ -194,14 +196,16 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
             mb: 3,
           }}
         >
-          <Typography variant="h6">Add basic information</Typography>
+          <Typography variant="h6">
+            {t('addRecipe.pages.basic.title')}
+          </Typography>
 
           <Button
             variant="contained"
             disabled={!isValid || !image}
             onClick={onNext}
           >
-            Next &gt;
+            {t('addRecipe.next')} &gt;
           </Button>
         </Box>
 
@@ -213,8 +217,8 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
           }}
         >
           <TextField
-            label="Title*"
-            placeholder="Enter recipe title"
+            label={`${t('addRecipe.pages.basic.recipeTitleTitle')}*`}
+            placeholder={t('addRecipe.pages.basic.recipeTitlePlaceholder')}
             error={!!errors.title && touchedFields.title}
             slotProps={{
               inputLabel: {
@@ -239,8 +243,10 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
           </Typography>
 
           <TextField
-            label="Description*"
-            placeholder="Enter recipe description"
+            label={`${t('addRecipe.pages.basic.recipeDescriptionTitle')}*`}
+            placeholder={t(
+              'addRecipe.pages.basic.recipeDescriptionPlaceholder'
+            )}
             error={!!errors.description && touchedFields.description}
             slotProps={{
               inputLabel: {
@@ -271,7 +277,9 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
             }}
           >
             <FormControl fullWidth>
-              <InputLabel shrink>Category*</InputLabel>
+              <InputLabel shrink>
+                {t('addRecipe.pages.basic.recipeCategoryTitle')}*
+              </InputLabel>
 
               <Controller
                 name="category"
@@ -284,7 +292,7 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
                     {...field}
                     displayEmpty
                     disabled={loadingCategories}
-                    label="Category*"
+                    label={`${t('addRecipe.pages.basic.recipeCategoryTitle')}*`}
                     renderValue={(selected) => {
                       const category = categories.find(
                         (cat) => cat.id === selected
@@ -292,7 +300,9 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
                       if (category === undefined) {
                         return (
                           <Typography color="secondary">
-                            Choose category
+                            {t(
+                              'addRecipe.pages.basic.recipeCategoryPlaceholder'
+                            )}
                           </Typography>
                         );
                       }
@@ -311,7 +321,9 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
             </FormControl>
 
             <FormControl fullWidth>
-              <InputLabel shrink>Preparation time*</InputLabel>
+              <InputLabel shrink>
+                {t('addRecipe.pages.basic.recipePrepTimeTitle')}*
+              </InputLabel>
 
               <Controller
                 name="prepTime"
@@ -323,23 +335,41 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
                   <Select
                     {...field}
                     displayEmpty
-                    label="Preparation time*"
+                    label={`${t('addRecipe.pages.basic.recipePrepTimeTitle')}*`}
                     renderValue={(selected) => {
                       if (!selected) {
                         return (
-                          <Typography color="secondary">Choose</Typography>
+                          <Typography color="secondary">
+                            {t('addRecipe.pages.basic.choose')}
+                          </Typography>
                         );
                       }
 
                       return Number(selected) >= 61
-                        ? 'More than 60 minutes'
-                        : `Up to ${selected} minutes`;
+                        ? t('addRecipe.pages.basic.prepTime.moreThan60')
+                        : t('addRecipe.pages.basic.prepTime.selected', {
+                            selected,
+                          });
                     }}
                   >
-                    <MenuItem value={15}>Up to 15 minutes</MenuItem>
-                    <MenuItem value={30}>Up to 30 minutes</MenuItem>
-                    <MenuItem value={60}>Up to 60 minutes</MenuItem>
-                    <MenuItem value={90}>More than 60 minutes</MenuItem>
+                    <MenuItem value={15}>
+                      {t('addRecipe.pages.basic.prepTime.selected', {
+                        selected: 15,
+                      })}
+                    </MenuItem>
+                    <MenuItem value={30}>
+                      {t('addRecipe.pages.basic.prepTime.selected', {
+                        selected: 30,
+                      })}
+                    </MenuItem>
+                    <MenuItem value={60}>
+                      {t('addRecipe.pages.basic.prepTime.selected', {
+                        selected: 60,
+                      })}
+                    </MenuItem>
+                    <MenuItem value={90}>
+                      {t('addRecipe.pages.basic.prepTime.moreThan60')}
+                    </MenuItem>
                   </Select>
                 )}
               />
@@ -348,7 +378,7 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
             <TextField
               fullWidth
               type="number"
-              label="Servings*"
+              label={`${t('addRecipe.pages.basic.recipeServingsTitle')}*`}
               error={!!errors.servings}
               slotProps={{
                 inputLabel: {
@@ -365,7 +395,7 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
                 validate: (value) =>
                   Number.isInteger(value) && value > 0
                     ? true
-                    : 'Servings must be a positive whole number',
+                    : t('addRecipe.pages.basic.errors.servings'),
               })}
             />
           </Box>

@@ -16,8 +16,15 @@ import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
 import { useRecipeCategories } from '@/hooks/useRecipeCategories';
 import { removeToken } from '@/services/tokenService';
-import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
+import {
+  useLocation,
+  useNavigate,
+  useLocation,
+  useSearchParams,
+} from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
+import { useTranslation } from 'react-i18next';
+import { useLocalizedNavigate } from '@/hooks/useLocalizedNavigate';
 
 interface NavBarProps {
   authenticated: boolean;
@@ -25,7 +32,7 @@ interface NavBarProps {
 }
 
 export function NavBar({ authenticated, onLogout }: NavBarProps) {
-  const navigate = useNavigate();
+  const navigate = useLocalizedNavigate();
   const location = useLocation();
   const [recipesAnchor, setRecipesAnchor] = useState<null | HTMLElement>(null);
   const [myAccountAnchor, setMyAccountAnchor] = useState<null | HTMLElement>(
@@ -37,16 +44,21 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
 
   const { categories } = useRecipeCategories();
 
+  const { t } = useTranslation();
+
+  const handleSearch = () => {
+    if (!searchQuery.trim()) {
+      return;
+    }
+    navigate(`/recipes?${searchParams.toString()}`);
+  };
+
   useEffect(() => {
     const query = searchParams.get('search') ?? '';
     if (query.trim()) {
       setSearchQuery(query.trim());
     }
   }, []);
-
-  const handleSearch = () => {
-    navigate(`/recipes?${searchParams.toString()}`);
-  };
 
   return (
     <StyledAppBar position="static">
@@ -55,20 +67,20 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
           <Box>
             <Logo
               src={logo}
-              alt="Leftovers logo"
+              alt={t('navbar.logo')}
               onClick={() => navigate('/')}
               sx={{ cursor: 'pointer' }}
             />
           </Box>
           <SearchBox>
             <SearchInput
-              placeholder="Search"
+              placeholder={t('navbar.searchPlaceholder')}
               value={searchQuery}
               onChange={(event) => {
                 setSearchQuery(event.target.value);
                 const newParams = {
                   ...searchParams,
-                }
+                };
                 if (event.target.value.trim()) {
                   newParams.delete('category');
                   newParams.delete('saved');
@@ -96,7 +108,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
               startIcon={<AddIcon />}
               onClick={() => navigate('/add-recipe')}
             >
-              Add recipe
+              {t('navbar.add')}
             </Button>
           )}
           <Button
@@ -104,7 +116,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
             endIcon={<KeyboardArrowDownIcon />}
             onClick={(event) => setRecipesAnchor(event.currentTarget)}
           >
-            Recipes
+            {t('navbar.recipes')}
           </Button>
           <Menu
             anchorEl={recipesAnchor}
@@ -142,7 +154,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                 onClick={(event) => setMyAccountAnchor(event.currentTarget)}
                 sx={{ whiteSpace: 'nowrap' }}
               >
-                My account
+                {t('navbar.myAcc')}
               </Button>
               <Menu
                 anchorEl={myAccountAnchor}
@@ -156,7 +168,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                     navigate('/saved');
                   }}
                 >
-                  Saved recipes
+                  {t('navbar.saved')}
                 </MenuItem>
                 <MenuItem
                   key="my-recipes"
@@ -165,7 +177,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                     navigate('/my-recipes');
                   }}
                 >
-                  My recipes
+                  {t('navbar.myRecipes')}
                 </MenuItem>
                 <MenuItem
                   key="log-out"
@@ -176,7 +188,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                     setMyAccountAnchor(null);
                   }}
                 >
-                  Log out
+                  {t('navbar.logout')}
                 </MenuItem>
               </Menu>
             </>
@@ -191,7 +203,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                   })
                 }
               >
-                Log in
+                {t('navbar.login')}
               </Button>
               <Button
                 variant="contained"
@@ -203,7 +215,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                 }
                 sx={{ whiteSpace: 'nowrap' }}
               >
-                Sign up
+                {t('navbar.signup')}
               </Button>
             </>
           )}

@@ -60,7 +60,7 @@ describe('useBookmark', () => {
       } as any);
     });
 
-    expect(mockedNavigate).toHaveBeenCalledWith('?saveLogin=true');
+    expect(mockedNavigate).toHaveBeenCalledWith('?saveLogin=true', undefined);
   });
 
   it('bookmarks authenticated recipe', async () => {

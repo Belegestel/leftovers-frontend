@@ -4,6 +4,7 @@ import { RecipeCard } from '@/components/recipe/RecipeCard';
 import { useRecipes } from '@/hooks/useRecipes';
 import { useBookmark } from '@/hooks/useBookmark';
 import { RecipeFilters } from '@/components/recipe/RecipeFilters';
+import { useTranslation } from 'react-i18next';
 
 type RecipesProps = {
   mode: 'all' | 'saved' | 'my' | 'search';
@@ -11,16 +12,17 @@ type RecipesProps = {
 
 export default function Recipes({ mode }: RecipesProps) {
   const [searchParams] = useSearchParams();
+  const { t } = useTranslation();
 
   const searchWord = searchParams.get('search');
 
   const title =
     mode == 'all'
-      ? 'All Recipes'
+      ? t('recipes.titles.all')
       : mode == 'saved'
-        ? 'Saved Recipes'
+        ? t('recipes.titles.saved')
         : mode == 'my'
-          ? 'My Recipes'
+          ? t('recipes.titles.my')
           : searchWord ?? '';
 
   const category = searchParams.get('category') ?? undefined;

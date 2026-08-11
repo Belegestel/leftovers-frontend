@@ -1,0 +1,221 @@
+{
+  "home": {
+    "newRecipes": "Nouvelles recettes"
+  },
+"language": {
+  "switchPrompt": "Cette page est également disponible en {{language}}.",
+  "switch": "Changer",
+  "names": {
+    "en": "anglais/English",
+    "fr": "français",
+    "de": "allemand/Deutsch",
+    "pl": "polonais/Polski"
+  }
+},
+  "recipes": {
+    "titles": {
+      "all": "Toutes les recettes",
+      "saved": "Recettes enregistrées",
+      "my": "Mes recettes"
+    },
+    "snackbar": {
+      "saved": "La recette a été ajoutée aux recettes enregistrées dans votre profil.",
+      "unsaved": "La recette a été retirée des recettes enregistrées dans votre profil."
+    }
+  },
+  "addRecipe": {
+    "labels": {
+      "basic": "Informations générales",
+      "ingredients": "Ingrédients",
+      "preparation": "Méthode de préparation",
+      "publication": "Publication"
+    },
+    "snackbar": {
+      "editFail": "Échec de la modification de la recette",
+      "savedPrivate": "Votre recette a été enregistrée en privé. Vous pouvez la retrouver dans votre profil.",
+      "savedPublic": "Félicitations ! Votre recette a été publiée !",
+      "deleted": "Votre recette a été supprimée !"
+    },
+    "title": "Ajouter une recette",
+    "next": "Suivant",
+    "back": "Retour",
+    "pages": {
+      "basic": {
+        "photo": "Ajouter une photo",
+        "upload": "Cliquez pour importer",
+        "dragdrop": "ou glissez-déposez",
+        "filetypes": "SVG, PNG, JPG ou GIF",
+        "maxFileSize": "3 Mo maximum",
+        "title": "Ajouter les informations générales",
+        "recipeTitleTitle": "Titre",
+        "recipeTitlePlaceholder": "Saisissez le titre de la recette",
+        "recipeDescriptionTitle": "Description",
+        "recipeDescriptionPlaceholder": "Saisissez la description de la recette",
+        "recipeCategoryTitle": "Catégorie",
+        "recipeCategoryPlaceholder": "Choisissez une catégorie",
+        "recipePrepTimeTitle": "Temps de préparation",
+        "recipeServingsTitle": "Portions",
+        "choose": "Choisir",
+        "prepTime": {
+          "moreThan60": "Plus de 60 minutes",
+          "selected": "Jusqu'à {{selected}} minutes"
+        },
+        "errors": {
+          "servings": "Le nombre de portions doit être un nombre entier positif"
+        }
+      },
+      "ingredients": {
+        "title": "Ajouter des ingrédients",
+        "ingredientCounter": "Ingrédient {{index}}",
+        "ingredientCounterPlaceholder": "Saisissez un ingrédient",
+        "ingredientAdd": "Ajouter un nouvel ingrédient"
+      },
+      "preparation": {
+        "title": "Saisir la méthode de préparation",
+        "addStep": "Ajouter une nouvelle étape",
+        "stepLabel": "Étape {{index}}",
+        "stepPlaceholder": "Saisissez une étape de préparation"
+      },
+      "publication": {
+        "error": "Une erreur est survenue lors de l'enregistrement de la recette.",
+        "title": "Publication",
+        "savePrivateTitle": "Enregistrer la recette en privé",
+        "savePrivateDesc": "Enregistrez votre recette dans votre compte sans la rendre visible aux autres utilisateurs. Vous pourrez la publier plus tard à tout moment.",
+        "publishTitle": "Publier votre recette",
+        "publishDesc": "Publiez votre recette pour qu'elle soit visible par tous les utilisateurs.",
+        "deleteTitle": "Supprimer votre recette",
+        "deleteDesc": "Abandonnez ce brouillon et supprimez toutes les informations saisies.",
+        "buttons": {
+          "saving": "Enregistrement...",
+          "savedPrivate": "Recette enregistrée",
+          "toSavePrivate": "Enregistrer en privé",
+          "publishing": "Publication...",
+          "published": "Recette publiée",
+          "toPublish": "Publier la recette",
+          "toDelete": "Supprimer la recette"
+        },
+        "deleteModal": {
+          "title": "Êtes-vous sûr de vouloir supprimer la recette ?",
+          "message": "Si vous souhaitez la supprimer, appuyez sur le bouton de suppression.",
+          "confirmButton": "Supprimer"
+        }
+      }
+    }
+  },
+  "modals": {
+    "emailLabel": "Adresse e-mail",
+    "emailPlaceholder": "Saisissez votre e-mail",
+    "emailFail": "Saisissez une adresse e-mail valide",
+    "passwordLabel": "Mot de passe",
+    "passwordPlaceholder": "Saisissez votre mot de passe",
+    "passwordVisToggle": "Afficher ou masquer le mot de passe",
+    "passwordLength": "La longueur minimale du mot de passe est de {{length}} caractères",
+    "cancel": "Annuler",
+    "close": "Fermer",
+    "forgot": {
+      "snackbar": {
+        "success": "Merci ! Un e-mail vous a été envoyé avec un lien pour vérifier que vous êtes bien le propriétaire de ce compte",
+        "fail": "La réinitialisation du mot de passe a échoué, vérifiez votre e-mail"
+      },
+      "title": "Mot de passe oublié",
+      "desc": "Pas d'inquiétude ! Saisissez votre adresse e-mail ci-dessous et nous vous enverrons un lien pour réinitialiser votre mot de passe.",
+      "send": "Envoyer l'e-mail"
+    },
+    "login": {
+      "fail": "Échec de la connexion",
+      "failCred": "Échec de la connexion - identifiants invalides",
+      "title": "Se connecter",
+      "forgot": "Mot de passe oublié ?",
+      "login": "Se connecter",
+      "noAccount": "Vous n'avez pas encore de compte ?",
+      "createAccount": "Créer un compte",
+      "rememberMe": "Se souvenir de moi"
+    },
+    "register": {
+      "snackbar": {
+        "success": "Vous êtes inscrit avec succès sur notre site. Pour terminer le processus d'inscription, veuillez consulter votre e-mail",
+        "fail": "L'inscription a échoué. Veuillez réessayer"
+      },
+      "title": "S'inscrire",
+      "description": "Créez un compte gratuitement",
+      "terms": "Acceptation des <terms>Conditions générales</terms> et de la <privacy>Politique de confidentialité</privacy>",
+      "submit": "Créer un compte",
+      "goLoginPrompt": "Vous avez déjà un compte ?",
+      "login": "Connexion"
+    },
+    "requireLogin": {
+      "saveTitle": "Connectez-vous pour enregistrer la recette",
+      "saveMessage": "Si vous souhaitez enregistrer cette recette, vous devez vous connecter ou créer un compte. Ne manquez pas la possibilité d'avoir vos recettes préférées à portée de main lorsque vous en avez envie !",
+      "rateTitle": "Connectez-vous pour noter la recette",
+      "rateMessage": "Si vous souhaitez noter cette recette, vous devez vous connecter ou créer un compte. Partagez votre avis et aidez les autres utilisateurs à découvrir de bonnes recettes !",
+      "login": "Connexion"
+    },
+    "resetPassword": {
+      "snackbar": {
+        "fail": "La réinitialisation du mot de passe a échoué"
+      },
+      "title": "Nouveau mot de passe",
+      "description": "Veuillez vous assurer que votre mot de passe comporte au moins 8 caractères. Idéalement, utilisez un mélange de lettres et de chiffres",
+      "newPasswordTitle": "Nouveau mot de passe",
+      "newPasswordPlaceholder": "Saisissez le nouveau mot de passe",
+      "repeatTitle": "Répéter le nouveau mot de passe",
+      "repeatPlaceholder": "Saisissez à nouveau le nouveau mot de passe",
+      "passwordsDontMatch": "Les deux mots de passe doivent être identiques",
+      "submit": "Réinitialiser mon mot de passe"
+    },
+    "rateRecipe": {
+      "snackbar": {
+        "success": "Merci d'avoir envoyé votre évaluation !",
+        "fail": "Échec de l'envoi de votre évaluation."
+      },
+      "title": "Comment évalueriez-vous cette recette ?",
+      "description": "Nous aimerions connaître votre avis. Votre évaluation nous aide à améliorer les recettes et à offrir une meilleure expérience culinaire.",
+      "cancel": "Pas maintenant",
+      "submit": "Envoyer"
+    }
+  },
+  "footer": {
+    "tos": "Conditions d'utilisation",
+    "policy": "Politique de confidentialité"
+  },
+  "navbar": {
+    "logo": "Logo Leftovers",
+    "searchPlaceholder": "Rechercher",
+    "add": "Ajouter une recette",
+    "recipes": "Recettes",
+    "myAcc": "Mon compte",
+    "saved": "Recettes enregistrées",
+    "myRecipes": "Mes recettes",
+    "logout": "Se déconnecter",
+    "login": "Se connecter",
+    "signup": "S'inscrire"
+  },
+  "recipeCard": {
+    "recipeOfTheDay": "Recette du jour",
+    "prepTime": "Temps de préparation : {{time}} minutes",
+    "servings_one": "{{count}} portion",
+    "servings_other": "{{count}} portions",
+    "view": "Voir la recette",
+    "private": "Privée",
+    "edit": "Modifier la recette",
+    "rated": "Recette évaluée",
+    "notRated": "Évaluer la recette",
+    "ingredients": "Ingrédients",
+    "prep": "Préparation",
+    "stepNum": "Étape {{index}}",
+    "filters": {
+      "filters": "Filtres",
+      "rating": "Évaluation",
+      "date": "Date",
+      "dishType": "Type de plat",
+      "saved": "Enregistrées",
+      "newFirst": "Les plus récentes d'abord",
+      "oldFirst": "Les plus anciennes d'abord",
+      "savedRecipes": "Recettes enregistrées",
+      "unsavedRecipes": "Recettes non enregistrées",
+      "highScore": "Meilleure note en premier",
+      "lowScore": "Note la plus basse en premier"
+    },
+    "save": "Enregistrer"
+  }
+}

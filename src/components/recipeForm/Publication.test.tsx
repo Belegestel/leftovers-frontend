@@ -48,7 +48,7 @@ describe('Publication', () => {
     const savePrivate = vi.fn().mockResolvedValue(5);
 
     renderComponent({
-      onSave: savePrivate,
+      onSavePrivate: savePrivate,
     });
 
     fireEvent.click(screen.getByText('Save as private'));
@@ -56,8 +56,6 @@ describe('Publication', () => {
     await waitFor(() => {
       expect(savePrivate).toHaveBeenCalledTimes(1);
     });
-
-    expect(savePrivate).toHaveBeenCalledWith(false);
   });
 
   it('opens delete modal and deletes recipe after confirmation', async () => {

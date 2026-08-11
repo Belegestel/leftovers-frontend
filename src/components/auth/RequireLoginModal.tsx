@@ -1,5 +1,6 @@
 import { Box, Button, Dialog, IconButton, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import { useTranslation } from 'react-i18next';
 
 interface RequireLoginModalProps {
   open: boolean;
@@ -16,6 +17,7 @@ export function RequireLoginModal({
   onClose,
   onLogin,
 }: RequireLoginModalProps) {
+  const { t } = useTranslation();
   return (
     <Dialog
       open={open}
@@ -62,11 +64,11 @@ export function RequireLoginModal({
           }}
         >
           <Button variant="secondary" onClick={onClose}>
-            Cancel
+            {t('modals.cancel')}
           </Button>
 
           <Button variant="contained" onClick={onLogin}>
-            Login
+            {t('modals.requireLogin.cancel')}
           </Button>
         </Box>
       </Box>

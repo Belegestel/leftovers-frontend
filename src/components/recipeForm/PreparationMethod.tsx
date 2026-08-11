@@ -8,6 +8,7 @@ import {
   Typography,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import { useTranslation } from 'react-i18next';
 import type { RecipeFormValues } from '@/types/recipeForm';
 
 interface PreparationMethodProps {
@@ -23,6 +24,8 @@ export function PreparationMethod({ onBack, onNext }: PreparationMethodProps) {
     control,
     name: 'steps',
   });
+
+  const { t } = useTranslation();
 
   const steps = getValues('steps');
   const stepsValid =
@@ -42,7 +45,9 @@ export function PreparationMethod({ onBack, onNext }: PreparationMethodProps) {
           mb: 3,
         }}
       >
-        <Typography variant="h6">Enter preparation method</Typography>
+        <Typography variant="h6">
+          {t('addRecipe.pages.preparation.title')}
+        </Typography>
 
         <Box
           sx={{
@@ -55,11 +60,11 @@ export function PreparationMethod({ onBack, onNext }: PreparationMethodProps) {
             onClick={onBack}
             sx={{ border: '1px solid', borderColor: 'currentColor' }}
           >
-            &lt; Back
+            &lt; {t('addRecipe.back')}
           </Button>
 
           <Button variant="contained" disabled={!stepsValid} onClick={onNext}>
-            Next &gt;
+            {t('addRecipe.next')} &gt;
           </Button>
         </Box>
       </Box>
@@ -79,8 +84,10 @@ export function PreparationMethod({ onBack, onNext }: PreparationMethodProps) {
               <TextField
                 {...field}
                 fullWidth
-                label={`Step ${index + 1}`}
-                placeholder="Enter preparation step"
+            label={t('addRecipe.pages.preparation.stepLabel', {
+              index: index + 1,
+            })}
+            placeholder={t('addRecipe.pages.preparation.stepPlaceholder')}
                 value={field.value}
                 slotProps={{
                   inputLabel: {
@@ -115,7 +122,7 @@ export function PreparationMethod({ onBack, onNext }: PreparationMethodProps) {
             px: 0,
           }}
         >
-          + Add a new step
+          + {t('addRecipe.pages.preparation.addStep')}
         </Button>
       </Box>
     </Box>

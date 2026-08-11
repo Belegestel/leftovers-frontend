@@ -46,6 +46,7 @@ vi.mock('@/services/tokenService', () => ({
 vi.mock('react-router-dom', () => ({
   useNavigate: () => mockedNavigate,
   useLocation: () => mockedLocation,
+  useParams: () => ({ lang: 'en' }),
   useSearchParams: () => [mockedSearchParams, mockedSetSearchParams],
 }));
 vi.mock('@/hooks/useRecipeCategories', () => ({

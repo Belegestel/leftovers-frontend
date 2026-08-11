@@ -2,7 +2,10 @@ import { Box, Container, Divider, Grid, Typography } from '@mui/material';
 import { RecipeCard } from '@/components/recipe/RecipeCard';
 import { useRecipes } from '@/hooks/useRecipes';
 import { useBookmark } from '@/hooks/useBookmark';
+import { useTranslation } from 'react-i18next';
+
 export default function Home() {
+  const { t } = useTranslation();
   const { recipes, setRecipes, recipeOfTheDay, setRecipeOfTheDay } =
     useRecipes();
 
@@ -27,7 +30,7 @@ export default function Home() {
           mb: 3,
         }}
       >
-        <Typography variant="h5">New Recipes</Typography>
+        <Typography variant="h5">{t('home.newRecipes')}</Typography>
 
         <Divider
           sx={{

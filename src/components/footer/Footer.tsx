@@ -1,8 +1,10 @@
 import { Box, Link, Typography } from '@mui/material';
 import instagramIcon from '@/assets/instagram.svg';
 import facebookIcon from '@/assets/facebook.svg';
+import { useTranslation } from 'react-i18next';
 
 export function Footer() {
+  const { t } = useTranslation();
   return (
     <Box
       component="footer"
@@ -47,13 +49,13 @@ export function Footer() {
       <Box sx={{ height: 20, width: '1px', bgcolor: 'divider', mx: 1 }} />
 
       <Link href="/tos" underline="hover" color="text.primary">
-        Terms of Service
+        {t('footer.tos')}
       </Link>
 
       <Box sx={{ height: 20, width: '1px', bgcolor: 'divider', mx: 1 }} />
 
       <Link href="/privacy" underline="hover" color="text.primary">
-        Privacy Policy
+        {t('footer.policy')}
       </Link>
 
       <Typography variant="body2" sx={{ ml: 'auto' }}>

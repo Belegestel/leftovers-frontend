@@ -1,16 +1,20 @@
-import { Typography, Paper, Snackbar } from '@mui/material';
+import { Typography, Paper, Snackbar, Box } from '@mui/material';
 import React, { createContext, useContext, useState } from 'react';
 import { IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import { useTranslation } from 'react-i18next';
 
 type SnackbarState = {
   message: string;
+  action?: React.ReactNode;
 };
 
 const SnackbarContext = createContext<(state: SnackbarState) => void>(() => {});
 
 export function SnackbarProvider({ children }: { children: React.ReactNode }) {
   const [snackbar, setSnackbar] = useState<SnackbarState | null>(null);
+
+  const { t } = useTranslation();
 
   return (
     <SnackbarContext.Provider value={setSnackbar}>
@@ -44,11 +48,16 @@ export function SnackbarProvider({ children }: { children: React.ReactNode }) {
             >
               {snackbar.message}
             </Typography>
+            {snackbar?.action && (
+              <Box sx={{mr:1}}>
+                {snackbar.action}
+              </Box>
+            )}
 
             <IconButton
               size="small"
               onClick={() => setSnackbar(null)}
-              aria-label="close"
+              aria-label={t('modals.close')}
               sx={{ p: 0.5 }}
             >
               <CloseIcon fontSize="small" />

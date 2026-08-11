@@ -11,9 +11,10 @@ import DinnerDiningIcon from '@mui/icons-material/DinnerDining';
 import { RecipeRating } from './RecipeRating';
 import { SaveRecipeButton } from './SaveRecipeButton';
 import type { RecipeSummary } from '@/types/recipe';
-import { useNavigate } from 'react-router-dom';
 import CreateIcon from '@mui/icons-material/Create';
 import LockIcon from '@mui/icons-material/Lock';
+import { useTranslation } from 'react-i18next';
+import { useLocalizedNavigate } from '@/hooks/useLocalizedNavigate';
 
 interface RecipeCardProps {
   recipe: RecipeSummary;
@@ -30,9 +31,11 @@ export function RecipeCard({
 }: RecipeCardProps) {
   const isFeatured = variant === 'featured';
   const isOwnedByUser = variant === 'own';
-  const navigate = useNavigate();
+  const navigate = useLocalizedNavigate();
 
   const imageHeight = isFeatured ? { xs: 280, md: 360 } : undefined;
+
+  const { t } = useTranslation();
 
   const image = recipe.imageLink ? (
     <CardMedia
@@ -118,7 +121,7 @@ export function RecipeCard({
                 fontSize: 16,
               }}
             >
-              RECIPE OF THE DAY
+              {t('recipeCard.recipeOfTheDay').toUpperCase()}
             </Typography>
 
             <RecipeRating
@@ -144,12 +147,14 @@ export function RecipeCard({
               }}
             >
               <Typography>
-                PREPARATION TIME: {recipe.prepTime} MINUTES
+                {t('recipeCard.prepTime', { time: recipe.prepTime })}
               </Typography>
 
               <Divider orientation="vertical" flexItem />
 
-              <Typography>{recipe.servings} SERVINGS</Typography>
+              <Typography>
+                {t('recipeCard.servings', { count: recipe.servings })}
+              </Typography>
             </Box>
 
             <Link
@@ -164,7 +169,7 @@ export function RecipeCard({
                 p: 0,
               }}
             >
-              View the recipe &gt;
+              {t('recipeCard.view')} &gt;
             </Link>
           </CardContent>
         </Box>
@@ -208,7 +213,7 @@ export function RecipeCard({
                 fontWeight: 700,
               }}
             >
-              Private
+              {t('recipeCard.private')}
             </Typography>
           </Box>
         )}
@@ -264,7 +269,7 @@ export function RecipeCard({
                   mt: 2,
                 }}
               >
-                <Typography>Edit the recipe</Typography>
+                <Typography>{t('recipeCard.edit')}</Typography>
                 <CreateIcon sx={{ pb: 0.5, fontSize: 32 }} />
               </Box>
             </Link>

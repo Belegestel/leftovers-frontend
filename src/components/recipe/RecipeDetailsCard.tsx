@@ -4,6 +4,7 @@ import type { Recipe } from '@/types/recipe';
 import { SaveRecipeButton } from './SaveRecipeButton';
 import { RecipeRating } from './RecipeRating';
 import CheckIcon from '@mui/icons-material/Check';
+import { useTranslation } from 'react-i18next';
 
 interface RecipeDetailsCardProps {
   recipe: Recipe;
@@ -16,6 +17,7 @@ export function RecipeDetailsCard({
   onBookmarkToggle,
   onRate,
 }: RecipeDetailsCardProps) {
+  const { t } = useTranslation();
   const image = recipe.imageLink ? (
     <CardMedia
       component="img"
@@ -101,7 +103,14 @@ export function RecipeDetailsCard({
                 mb: 1,
               }}
             >
-              {recipe.userRating ? <> <CheckIcon fontSize='small'/> {'Recipe rated'} </>: 'Rate the recipe'}
+              {recipe.userRating ? (
+                <>
+                  {' '}
+                  <CheckIcon fontSize="small" /> {t('recipeCard.rated')}{' '}
+                </>
+              ) : (
+                t('recipeCard.notRated')
+              )}
             </Link>
           </Box>
 
@@ -143,7 +152,9 @@ export function RecipeDetailsCard({
                 mt: 3,
               }}
             >
-              PREPARATION TIME: {recipe.prepTime} MINUTES
+              {t('recipeCard.prepTime', {
+                time: recipe.prepTime,
+              }).toUpperCase()}
             </Typography>
           </Box>
         </Box>
@@ -167,7 +178,7 @@ export function RecipeDetailsCard({
               mb: 2,
             }}
           >
-            Ingredients
+            {t('recipeCard.ingredients')}
           </Typography>
 
           <Box>
@@ -191,7 +202,7 @@ export function RecipeDetailsCard({
               mb: 3,
             }}
           >
-            Preparation
+            {t('recipeCard.prep')}
           </Typography>
 
           {recipe.steps.map((step, index) => (
@@ -204,7 +215,7 @@ export function RecipeDetailsCard({
                   color: 'primary.main',
                 }}
               >
-                STEP {index + 1}
+                {t('recipeCard.stepNum', { index: index + 1 })}
               </Typography>
 
               <Typography

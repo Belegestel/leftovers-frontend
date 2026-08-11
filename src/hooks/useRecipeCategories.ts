@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getRecipeCategories, RecipeCategory } from '@/services/recipeService';
 
-export function useRecipeCategories() {
+export function useRecipeCategories(skipAllRecipes?: boolean) {
   const [recipeCategories, setRecipeCategories] = useState<RecipeCategory[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -15,10 +15,10 @@ export function useRecipeCategories() {
       });
   }, []);
 
-  const categories = [
-    new RecipeCategory('🍽 All recipes'),
-    ...recipeCategories.map((category) => new RecipeCategory(category.name)),
-  ];
+  const categories = skipAllRecipes === false || skipAllRecipes === undefined ? [
+    new RecipeCategory('🍽', 'All Recipes', ''),
+    ...recipeCategories,
+  ] : recipeCategories;
 
   return {
     categories,

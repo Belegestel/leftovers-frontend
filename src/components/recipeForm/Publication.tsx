@@ -5,11 +5,14 @@ import PublicIcon from '@mui/icons-material/Public';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import { useSnackbar } from '../common/SnackbarProvider';
 import { ConfirmModal } from '../common/ConfirmationModal';
-import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { useLocalizedNavigate } from '@/hooks/useLocalizedNavigate';
+import type { Recipe } from '@/types/recipe';
 
 interface PublicationProps {
   onBack: () => void;
-  onSave: (isPublic: boolean) => Promise<number>;
+  onSavePrivate: () => Promise<Recipe>;
+  onPublish: () => Promise<Recipe>;
   onChangeVisibility: (recipeId: number, isPrivate: boolean) => Promise<void>;
   onRecipeDelete: (recipeId: number) => Promise<void>;
   recipeId?: number;
@@ -19,7 +22,8 @@ interface PublicationProps {
 
 export function Publication({
   onBack,
-  onSave,
+  onSavePrivate,
+  onPublish,
   onChangeVisibility,
   onRecipeDelete,
   recipeId,
@@ -31,24 +35,36 @@ export function Publication({
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const showSnackbar = useSnackbar();
-  const navigate = useNavigate();
+  const navigate = useLocalizedNavigate();
 
-  const saved =
-    isPublic === undefined ? null : isPublic ? 'public' : 'private';
+  const saved = isPublic === undefined ? null : isPublic ? 'public' : 'private';
 
-  const handleAction = async (isPrivate: boolean) => {
+  const { t } = useTranslation();
+
+  const handleAction = async (
+    action: () => Promise<Recipe>,
+    visibilityAction: (recipeId: number, isPrivate: boolean) => Promise<void>,
+    isPrivate: boolean
+  ) => {
     try {
       setLoading(true);
       setError(null);
 
-      if (recipeId === undefined) {
-        await onSave(!isPrivate);
-      } else if (isDirty) {
-        await onSave(!isPrivate);
+      if (recipeId === undefined || isDirty) {
+        const recipe = await action();
       } else {
-        await onChangeVisibility(recipeId, isPrivate);
+        await visibilityAction(recipeId, isPrivate);
       }
 
+      if (isPrivate) {
+        showSnackbar({
+          message: `🔒 ${t('addRecipe.snackbar.savedPrivate')}`,
+        });
+      } else {
+        showSnackbar({
+          message: `👏 ${t('addRecipe.snackbar.savedPublic')}`,
+        });
+      }
       if (isPrivate) {
         showSnackbar({
           message:
@@ -60,7 +76,7 @@ export function Publication({
         });
       }
     } catch {
-      setError('Something went wrong while saving the recipe.');
+      setError(t('addRecipe.pages.publication.error'));
     } finally {
       setLoading(false);
     }
@@ -76,16 +92,19 @@ export function Publication({
       setError(null);
 
       await onRecipeDelete(recipeId);
+      navigate('/');
+      showSnackbar({
+        message: '🗑️ Your recipe has been deleted!',
+      });
     } catch {
-      setError('Something went wrong while saving the recipe.');
+      setError(t('addRecipe.pages.publication.error'));
     } finally {
       setLoading(false);
       setDeleteModalOpen(false);
-      navigate('/');
     }
 
     showSnackbar({
-      message: '🗑️ Your recipe has been deleted!',
+      message: `🗑️ ${t('addRecipe.snackbar.deleted')}`,
     });
   };
 
@@ -103,14 +122,16 @@ export function Publication({
           mb: 4,
         }}
       >
-        <Typography variant="h6">Publication</Typography>
+        <Typography variant="h6">
+          {t('addRecipe.pages.publication.title')}
+        </Typography>
 
         <Button
           variant="secondary"
           onClick={onBack}
           sx={{ border: '1px solid', borderColor: 'currentColor' }}
         >
-          &lt; Back
+          &lt; {t('addRecipe.back')}
         </Button>
       </Box>
 
@@ -136,19 +157,18 @@ export function Publication({
         >
           <Box>
             <Typography sx={{ fontWeight: 500, fontSize: 20 }}>
-              Save recipe as private
+              {t('addRecipe.pages.publication.savePrivateTitle')}
             </Typography>
 
             <Typography variant="body2" color="text.secondary">
-              Save your recipe to your account without making it visible to
-              other users. You can publish it later at any time.
+              {t('addRecipe.pages.publication.savePrivateDesc')}
             </Typography>
           </Box>
 
           <Button
             variant="secondary"
             disabled={loading || (saved === 'private' && !(isDirty ?? false))}
-            onClick={() => handleAction(true)}
+            onClick={() => handleAction(onSavePrivate, onChangeVisibility, true)}
             sx={{
               borderColor: 'currentColor',
               border: '1px solid',
@@ -157,10 +177,10 @@ export function Publication({
             <LockIcon sx={{ fontSize: 20, mr: 1 }} />
             <Typography sx={{ fontWeight: 600 }}>
               {loading
-                ? 'Saving...'
+                ? t('addRecipe.pages.publication.buttons.saving')
                 : saved === 'private' && !(isDirty ?? false)
-                  ? 'Recipe saved'
-                  : 'Save as private'}
+                  ? t('addRecipe.pages.publication.buttons.savedPrivate')
+                  : t('addRecipe.pages.publication.buttons.toSavePrivate')}
             </Typography>
           </Button>
         </Box>
@@ -177,27 +197,27 @@ export function Publication({
         >
           <Box>
             <Typography sx={{ fontWeight: 500, fontSize: 20 }}>
-              Publish your recipe
+              {t('addRecipe.pages.publication.publishTitle')}
             </Typography>
 
             <Typography variant="body2" color="text.secondary">
-              Publish your recipe so that it becomes visible to all users.
+              {t('addRecipe.pages.publication.publishDesc')}
             </Typography>
           </Box>
 
           <Button
             variant="contained"
             disabled={loading || (saved === 'public' && !isDirty)}
-            onClick={() => handleAction(false)}
+            onClick={() => handleAction(onPublish, onChangeVisibility, false)}
           >
             <PublicIcon sx={{ mr: 1 }} />
 
             <Typography>
               {loading
-                ? 'Publishing...'
+                ? t('addRecipe.pages.publication.buttons.publishing')
                 : saved === 'public' && !isDirty
-                  ? 'Recipe published'
-                  : 'Publish the recipe'}
+                  ? t('addRecipe.pages.publication.buttons.published')
+                  : t('addRecipe.pages.publication.buttons.toPublish')}
             </Typography>
           </Button>
         </Box>
@@ -214,17 +234,17 @@ export function Publication({
         >
           <Box>
             <Typography sx={{ fontWeight: 500, fontSize: 20 }}>
-              Delete your recipe
+              {t('addRecipe.pages.publication.deleteTitle')}
             </Typography>
 
             <Typography variant="body2" color="text.secondary">
-              Discard this draft and remove all entered information.
+              {t('addRecipe.pages.publication.deleteDesc')}
             </Typography>
           </Box>
 
           <Button
             variant="secondary"
-            disabled={loading}
+            disabled={loading || recipeId === null}
             onClick={() => setDeleteModalOpen(true)}
             sx={{
               border: '1px solid',
@@ -243,7 +263,7 @@ export function Publication({
                 fontWeight: 500,
               }}
             >
-              Delete the recipe
+              {t('addRecipe.pages.publication.buttons.toDelete')}
             </Typography>
           </Button>
         </Box>
@@ -251,9 +271,11 @@ export function Publication({
 
       <ConfirmModal
         open={deleteModalOpen}
-        title="Are you sure you want to delete the recipe?"
-        message="If you want to delete it, press the delete button."
-        confirmButton="Delete"
+        title={t('addRecipe.pages.publication.deleteModal.title')}
+        message={t('addRecipe.pages.publication.deleteModal.message')}
+        confirmButton={t(
+          'addRecipe.pages.publication.deleteModal.confirmButton'
+        )}
         onConfirm={handleDelete}
         onCancel={() => setDeleteModalOpen(false)}
       />

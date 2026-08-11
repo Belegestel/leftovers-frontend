@@ -38,7 +38,7 @@ describe('ForgotPasswordModal', () => {
 
   it('closes when clicking Cancel', async () => {
     renderModal();
-    await userEvent.click(screen.getByLabelText('close'));
+    await userEvent.click(screen.getByLabelText('Close'));
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 

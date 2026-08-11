@@ -16,6 +16,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { useForm } from 'react-hook-form';
+import { Trans, useTranslation } from 'react-i18next';
 
 interface RegisterModalProps {
   open: boolean;
@@ -33,6 +34,8 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
 
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const { t } = useTranslation();
 
   const {
     register: registerField,
@@ -62,14 +65,13 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
       });
 
       showSnackbar({
-        message:
-          "You've successfully registered on our website. To complete the registration process, please check your email 📬",
+        message: `${t('modals.register.snackbar.success')} 📬`,
       });
       reset();
       onClose();
     } catch (error) {
       showSnackbar({
-        message: 'Registration failed. Please try again.',
+        message: t('modals.register.snackbar.fail'),
       });
     } finally {
       setLoading(false);
@@ -91,21 +93,21 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         <Typography variant="h4" sx={{ font: 'Poppins', fontWeight: 600 }}>
-          Sign up
+          {t('modals.register.title')}
         </Typography>
 
         <Typography variant="body2" color="text.secondary">
-          Create an account for free
+          {t('modals.register.description')}
         </Typography>
 
         <TextField
-          label="E-mail address*"
-          placeholder="Enter your email"
+          label={`${t('modals.emailLabel')}*`}
+          placeholder={t('modals.emailPlaceholder')}
           {...registerField('email', {
             required: true,
             pattern: {
               value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-              message: 'Enter a valid email',
+              message: t('modals.emailFail'),
             },
           })}
           error={!!errors.email}
@@ -127,22 +129,24 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
 
         {errors.email && (
           <Typography sx={{ fontSize: 12, color: 'error.main' }}>
-            Enter a valid email
+            {t('modals.emailFail')}
           </Typography>
         )}
 
         <TextField
-          label="Password*"
-          placeholder="Create a password"
+          label={`${t('modals.passwordLabel')}*`}
+          placeholder={t('modals.passwordPlaceholder')}
           type={showPassword ? 'text' : 'password'}
           {...registerField('password', {
             minLength: {
-              value: {MIN_PASSWORD_LENGTH},
-              message: `Minimum password length is ${MIN_PASSWORD_LENGTH}`,
+              value: MIN_PASSWORD_LENGTH,
+              message: t('modals.passwordLength', {
+                length: MIN_PASSWORD_LENGTH,
+              }),
             },
           })}
           fullWidth
-          error={password.length < MIN_PASSWORD_LENGTH && password.length > 0 }
+          error={password.length < MIN_PASSWORD_LENGTH && password.length > 0}
           sx={{
             '& .MuiOutlinedInput-root': {
               '& fieldset': {
@@ -159,7 +163,7 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
               endAdornment: (
                 <InputAdornment position="end">
                   <IconButton
-                    aria-label="toggle password visibility"
+                    aria-label={t('modals.passwordVisToggle')}
                     onClick={() => setShowPassword((previous) => !previous)}
                     edge="end"
                   >
@@ -176,7 +180,7 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
         />
         {errors.password && (
           <Typography sx={{ fontSize: 12, color: 'error.main' }}>
-            Minimum password length is {MIN_PASSWORD_LENGTH}
+            {t('modals.passwordLength', { length: MIN_PASSWORD_LENGTH })}
           </Typography>
         )}
 
@@ -191,30 +195,33 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
           <input
             type="checkbox"
             {...registerField('termsAccepted', {
-              required: true
+              required: true,
             })}
             style={{ marginTop: 4 }}
           />
 
           <Typography variant="body2">
-            Acceptance of{' '}
-            <Link
-              href="/tos"
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{ color: 'text.primary', fontWeight: 'bold' }}
-            >
-              Terms & conditions
-            </Link>{' '}
-            and{' '}
-            <Link
-              href="/privacy"
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{ color: 'text.primary', fontWeight: 'bold' }}
-            >
-              Privacy Policy
-            </Link>{' '}
+            <Trans
+              i18nKey="modals.register.terms"
+              components={{
+                terms: (
+                  <Link
+                    href="/tos"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{ color: 'text.primary', fontWeight: 'bold' }}
+                  />
+                ),
+                privacy: (
+                  <Link
+                    href="/privacy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{ color: 'text.primary', fontWeight: 'bold' }}
+                  />
+                ),
+              }}
+            />
           </Typography>
         </Box>
 
@@ -227,12 +234,12 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
           {loading ? (
             <CircularProgress size={22} color="inherit" />
           ) : (
-            'Create an account'
+            t('modals.register.submit')
           )}
         </Button>
 
         <Typography variant="body2" sx={{ mt: 1, textAlign: 'left' }}>
-          Already have an account?{' '}
+        {`${t('modals.register.goLoginPrompt')} `}
           <Link
             href={`${location.pathname}?login=true`}
             sx={{
@@ -241,7 +248,7 @@ export function RegisterModal({ open, onClose }: RegisterModalProps) {
             }}
             underline="always"
           >
-            Login
+          {t('modals.register.login')}
           </Link>
         </Typography>
       </Box>

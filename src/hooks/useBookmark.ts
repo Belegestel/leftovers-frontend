@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   bookmarkRecipe,
   unbookmarkRecipe,
@@ -7,6 +6,8 @@ import {
 import { isAuthenticated } from '@/services/tokenService';
 import type { Recipe, RecipeSummary } from '@/types/recipe';
 import { useSnackbar } from '@/components/common/SnackbarProvider';
+import { useLocalizedNavigate } from './useLocalizedNavigate';
+import { useTranslation } from 'react-i18next';
 
 type BookmarkMode = 'list' | 'single';
 
@@ -33,8 +34,10 @@ type UseBookmarkProps =
 
 export function useBookmark({ mode, state }: UseBookmarkProps) {
   const showSnackbar = useSnackbar();
-  const navigate = useNavigate();
+  const navigate = useLocalizedNavigate();
   const [loading, setLoading] = useState(false);
+
+  const { t } = useTranslation();
 
   async function toggleBookmark(
     recipe: Recipe | RecipeSummary
@@ -54,14 +57,14 @@ export function useBookmark({ mode, state }: UseBookmarkProps) {
 
         showSnackbar({
           message:
-            '✅ The recipe was removed from Saved Recipes in your profile.',
+            `✅ ${t('recipes.snackbar.unsaved')}`,
         });
       } else {
         await bookmarkRecipe(recipe.id);
 
         showSnackbar({
           message:
-            '✅ The recipe was added to Saved Recipes in your profile.',
+            `✅ ${t('recipes.snackbar.saved')}`,
         });
       }
 

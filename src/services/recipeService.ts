@@ -8,20 +8,24 @@ type RecipeSummariesResponse = {
 type RecipeResponse = Recipe;
 
 export class RecipeCategory {
+  emoji: string;
   name: string;
+  id: string;
 
-  constructor(name: string) {
+  constructor(emoji: string, name: string, id: string) {
     this.name = name;
+    this.emoji = emoji;
+    this.id = id;
   }
 }
 
-type RecipeCategoriesResponse = { categories: string[] };
+type RecipeCategoriesResponse = { categories: RecipeCategory[] };
 
 export async function getRecipeCategories(): Promise<RecipeCategory[]> {
   const response = await httpService.get<RecipeCategoriesResponse>(
     '/recipes/categories'
   );
-  return response.data.categories.map((val) => new RecipeCategory(val));
+  return response.data.categories;
 }
 
 export interface RecipeFilters {
@@ -77,21 +81,9 @@ type ImageUploadUrlResponse = {
   key: string;
 };
 
-export async function createRecipeWithImage(
-  recipe: CreateRecipeRequest,
-  image: File | null
-): Promise<CreateRecipeResponse> {
-  const createResponse = await httpService.post<CreateRecipeResponse>(
-    '/recipes',
-    recipe
-  );
-
-  const createdRecipe = createResponse.data;
-  if (!image) {
-    return createdRecipe;
-  }
+async function uploadImage(recipeId: number, image: File) {
   const uploadUrlResponse = await httpService.post<ImageUploadUrlResponse>(
-    `/recipes/${createdRecipe.id}/image-upload-url`,
+    `/recipes/${recipeId}/image-upload-url`,
     {
       fileName: image.name,
       fileType: image.type,
@@ -106,10 +98,29 @@ export async function createRecipeWithImage(
     },
   });
 
-  await httpService.post(`/recipes/${createdRecipe.id}/image-confirm`, {
+  await httpService.post(`/recipes/${recipeId}/image-confirm`, {
     key,
   });
+}
 
+export async function createRecipeWithImage(
+  recipe: CreateRecipeRequest,
+  image: File | null
+): Promise<CreateRecipeResponse> {
+  const createResponse = await httpService.post<CreateRecipeResponse>(
+    '/recipes',
+    recipe
+  );
+
+  const createdRecipe = createResponse.data;
+  if (!image) {
+    return createdRecipe;
+  }
+  try {
+    await uploadImage(createdRecipe.id, image);
+  } catch {
+    console.error('Failed to clean up after failed recipe image upload');
+  }
   return createdRecipe;
 }
 
@@ -125,9 +136,13 @@ type EditRecipeRequest = {
 };
 export async function editRecipe(
   id: number,
-  recipe: EditRecipeRequest
+  recipe: EditRecipeRequest,
+  image?: File
 ): Promise<void> {
-  await httpService.post(`/recipes/${id}/edit`, recipe);
+  await httpService.patch(`/recipes/${id}/edit`, recipe);
+  if (image) {
+    await uploadImage(id, image);
+  }
 }
 
 export async function deleteRecipe(id: number): Promise<void> {

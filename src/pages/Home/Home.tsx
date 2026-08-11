@@ -9,6 +9,8 @@ import {
 import { RecipeCard } from '@/components/recipe/RecipeCard';
 import { useRecipes } from '@/hooks/useRecipes';
 import { useBookmark } from '@/hooks/useBookmark';
+import { useTranslation } from 'react-i18next';
+
 export default function Home() {
   const {
     recipes,
@@ -17,6 +19,7 @@ export default function Home() {
     setRecipeOfTheDay,
     recipesLoading,
   } = useRecipes();
+  const { t } = useTranslation();
 
   const { toggleBookmark } = useBookmark({
     mode: 'list',
@@ -43,7 +46,7 @@ export default function Home() {
           mb: 3,
         }}
       >
-        <Typography variant="h5">New Recipes</Typography>
+        <Typography variant="h5">{t('home.newRecipes')}</Typography>
 
         <Divider
           sx={{

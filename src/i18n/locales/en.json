@@ -1,0 +1,227 @@
+{
+  "home": {
+    "newRecipes": "New recipes"
+  },
+  "language": {
+    "switchPrompt": "This page is also available in {{language}}.",
+    "switch": "Switch",
+    "names": {
+      "en": "English",
+      "fr": "French/Français",
+      "de": "German/Deutsch",
+      "pl": "Polish/Polski"
+    }
+  },
+  "recipeDetails": {
+    "loading": "Loading recipe...",
+    "notExist": "The recipe does not exist",
+    "unable": "Unable to load recipe."
+  },
+  "recipes": {
+    "titles": {
+      "all": "All Recipes",
+      "saved": "Saved Recipes",
+      "my": "My Recipes"
+    },
+    "snackbar": {
+      "saved": "The recipe was added to Saved Recipes in your profile.",
+      "unsaved": "The recipe was removed from Saved Recipes in your profile."
+    }
+  },
+  "editRecipe": {
+    "title": "Edit Recipe"
+  },
+  "addRecipe": {
+    "labels": {
+      "basic": "Basic information",
+      "ingredients": "Ingredients",
+      "preparation": "Preparation method",
+      "publication": "Publication"
+    },
+    "snackbar": {
+      "editFail": "Failed to edit the recipe",
+      "savedPrivate": "Your recipe has been saved as private. You can find it in your profile.",
+      "savedPublic": "Congratulations! Your recipe has been published!",
+      "deleted": "Your recipe has been deleted!"
+    },
+    "title": "Add Recipe",
+    "next": "Next",
+    "back": "Back",
+    "pages": {
+      "basic": {
+        "photo": "Add photo",
+        "upload": "Click to upload",
+        "dragdrop": "or drag and drop",
+        "filetypes": "SVG, PNG, JPG or GIF",
+        "maxFileSize": "max. 3MB",
+        "title": "Add basic information",
+        "recipeTitleTitle": "Title",
+        "recipeTitlePlaceholder": "Enter recipe title",
+        "recipeDescriptionTitle": "Description",
+        "recipeDescriptionPlaceholder": "Enter recipe description",
+        "recipeCategoryTitle": "Category",
+        "recipeCategoryPlaceholder": "Choose category",
+        "recipePrepTimeTitle": "Preparation time",
+        "recipeServingsTitle": "Servings",
+        "choose": "Choose",
+        "prepTime": {
+          "moreThan60": "More than 60 minutes",
+          "selected": "Up to {{selected}} minutes"
+        },
+        "errors": {
+          "servings": "Servings must be a positive whole number"
+        }
+      },
+      "ingredients": {
+        "title": "Add ingredients",
+        "ingredientCounter": "Ingredient #{{index}}",
+        "ingredientCounterPlaceholder": "Enter ingredient",
+        "ingredientAdd": "Add a new ingredient"
+      },
+      "preparation": {
+        "title": "Enter preparation method",
+        "addStep": "Add a new step",
+        "stepLabel": "Step {{index}}",
+        "stepPlaceholder": "Enter preparation step"
+      },
+      "publication": {
+        "error": "Something went wrong while saving the recipe.",
+        "title": "Publication",
+        "savePrivateTitle": "Save recipe as private",
+        "savePrivateDesc": "Save your recipe to your account without making it visible to other users. You can publish it later at any time.",
+        "publishTitle": "Publish your recipe",
+        "publishDesc": "Publish your recipe so that it becomes visible to all users.",
+        "deleteTitle": "Delete your recipe",
+        "deleteDesc": "Discard this draft and remove all entered information.",
+        "buttons": {
+          "saving": "Saving...",
+          "savedPrivate": "Recipe saved",
+          "toSavePrivate": "Save as private",
+          "publishing": "Publishing...",
+          "published": "Recipe published",
+          "toPublish": "Publish the recipe",
+          "toDelete": "Delete the recipe"
+        },
+        "deleteModal": {
+          "title": "Are you sure you want to delete the recipe?",
+          "message": "If you want to delete it, press the delete button.",
+          "confirmButton": "Delete"
+        }
+      }
+    }
+  },
+  "modals": {
+    "emailLabel": "E-mail address",
+    "emailPlaceholder": "Enter your email",
+    "emailFail": "Enter a valid email",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "passwordVisToggle": "toggle password visibility",
+    "passwordLength": "Minimum password length is {{length}}",
+    "cancel": "Cancel",
+    "close": "Close",
+    "forgot": {
+      "snackbar": {
+        "success": "Thanks! An e-mail was sent that will ask you to click on a link to verify that you own this account",
+        "fail": "Password reset failed, verify your e-mail"
+      },
+      "title": "Forgot password",
+      "desc": "No worries! Enter your email address below, and we'll send you a link to reset your password.",
+      "send": "Send e-mail"
+    },
+    "login": {
+      "fail": "Login failed",
+      "failCred": "Login failed - invalid credentials",
+      "title": "Log in",
+      "forgot": "Forgot your password?",
+      "login": "Log in",
+      "noAccount": "Don't have an account yet?",
+      "createAccount": "Create an account",
+      "rememberMe": "Remember me"
+    },
+    "register": {
+      "snackbar": {
+        "success": "You've successfully registered on our website. To complete the registration process, please check your email",
+        "fail": "Registration failed. Please try again."
+      },
+      "title": "Sign up",
+      "description": "Create an account for free",
+      "terms": "Acceptance of <terms>Terms & conditions</terms> and <privacy>Privacy Policy</privacy>",
+      "submit": "Create an account",
+      "goLoginPrompt": "Already have an account?",
+      "login": "Login"
+    },
+    "requireLogin": {
+      "saveTitle": "Login to save the recipe",
+      "saveMessage": "If you want to save this recipe you need to login or create an account. Don't miss out on the convenience of having your favorite recipes at your fingertips whenever you crave them!",
+      "rateTitle": "Login to rate the recipe",
+      "rateMessage": "If you want to rate this recipe you need to login or create an account. Share your opinions and help other users discover great recipes!",
+      "login": "Login"
+    },
+    "resetPassword": {
+      "snackbar": { "fail": "Password reset failed" },
+      "title": "New password",
+      "description": "Please ensure your password is a minimum of 8 characters long. Ideally, include a mix of both letters and numbers",
+      "newPasswordTitle": "New password",
+      "newPasswordPlaceholder": "Type new password",
+      "repeatTitle": "Repeat new password",
+      "repeatPlaceholder": "Type new password again",
+      "passwordsDontMatch": "Both passwords must be the same",
+      "submit": "Reset my password"
+    },
+    "rateRecipe": {
+      "snackbar": {
+        "success": "Thank you for submitting your rating!",
+        "fail": "Failed to submit your rating."
+      },
+      "title": "How would you rate this recipe?",
+      "description": "We’d love to hear your feedback. Your rating helps us enhance the recipe and provide a better culinary experience.",
+      "cancel": "Not now",
+      "submit": "Submit"
+    }
+  },
+  "footer": {
+    "tos": "Terms of Service",
+    "policy": "Privacy Policy"
+  },
+  "navbar": {
+    "logo": "Leftovers logo",
+    "searchPlaceholder": "Search",
+    "add": "Add recipe",
+    "recipes": "Recipes",
+    "myAcc": "My account",
+    "saved": "Saved recipes",
+    "myRecipes": "My recipes",
+    "logout": "Log out",
+    "login": "Log in",
+    "signup": "Sign up"
+  },
+  "recipeCard": {
+    "recipeOfTheDay": "Recipe of the day",
+    "prepTime": "Preparation time: {{time}} minutes",
+    "servings_one": "{{count}} serving",
+    "servings_other": "{{count}} servings",
+    "view": "View the recipe",
+    "private": "Private",
+    "edit": "Edit the recipe",
+    "rated": "Recipe rated",
+    "notRated": "Rate the recipe",
+    "ingredients": "Ingredients",
+    "prep": "Preparation",
+    "stepNum": "Step {{index}}",
+    "filters": {
+      "filters": "Filters",
+      "rating": "Rating",
+      "date": "Date",
+      "dishType": "Dish Type",
+      "saved": "Saved",
+      "newFirst": "Newest first",
+      "oldFirst": "Oldest first",
+      "savedRecipes": "Saved recipes",
+      "unsavedRecipes": "Unsaved recipes",
+      "highScore": "Highest score first",
+      "lowScore": "Lowest score first"
+    },
+    "save": "Save"
+  }
+}

@@ -38,6 +38,7 @@ export function useRecipes(filters?: RecipeFilters) {
     filters?.ratingOrderIncr,
     filters?.title,
     filters?.description,
+    filters?.authored,
   ]);
 
   return {

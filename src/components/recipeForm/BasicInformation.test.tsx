@@ -5,7 +5,10 @@ import { vi, expect, describe, it } from 'vitest';
 
 vi.mock('@/hooks/useRecipeCategories', () => ({
   useRecipeCategories: () => ({
-    categories: [{ name: 'Breakfasts' }, { name: 'Dinner' }],
+    categories: [
+      { name: 'Breakfasts', emoji: '' },
+      { name: 'Dinner', emoji: '' },
+    ],
     loading: false,
   }),
 }));

@@ -11,6 +11,7 @@ import { RecipeCard } from '@/components/recipe/RecipeCard';
 import { useRecipes } from '@/hooks/useRecipes';
 import { useBookmark } from '@/hooks/useBookmark';
 import { RecipeFilters } from '@/components/recipe/RecipeFilters';
+import { useTranslation } from 'react-i18next';
 
 type RecipesProps = {
   mode: 'all' | 'saved' | 'my' | 'search';
@@ -18,17 +19,18 @@ type RecipesProps = {
 
 export default function Recipes({ mode }: RecipesProps) {
   const [searchParams] = useSearchParams();
+  const { t } = useTranslation();
 
   const searchWord = searchParams.get('search');
 
   const title =
     mode == 'all'
-      ? 'All Recipes'
+      ? t('recipes.titles.all')
       : mode == 'saved'
-        ? 'Saved Recipes'
+        ? t('recipes.titles.saved')
         : mode == 'my'
-          ? 'My Recipes'
-          : (searchWord ?? '');
+          ? t('recipes.titles.my')
+          : searchWord ?? '';
 
   const category = searchParams.get('category') ?? undefined;
 
@@ -39,10 +41,10 @@ export default function Recipes({ mode }: RecipesProps) {
 
   const ratingParam = searchParams.get('rating');
   const ratingOrderIncr =
-    ratingParam === null ? undefined : ratingParam === 'desc';
+    ratingParam === null ? undefined : ratingParam === 'asc';
 
   const dateParam = searchParams.get('date');
-  const dateOrderIncr = dateParam === null ? undefined : dateParam === 'asc';
+  const dateOrderIncr = dateParam === null ? undefined : dateParam === 'desc';
 
   const textSearch = searchParams.get('search') ?? undefined;
 

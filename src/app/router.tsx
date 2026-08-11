@@ -3,7 +3,7 @@ import Home from '@/pages/Home/Home';
 import RecipeDetails from '@/pages/RecipeDetails/RecipeDetails';
 import Recipes from '@/pages/Recipes/Recipes';
 import { ProtectedRoute } from './ProtectedRoute';
-import AddRecipe from '@/pages/AddRecipe/AddRecipe';
+import RecipeForm from '@/pages/RecipeForm/RecipeForm';
 import { RootLayout } from '@/layouts/RootLayout';
 
 const children = [
@@ -15,8 +15,8 @@ const children = [
     children: [
       { path: 'saved', element: <Recipes mode={'saved'} /> },
       { path: 'my-recipes', element: <Recipes mode={'my'} /> },
-      { path: 'add-recipe', element: <AddRecipe /> },
-      { path: 'edit-recipe/:recipe', element: <AddRecipe /> },
+      { path: 'add-recipe', element: <RecipeForm /> },
+      { path: 'edit-recipe/:recipe', element: <RecipeForm /> },
     ],
   },
 ];

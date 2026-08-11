@@ -30,12 +30,12 @@ export function RecipeCard({
   isPrivate,
 }: RecipeCardProps) {
   const isFeatured = variant === 'featured';
-  const isOwn = variant === 'own';
+  const isOwnedByUser = variant === 'own';
   const navigate = useLocalizedNavigate();
 
   const imageHeight = isFeatured ? { xs: 280, md: 360 } : undefined;
 
-  const { t , i18n} = useTranslation();
+  const { t } = useTranslation();
 
   const image = recipe.imageLink ? (
     <CardMedia
@@ -193,7 +193,7 @@ export function RecipeCard({
       >
         {image}
 
-        {isOwn && isPrivate && (
+        {isOwnedByUser && isPrivate && (
           <Box
             sx={{
               position: 'absolute',
@@ -253,7 +253,7 @@ export function RecipeCard({
           />
         </Box>
 
-        {isOwn && (
+        {isOwnedByUser && (
           <Box>
             <Link
               underline="hover"

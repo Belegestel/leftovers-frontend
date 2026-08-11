@@ -1,4 +1,4 @@
-import { useFieldArray, useFormContext } from 'react-hook-form';
+import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import {
   Box,
   Button,
@@ -8,29 +8,28 @@ import {
   Typography,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import type { AddRecipeFormValues } from '@/types/addRecipe';
 import { useTranslation } from 'react-i18next';
+import type { RecipeFormValues } from '@/types/recipeForm';
 
-interface IngredientsProps {
+interface PreparationMethodProps {
   onBack: () => void;
   onNext: () => void;
 }
 
-export function Ingredients({ onBack, onNext }: IngredientsProps) {
+export function PreparationMethod({ onBack, onNext }: PreparationMethodProps) {
   const { control, register, getValues } =
-    useFormContext<AddRecipeFormValues>();
-
-  const { t } = useTranslation();
+    useFormContext<RecipeFormValues>();
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: 'ingredients',
+    name: 'steps',
   });
 
-  const ingredients = getValues('ingredients');
-  const ingredientsValid =
-    ingredients.length > 0 &&
-    ingredients.every((ingredient) => ingredient.value.trim().length > 0);
+  const { t } = useTranslation();
+
+  const steps = getValues('steps');
+  const stepsValid =
+    steps.length > 0 && steps.every((step) => step.value.trim().length > 0);
 
   return (
     <Box
@@ -47,7 +46,7 @@ export function Ingredients({ onBack, onNext }: IngredientsProps) {
         }}
       >
         <Typography variant="h6">
-          {t('addRecipe.pages.ingredients.title')}
+          {t('addRecipe.pages.preparation.title')}
         </Typography>
 
         <Box
@@ -64,11 +63,7 @@ export function Ingredients({ onBack, onNext }: IngredientsProps) {
             &lt; {t('addRecipe.back')}
           </Button>
 
-          <Button
-            variant="contained"
-            disabled={!ingredientsValid}
-            onClick={onNext}
-          >
+          <Button variant="contained" disabled={!stepsValid} onClick={onNext}>
             {t('addRecipe.next')} &gt;
           </Button>
         </Box>
@@ -82,33 +77,36 @@ export function Ingredients({ onBack, onNext }: IngredientsProps) {
         }}
       >
         {fields.map((field, index) => (
-          <TextField
+          <Controller
             key={field.id}
-            fullWidth
-            label={t('addRecipe.pages.ingredients.ingredientCounter', {
+            name={`steps.${index}.value`}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                fullWidth
+            label={t('addRecipe.pages.preparation.stepLabel', {
               index: index + 1,
             })}
-            placeholder={t('addRecipe.pages.ingredients.ingredientCounterPlaceholder')}
-            slotProps={{
-              inputLabel: {
-                shrink: true,
-              },
-              input: {
-                endAdornment: (
-                  <InputAdornment position="end">
-                    {fields.length > 3 && (
-                      <IconButton onClick={() => remove(index)} edge="end">
-                        <CloseIcon />
-                      </IconButton>
-                    )}
-                  </InputAdornment>
-                ),
-              },
-            }}
-            {...register(`ingredients.${index}.value`, {
-              required: true,
-              minLength: 1,
-            })}
+            placeholder={t('addRecipe.pages.preparation.stepPlaceholder')}
+                value={field.value}
+                slotProps={{
+                  inputLabel: {
+                    shrink: true,
+                  },
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        {fields.length > 3 && (
+                          <IconButton onClick={() => remove(index)} edge="end">
+                            <CloseIcon />
+                          </IconButton>
+                        )}
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+              />
+            )}
           />
         ))}
 
@@ -124,7 +122,7 @@ export function Ingredients({ onBack, onNext }: IngredientsProps) {
             px: 0,
           }}
         >
-          + {t('addRecipe.pages.ingredients.ingredientAdd')}
+          + {t('addRecipe.pages.preparation.addStep')}
         </Button>
       </Box>
     </Box>

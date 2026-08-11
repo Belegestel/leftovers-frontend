@@ -5,11 +5,11 @@ import LunchDiningOutlinedIcon from '@mui/icons-material/LunchDiningOutlined';
 import RestaurantMenuOutlinedIcon from '@mui/icons-material/RestaurantMenuOutlined';
 import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
 import { FormProvider, useForm } from 'react-hook-form';
-import { BasicInformation } from '@/components/addRecipe/BasicInformation';
-import type { AddRecipeFormValues } from '@/types/addRecipe';
-import { Ingredients } from '@/components/addRecipe/Ingredients';
-import { PreparationMethod } from '@/components/addRecipe/PreparationMethod';
-import { Publication } from '@/components/addRecipe/Publication';
+import { BasicInformation } from '@/components/recipeForm/BasicInformation';
+import type { RecipeFormValues } from '@/types/recipeForm';
+import { Ingredients } from '@/components/recipeForm/Ingredients';
+import { PreparationMethod } from '@/components/recipeForm/PreparationMethod';
+import { Publication } from '@/components/recipeForm/Publication';
 import {
   createRecipeWithImage,
   deleteRecipe,
@@ -20,11 +20,39 @@ import {  useParams } from 'react-router-dom';
 import { useSnackbar } from '@/components/common/SnackbarProvider';
 import { useTranslation } from 'react-i18next';
 import { useLocalizedNavigate } from '@/hooks/useLocalizedNavigate';
+import type { Recipe } from '@/types/recipe';
 
-type AddRecipeStep = 'basic' | 'ingredients' | 'preparation' | 'publication';
+type RecipeFormStep = 'basic' | 'ingredients' | 'preparation' | 'publication';
 
-export default function AddRecipe() {
-  const [activeStep, setActiveStep] = useState<AddRecipeStep>('basic');
+const steps: {
+  value: RecipeFormStep;
+  label: string;
+  icon: React.ReactNode;
+}[] = [
+  {
+    value: 'basic',
+    label: 'BASIC INFORMATION',
+    icon: <InfoOutlinedIcon />,
+  },
+  {
+    value: 'ingredients',
+    label: 'INGREDIENTS',
+    icon: <LunchDiningOutlinedIcon />,
+  },
+  {
+    value: 'preparation',
+    label: 'PREPARATION METHOD',
+    icon: <RestaurantMenuOutlinedIcon />,
+  },
+  {
+    value: 'publication',
+    label: 'PUBLICATION',
+    icon: <LibraryBooksOutlinedIcon />,
+  },
+];
+
+export default function RecipeForm() {
+  const [activeStep, setActiveStep] = useState<RecipeFormStep>('basic');
   const [currentRecipeId, setCurrentRecipeId] = useState<number | undefined>();
   const [savedIsPublic, setSavedIsPublic] = useState<boolean | undefined>();
 
@@ -36,34 +64,7 @@ export default function AddRecipe() {
 
   const recipeIdFromRoute = recipe ? Number(recipe) : undefined;
 
-  const steps: {
-    value: AddRecipeStep;
-    label: string;
-    icon: React.ReactNode;
-  }[] = [
-    {
-      value: 'basic',
-      label: t('addRecipe.labels.basic').toUpperCase(),
-      icon: <InfoOutlinedIcon />,
-    },
-    {
-      value: 'ingredients',
-      label: t('addRecipe.labels.ingredients').toUpperCase(),
-      icon: <LunchDiningOutlinedIcon />,
-    },
-    {
-      value: 'preparation',
-      label: t('addRecipe.labels.preparation').toUpperCase(),
-      icon: <RestaurantMenuOutlinedIcon />,
-    },
-    {
-      value: 'publication',
-      label: t('addRecipe.labels.publication').toUpperCase(),
-      icon: <LibraryBooksOutlinedIcon />,
-    },
-  ];
-
-  const methods = useForm<AddRecipeFormValues>({
+  const methods = useForm<RecipeFormValues>({
     mode: 'onChange',
     defaultValues: {
       title: '',
@@ -147,42 +148,26 @@ export default function AddRecipe() {
     });
   };
 
-  const handleSaveRecipe = async (isPublic: boolean): Promise<number> => {
+  const handleSaveRecipe = async (isPublic: boolean): Promise<Recipe> => {
     const values = methods.getValues();
 
-    const data = {
-      title: values.title,
-      description: values.description,
-      category:
-        values.category.toLowerCase() === 'breakfasts'
-          ? 'BREAKFAST'
-          : values.category.toUpperCase(),
-      prepTime: values.prepTime ?? 0,
-      servings: values.servings,
-      ingredients: values.ingredients.map((ingredient) => ingredient.value),
-      steps: values.steps.map((step) => step.value),
-      isPublic,
-    };
-
-    if (currentRecipeId) {
-      await editRecipe(currentRecipeId, data);
-      setSavedIsPublic(isPublic);
-      reset(methods.getValues());
-      return currentRecipeId;
-    }
-
-    if (typeof values.image === 'string') {
-      throw new Error('Something went wrong');
-    }
-
-    const recipe = await createRecipeWithImage(data, values.image);
-
-    setCurrentRecipeId(recipe.id);
-    setSavedIsPublic(isPublic);
-
-    reset(methods.getValues());
-
-    return recipe.id;
+    const recipe = await createRecipeWithImage(
+      {
+        title: values.title,
+        description: values.description,
+        category:
+          values.category.toLowerCase() === 'breakfasts'
+            ? 'BREAKFAST'
+            : values.category.toUpperCase(),
+        prepTime: values.prepTime ?? 0,
+        servings: values.servings,
+        ingredients: values.ingredients.map((ingredient) => ingredient.value),
+        steps: values.steps.map((step) => step.value),
+        isPublic,
+      },
+      values.image
+    );
+    return recipe;
   };
 
   const handleEditVisibility = async (
@@ -258,38 +243,49 @@ export default function AddRecipe() {
           })}
         </Box>
 
-        {activeStep === 'basic' && <BasicInformation onNext={goToNextStep} />}
+        <Box
+          sx={{
+            mt: 4,
+            p: 5,
+            pt: 1,
+            backgroundColor: 'background.default',
+            borderRadius: 3,
+          }}
+        >
+          {activeStep === 'basic' && <BasicInformation onNext={goToNextStep} />}
 
-        {activeStep === 'ingredients' && (
-          <Box sx={{ mt: 4 }}>
-            <Ingredients onNext={goToNextStep} onBack={goToPreviousStep} />
-          </Box>
-        )}
+          {activeStep === 'ingredients' && (
+            <Box sx={{ mt: 4 }}>
+              <Ingredients onNext={goToNextStep} onBack={goToPreviousStep} />
+            </Box>
+          )}
 
-        {activeStep === 'preparation' && (
-          <Box sx={{ mt: 4 }}>
-            <PreparationMethod
-              onNext={goToNextStep}
-              onBack={goToPreviousStep}
-            />
-          </Box>
-        )}
+          {activeStep === 'preparation' && (
+            <Box sx={{ mt: 4 }}>
+              <PreparationMethod
+                onNext={goToNextStep}
+                onBack={goToPreviousStep}
+              />
+            </Box>
+          )}
 
-        {activeStep === 'publication' && (
-          <Box sx={{ mt: 4 }}>
-            <Publication
-              onBack={goToPreviousStep}
-              onSave={handleSaveRecipe}
-              onChangeVisibility={(recipeId: number, isPrivate: boolean) =>
-                handleEditVisibility(recipeId, isPrivate)
-              }
-              onRecipeDelete={handleDeleteRecipe}
-              recipeId={currentRecipeId}
-              isPublic={savedIsPublic}
-              isDirty={isDirty}
-            />
-          </Box>
-        )}
+          {activeStep === 'publication' && (
+            <Box sx={{ mt: 4 }}>
+              <Publication
+                onBack={goToPreviousStep}
+                onSavePrivate={() => handleSaveRecipe(false)}
+                onPublish={() => handleSaveRecipe(true)}
+                onChangeVisibility={(recipeId: number, isPrivate: boolean) =>
+                  handleEditVisibility(recipeId, isPrivate)
+                }
+                onRecipeDelete={handleDeleteRecipe}
+                recipeId={currentRecipeId}
+                isPublic={savedIsPublic}
+                isDirty={isDirty}
+              />
+            </Box>
+          )}
+        </Box>
       </FormProvider>
     </Container>
   );

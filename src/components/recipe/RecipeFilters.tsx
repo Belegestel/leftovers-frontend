@@ -17,9 +17,10 @@ import { useLocation,  useSearchParams } from 'react-router-dom';
 import { useRecipeCategories } from '@/hooks/useRecipeCategories';
 import { useTranslation } from 'react-i18next';
 import { useLocalizedNavigate } from '@/hooks/useLocalizedNavigate';
+import type { RecipeCategory } from '@/services/recipeService';
 
 interface RecipeFilterForm {
-  categories: string[];
+  categories: RecipeCategory[];
   saved: string[];
   rating: string;
   date: string;
@@ -30,9 +31,9 @@ export function RecipeFilters() {
   const location = useLocation();
   const navigate = useLocalizedNavigate();
 
-  const { categories } = useRecipeCategories();
+  const { categories } = useRecipeCategories(true);
 
-  const categoryNames = categories.slice(1).map((category) =>
+  const categoryNames = categories.map((category) =>
     category.name
       .slice(2)
       .trim()
@@ -118,18 +119,19 @@ export function RecipeFilters() {
           mt: 2,
         }}
       >
-        <Button
-          startIcon={<FilterListIcon />}
-          onClick={(event) => setFilterAnchor(event.currentTarget)}
-          color={filterOpen ? 'primary' : 'secondary'}
-          sx={{
-            border: 1,
-            borderColor: 'currentColor',
-          }}
-        >
-          {t('recipeCard.filters.filters')}
-        </Button>
-
+        {!(searchParams.get('search') ?? '') && (
+          <Button
+            startIcon={<FilterListIcon />}
+            onClick={(event) => setFilterAnchor(event.currentTarget)}
+            color={filterOpen ? 'primary' : 'secondary'}
+            sx={{
+              border: 1,
+              borderColor: 'currentColor',
+            }}
+          >
+            {t('recipeCard.filters.filters')}
+          </Button>
+        )}
         <Button
           startIcon={<SwapVertIcon />}
           onClick={(event) => setRatingAnchor(event.currentTarget)}
@@ -316,13 +318,13 @@ export function RecipeFilters() {
               sx={{ p: 1 }}
             >
               <FormControlLabel
-                value="asc"
+                value="desc"
                 control={<Radio />}
                 label={t('recipeCard.filters.newFirst')}
               />
 
               <FormControlLabel
-                value="desc"
+                value="asc"
                 control={<Radio />}
                 label={t('recipeCard.filters.oldFirst')}
               />

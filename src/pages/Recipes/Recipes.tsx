@@ -7,19 +7,23 @@ import { RecipeFilters } from '@/components/recipe/RecipeFilters';
 import { useTranslation } from 'react-i18next';
 
 type RecipesProps = {
-  mode: 'all' | 'saved' | 'my';
+  mode: 'all' | 'saved' | 'my' | 'search';
 };
 
 export default function Recipes({ mode }: RecipesProps) {
   const [searchParams] = useSearchParams();
   const { t } = useTranslation();
 
+  const searchWord = searchParams.get('search');
+
   const title =
     mode == 'all'
       ? t('recipes.titles.all')
       : mode == 'saved'
         ? t('recipes.titles.saved')
-        : t('recipes.titles.my');
+        : mode == 'my'
+          ? t('recipes.titles.my')
+          : searchWord ?? '';
 
   const category = searchParams.get('category') ?? undefined;
 
@@ -30,10 +34,12 @@ export default function Recipes({ mode }: RecipesProps) {
 
   const ratingParam = searchParams.get('rating');
   const ratingOrderIncr =
-    ratingParam === null ? undefined : ratingParam === 'desc';
+    ratingParam === null ? undefined : ratingParam === 'asc';
 
   const dateParam = searchParams.get('date');
-  const dateOrderIncr = dateParam === null ? undefined : dateParam === 'asc';
+  const dateOrderIncr = dateParam === null ? undefined : dateParam === 'desc';
+
+  const textSearch = searchParams.get('search') ?? undefined;
 
   const authored = mode == 'my';
 
@@ -43,6 +49,8 @@ export default function Recipes({ mode }: RecipesProps) {
     ratingOrderIncr,
     dateOrderIncr,
     authored,
+    title: textSearch,
+    description: textSearch,
   });
 
   const { toggleBookmark } = useBookmark({
@@ -60,7 +68,10 @@ export default function Recipes({ mode }: RecipesProps) {
           mb: 3,
         }}
       >
-        <Typography variant="h5">{title}</Typography>
+        {searchWord && (
+          <Typography sx={{color: 'text.secondary'}}>Search results for</Typography>
+        )}
+        <Typography variant="h5">{searchWord?.trim() ? searchWord : title}</Typography>
 
         <Divider
           sx={{

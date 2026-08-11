@@ -13,10 +13,15 @@ import logo from '@/assets/logo.svg';
 import SearchIcon from '@mui/icons-material/Search';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import AddIcon from '@mui/icons-material/Add';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRecipeCategories } from '@/hooks/useRecipeCategories';
 import { removeToken } from '@/services/tokenService';
-import {  useLocation } from 'react-router-dom';
+import {
+  useLocation,
+  useNavigate,
+  useLocation,
+  useSearchParams,
+} from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { useLocalizedNavigate } from '@/hooks/useLocalizedNavigate';
@@ -35,6 +40,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
   );
   const [searchQuery, setSearchQuery] = useState('');
   const { authChanged } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const { categories } = useRecipeCategories();
 
@@ -44,7 +50,15 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
     if (!searchQuery.trim()) {
       return;
     }
+    navigate(`/recipes?${searchParams.toString()}`);
   };
+
+  useEffect(() => {
+    const query = searchParams.get('search') ?? '';
+    if (query.trim()) {
+      setSearchQuery(query.trim());
+    }
+  }, []);
 
   return (
     <StyledAppBar position="static">
@@ -62,14 +76,24 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
             <SearchInput
               placeholder={t('navbar.searchPlaceholder')}
               value={searchQuery}
-              onChange={(event) => setSearchQuery(event.target.value)}
+              onChange={(event) => {
+                setSearchQuery(event.target.value);
+                const newParams = {
+                  ...searchParams,
+                };
+                if (event.target.value.trim()) {
+                  newParams.delete('category');
+                  newParams.delete('saved');
+                }
+                setSearchParams(newParams);
+              }}
               onKeyDown={(event) => {
                 if (event.key === 'Enter') {
                   handleSearch();
                 }
               }}
             />
-            <IconButton size="small" onClick={handleSearch}>
+            <IconButton size="small" onClick={handleSearch} aria-label="search">
               <SearchIcon fontSize="small" />
             </IconButton>
           </SearchBox>
@@ -109,7 +133,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                     search:
                       index == 0
                         ? ''
-                        : `?category=${encodeURIComponent(category.name.slice(2).trim())}`,
+                        : `?category=${encodeURIComponent(category.name.trim())}`,
                   });
                   setRecipesAnchor(null);
                 }}
@@ -118,7 +142,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                   borderColor: 'divider',
                 }}
               >
-                {category.name.replace(/\b\w/g, (char) => char.toUpperCase())}
+                {`${category.emoji} ${category.name.replace(/\b\w/g, (char) => char.toUpperCase())}`}
               </MenuItem>
             ))}
           </Menu>

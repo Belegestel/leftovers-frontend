@@ -12,27 +12,32 @@ import {
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { Controller, useFormContext } from 'react-hook-form';
 import { useRecipeCategories } from '@/hooks/useRecipeCategories';
-import type { AddRecipeFormValues } from '@/types/addRecipe';
 import { useTranslation } from 'react-i18next';
+import type { RecipeFormValues } from '@/types/recipeForm';
 
 interface BasicInformationProps {
   onNext: () => void;
 }
+
+const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/gif', 'image/svg+xml'];
+const ALLOWED_FILE_SIZE = 3 * 1024 * 1024;
 
 export function BasicInformation({ onNext }: BasicInformationProps) {
   const {
     control,
     register,
     setValue,
+    setError,
+    clearErrors,
     watch,
-    formState: { isValid, errors },
-  } = useFormContext<AddRecipeFormValues>();
+    formState: { touchedFields, isValid, errors },
+  } = useFormContext<RecipeFormValues>();
 
   const { t } = useTranslation();
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const { categories, loading: loadingCategories } = useRecipeCategories();
+  const { categories, loading: loadingCategories } = useRecipeCategories(true);
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
@@ -64,16 +69,25 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
       return;
     }
 
-    if (
-      file.size <= 3 * 1024 * 1024 &&
-      ['image/png', 'image/jpeg', 'image/gif', 'image/svg+xml'].indexOf(
-        file.type
-      ) != -1
-    ) {
-      setValue('image', file, {
-        shouldValidate: true,
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      setError('image', {
+        type: 'manual',
+        message: 'Only SVG, PNG, JPG and GIF files are allowed.',
       });
+      return;
     }
+    if (file.size >= ALLOWED_FILE_SIZE) {
+      setError('image', {
+        type: 'manual',
+        message: 'Image must be smaller than 3MB',
+      });
+      return;
+    }
+    clearErrors('image');
+    setValue('image', file, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
   };
 
   return (
@@ -160,6 +174,11 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
             </>
           )}
         </Box>
+        {errors.image && (
+          <Typography sx={{ color: 'error.main' }}>
+            {errors.image.message}
+          </Typography>
+        )}
       </Box>
 
       <Box
@@ -200,7 +219,7 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
           <TextField
             label={`${t('addRecipe.pages.basic.recipeTitleTitle')}*`}
             placeholder={t('addRecipe.pages.basic.recipeTitlePlaceholder')}
-            error={!!errors.title && !!title}
+            error={!!errors.title && touchedFields.title}
             slotProps={{
               inputLabel: {
                 shrink: true,
@@ -228,7 +247,7 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
             placeholder={t(
               'addRecipe.pages.basic.recipeDescriptionPlaceholder'
             )}
-            error={!!errors.description && !!description}
+            error={!!errors.description && touchedFields.description}
             slotProps={{
               inputLabel: {
                 shrink: true,
@@ -275,7 +294,10 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
                     disabled={loadingCategories}
                     label={`${t('addRecipe.pages.basic.recipeCategoryTitle')}*`}
                     renderValue={(selected) => {
-                      if (!selected) {
+                      const category = categories.find(
+                        (cat) => cat.id === selected
+                      );
+                      if (category === undefined) {
                         return (
                           <Typography color="secondary">
                             {t(
@@ -285,25 +307,14 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
                         );
                       }
 
-                      return selected;
+                      return category.name;
                     }}
                   >
-                    {categories
-                      .filter((_, index) => index != 0)
-                      .map((category) => (
-                        <MenuItem
-                          key={category.name}
-                          value={category.name
-                            .slice(2)
-                            .trim()
-                            .replace(/\b\w/g, (c) => c.toUpperCase())}
-                        >
-                          {category.name
-                            .slice(2)
-                            .trim()
-                            .replace(/\b\w/g, (c) => c.toUpperCase())}
-                        </MenuItem>
-                      ))}
+                    {categories.map((category) => (
+                      <MenuItem key={category.id} value={category.id}>
+                        {category.name.replace(/\b\w/g, (c) => c.toUpperCase())}
+                      </MenuItem>
+                    ))}
                   </Select>
                 )}
               />

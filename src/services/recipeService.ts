@@ -6,6 +6,9 @@ type RecipeSummariesResponse = {
   recipes: RecipeSummary[];
 };
 type RecipeResponse = Recipe;
+export type RecipeSuggestions = {
+  names: string[];
+};
 
 export class RecipeCategory {
   emoji: string;
@@ -26,6 +29,14 @@ export async function getRecipeCategories(): Promise<RecipeCategory[]> {
     '/recipes/categories'
   );
   return response.data.categories;
+}
+
+export async function getRecipeSuggestions(query: string): Promise<RecipeSuggestions> {
+  const response = await httpService.get<RecipeSuggestions>(
+    '/recipes/suggestions/',
+    { params: { query }}
+  );
+  return response.data;
 }
 
 export interface RecipeFilters {

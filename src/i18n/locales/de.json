@@ -7,8 +7,8 @@
     "switch": "Wechseln",
     "names": {
       "en": "Englisch/English",
-      "fr": "Französisch/",
-      "de": "Deutsch",
+      "fr": "Französisch/Français",
+      "de": "Deutsch/German",
       "pl": "Polnisch/Polski"
     }
   },
@@ -26,22 +26,23 @@
     "snackbar": {
       "saved": "Das Rezept wurde zu den gespeicherten Rezepten in deinem Profil hinzugefügt.",
       "unsaved": "Das Rezept wurde aus den gespeicherten Rezepten in deinem Profil entfernt."
-    }
+    },
+    "nomore": "Keine weiteren Rezepte"
   },
   "editRecipe": {
     "title": "Rezept bearbeiten"
   },
   "addRecipe": {
     "labels": {
-      "basic": "Grundinformationen",
+      "basic": "Grundlegende Informationen",
       "ingredients": "Zutaten",
       "preparation": "Zubereitung",
       "publication": "Veröffentlichung"
     },
     "snackbar": {
       "editFail": "Das Rezept konnte nicht bearbeitet werden",
-      "savedPrivate": "Dein Rezept wurde privat gespeichert. Du findest es in deinem Profil.",
-      "savedPublic": "Glückwunsch! Dein Rezept wurde veröffentlicht!",
+      "savedPrivate": "Dein Rezept wurde als privat gespeichert. Du findest es in deinem Profil.",
+      "savedPublic": "Herzlichen Glückwunsch! Dein Rezept wurde veröffentlicht!",
       "deleted": "Dein Rezept wurde gelöscht!"
     },
     "title": "Rezept hinzufügen",
@@ -51,10 +52,10 @@
       "basic": {
         "photo": "Foto hinzufügen",
         "upload": "Zum Hochladen klicken",
-        "dragdrop": "oder per Drag & Drop hinzufügen",
+        "dragdrop": "oder per Drag & Drop hierher ziehen",
         "filetypes": "SVG, PNG, JPG oder GIF",
         "maxFileSize": "max. 3 MB",
-        "title": "Grundinformationen hinzufügen",
+        "title": "Grundlegende Informationen hinzufügen",
         "recipeTitleTitle": "Titel",
         "recipeTitlePlaceholder": "Rezepttitel eingeben",
         "recipeDescriptionTitle": "Beschreibung",
@@ -74,7 +75,7 @@
       },
       "ingredients": {
         "title": "Zutaten hinzufügen",
-        "ingredientCounter": "Zutat {{index}}",
+        "ingredientCounter": "Zutat Nr. {{index}}",
         "ingredientCounterPlaceholder": "Zutat eingeben",
         "ingredientAdd": "Neue Zutat hinzufügen"
       },
@@ -87,16 +88,16 @@
       "publication": {
         "error": "Beim Speichern des Rezepts ist ein Fehler aufgetreten.",
         "title": "Veröffentlichung",
-        "savePrivateTitle": "Rezept privat speichern",
+        "savePrivateTitle": "Rezept als privat speichern",
         "savePrivateDesc": "Speichere dein Rezept in deinem Konto, ohne es für andere Nutzer sichtbar zu machen. Du kannst es jederzeit später veröffentlichen.",
         "publishTitle": "Dein Rezept veröffentlichen",
         "publishDesc": "Veröffentliche dein Rezept, damit es für alle Nutzer sichtbar wird.",
         "deleteTitle": "Dein Rezept löschen",
-        "deleteDesc": "Diesen Entwurf verwerfen und alle eingegebenen Informationen entfernen.",
+        "deleteDesc": "Verwirf diesen Entwurf und entferne alle eingegebenen Informationen.",
         "buttons": {
           "saving": "Wird gespeichert...",
           "savedPrivate": "Rezept gespeichert",
-          "toSavePrivate": "Privat speichern",
+          "toSavePrivate": "Als privat speichern",
           "publishing": "Wird veröffentlicht...",
           "published": "Rezept veröffentlicht",
           "toPublish": "Rezept veröffentlichen",
@@ -104,7 +105,7 @@
         },
         "deleteModal": {
           "title": "Möchtest du das Rezept wirklich löschen?",
-          "message": "Wenn du es löschen möchtest, drücke die Löschtaste.",
+          "message": "Wenn du es löschen möchtest, klicke auf die Schaltfläche „Löschen“.",
           "confirmButton": "Löschen"
         }
       }
@@ -113,17 +114,17 @@
   "modals": {
     "emailLabel": "E-Mail-Adresse",
     "emailPlaceholder": "E-Mail eingeben",
-    "emailFail": "Gültige E-Mail-Adresse eingeben",
+    "emailFail": "Gib eine gültige E-Mail-Adresse ein",
     "passwordLabel": "Passwort",
     "passwordPlaceholder": "Passwort eingeben",
     "passwordVisToggle": "Passwortsichtbarkeit umschalten",
-    "passwordLength": "Die Mindestlänge des Passworts beträgt {{length}} Zeichen",
+    "passwordLength": "Das Passwort muss mindestens {{length}} Zeichen lang sein",
     "cancel": "Abbrechen",
     "close": "Schließen",
     "forgot": {
       "snackbar": {
-        "success": "Danke! Eine E-Mail wurde gesendet. Klicke auf den Link darin, um zu bestätigen, dass du der Besitzer dieses Kontos bist",
-        "fail": "Das Zurücksetzen des Passworts ist fehlgeschlagen. Überprüfe deine E-Mail-Adresse"
+        "success": "Danke! Eine E-Mail wurde gesendet. Klicke auf den darin enthaltenen Link, um zu bestätigen, dass du der Inhaber dieses Kontos bist.",
+        "fail": "Passwort konnte nicht zurückgesetzt werden. Überprüfe deine E-Mail-Adresse."
       },
       "title": "Passwort vergessen",
       "desc": "Keine Sorge! Gib unten deine E-Mail-Adresse ein und wir senden dir einen Link zum Zurücksetzen deines Passworts.",
@@ -131,53 +132,53 @@
     },
     "login": {
       "fail": "Anmeldung fehlgeschlagen",
-      "failCred": "Anmeldung fehlgeschlagen – ungültige Zugangsdaten",
+      "failCred": "Anmeldung fehlgeschlagen – ungültige Anmeldedaten",
       "title": "Anmelden",
       "forgot": "Passwort vergessen?",
       "login": "Anmelden",
-      "noAccount": "Noch kein Konto?",
+      "noAccount": "Du hast noch kein Konto?",
       "createAccount": "Konto erstellen",
       "rememberMe": "Angemeldet bleiben"
     },
     "register": {
       "snackbar": {
-        "success": "Du hast dich erfolgreich auf unserer Website registriert. Um die Registrierung abzuschließen, überprüfe bitte deine E-Mail",
-        "fail": "Registrierung fehlgeschlagen. Bitte versuche es erneut"
+        "success": "Du hast dich erfolgreich auf unserer Website registriert. Um den Registrierungsprozess abzuschließen, überprüfe bitte deine E-Mail.",
+        "fail": "Registrierung fehlgeschlagen. Bitte versuche es erneut."
       },
       "title": "Registrieren",
-      "description": "Kostenlos ein Konto erstellen",
-      "terms": "Akzeptieren der <terms>Allgemeinen Geschäftsbedingungen</terms> und der <privacy>Datenschutzerklärung</privacy>",
+      "description": "Erstelle kostenlos ein Konto",
+      "terms": "Akzeptanz der <terms>Nutzungsbedingungen</terms> und <privacy>Datenschutzerklärung</privacy>",
       "submit": "Konto erstellen",
       "goLoginPrompt": "Du hast bereits ein Konto?",
       "login": "Anmelden"
     },
     "requireLogin": {
       "saveTitle": "Anmelden, um das Rezept zu speichern",
-      "saveMessage": "Wenn du dieses Rezept speichern möchtest, musst du dich anmelden oder ein Konto erstellen. Verpasse nicht die Möglichkeit, deine Lieblingsrezepte jederzeit griffbereit zu haben!",
+      "saveMessage": "Wenn du dieses Rezept speichern möchtest, musst du dich anmelden oder ein Konto erstellen. Verpasse nicht den Komfort, deine Lieblingsrezepte jederzeit griffbereit zu haben, wenn du Lust darauf bekommst!",
       "rateTitle": "Anmelden, um das Rezept zu bewerten",
       "rateMessage": "Wenn du dieses Rezept bewerten möchtest, musst du dich anmelden oder ein Konto erstellen. Teile deine Meinung und hilf anderen Nutzern, tolle Rezepte zu entdecken!",
       "login": "Anmelden"
     },
     "resetPassword": {
       "snackbar": {
-        "fail": "Zurücksetzen des Passworts fehlgeschlagen"
+        "fail": "Passwort konnte nicht zurückgesetzt werden"
       },
       "title": "Neues Passwort",
-      "description": "Bitte stelle sicher, dass dein Passwort mindestens 8 Zeichen lang ist. Idealerweise enthält es eine Mischung aus Buchstaben und Zahlen",
+      "description": "Bitte stelle sicher, dass dein Passwort mindestens 8 Zeichen lang ist. Idealerweise sollte es eine Kombination aus Buchstaben und Zahlen enthalten.",
       "newPasswordTitle": "Neues Passwort",
       "newPasswordPlaceholder": "Neues Passwort eingeben",
       "repeatTitle": "Neues Passwort wiederholen",
       "repeatPlaceholder": "Neues Passwort erneut eingeben",
-      "passwordsDontMatch": "Beide Passwörter müssen identisch sein",
+      "passwordsDontMatch": "Beide Passwörter müssen übereinstimmen",
       "submit": "Mein Passwort zurücksetzen"
     },
     "rateRecipe": {
       "snackbar": {
         "success": "Vielen Dank für deine Bewertung!",
-        "fail": "Die Bewertung konnte nicht gesendet werden."
+        "fail": "Deine Bewertung konnte nicht übermittelt werden."
       },
       "title": "Wie würdest du dieses Rezept bewerten?",
-      "description": "Wir würden gerne dein Feedback hören. Deine Bewertung hilft uns, die Rezepte zu verbessern und ein besseres kulinarisches Erlebnis zu bieten.",
+      "description": "Wir würden gerne deine Meinung hören. Deine Bewertung hilft uns, das Rezept zu verbessern und dir ein besseres kulinarisches Erlebnis zu bieten.",
       "cancel": "Nicht jetzt",
       "submit": "Absenden"
     }

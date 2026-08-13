@@ -6,10 +6,10 @@
     "switchPrompt": "Ta strona jest również dostępna w języku {{language}}.",
     "switch": "Zmień",
     "names": {
-      "en": "angielski/English",
-      "fr": "francuski/Français",
-      "de": "niemiecki/Deutsch",
-      "pl": "polski"
+      "en": "Angielski/English",
+      "fr": "Francuski/Français",
+      "de": "Niemiecki/Deutsch",
+      "pl": "Polski/Polish"
     }
   },
   "recipeDetails": {
@@ -26,7 +26,8 @@
     "snackbar": {
       "saved": "Przepis został dodany do zapisanych przepisów w Twoim profilu.",
       "unsaved": "Przepis został usunięty z zapisanych przepisów w Twoim profilu."
-    }
+    },
+    "nomore": "Brak kolejnych przepisów"
   },
   "editRecipe": {
     "title": "Edytuj przepis"
@@ -74,7 +75,7 @@
       },
       "ingredients": {
         "title": "Dodaj składniki",
-        "ingredientCounter": "Składnik {{index}}",
+        "ingredientCounter": "Składnik nr {{index}}",
         "ingredientCounterPlaceholder": "Wpisz składnik",
         "ingredientAdd": "Dodaj nowy składnik"
       },
@@ -88,9 +89,9 @@
         "error": "Wystąpił błąd podczas zapisywania przepisu.",
         "title": "Publikacja",
         "savePrivateTitle": "Zapisz przepis jako prywatny",
-        "savePrivateDesc": "Zapisz swój przepis na koncie bez udostępniania go innym użytkownikom. Możesz opublikować go później w dowolnym momencie.",
+        "savePrivateDesc": "Zapisz przepis na swoim koncie bez udostępniania go innym użytkownikom. Możesz opublikować go później w dowolnym momencie.",
         "publishTitle": "Opublikuj swój przepis",
-        "publishDesc": "Opublikuj swój przepis, aby był widoczny dla wszystkich użytkowników.",
+        "publishDesc": "Opublikuj swój przepis, aby stał się widoczny dla wszystkich użytkowników.",
         "deleteTitle": "Usuń swój przepis",
         "deleteDesc": "Odrzuć ten szkic i usuń wszystkie wprowadzone informacje.",
         "buttons": {
@@ -104,7 +105,7 @@
         },
         "deleteModal": {
           "title": "Czy na pewno chcesz usunąć przepis?",
-          "message": "Jeśli chcesz go usunąć, naciśnij przycisk usuwania.",
+          "message": "Jeśli chcesz go usunąć, kliknij przycisk „Usuń”.",
           "confirmButton": "Usuń"
         }
       }
@@ -112,18 +113,18 @@
   },
   "modals": {
     "emailLabel": "Adres e-mail",
-    "emailPlaceholder": "Wpisz swój adres e-mail",
-    "emailFail": "Wpisz poprawny adres e-mail",
+    "emailPlaceholder": "Wpisz swój e-mail",
+    "emailFail": "Wpisz prawidłowy adres e-mail",
     "passwordLabel": "Hasło",
     "passwordPlaceholder": "Wpisz swoje hasło",
-    "passwordVisToggle": "Przełącz widoczność hasła",
-    "passwordLength": "Minimalna długość hasła to {{length}} znaków",
+    "passwordVisToggle": "przełącz widoczność hasła",
+    "passwordLength": "Hasło musi mieć co najmniej {{length}} znaków",
     "cancel": "Anuluj",
     "close": "Zamknij",
     "forgot": {
       "snackbar": {
-        "success": "Dziękujemy! Wysłaliśmy wiadomość e-mail z linkiem, który pozwoli potwierdzić, że jesteś właścicielem tego konta",
-        "fail": "Nie udało się zresetować hasła, sprawdź swój adres e-mail"
+        "success": "Dziękujemy! Wysłaliśmy wiadomość e-mail z prośbą o kliknięcie linku w celu potwierdzenia, że jesteś właścicielem tego konta.",
+        "fail": "Nie udało się zresetować hasła. Sprawdź swój adres e-mail."
       },
       "title": "Nie pamiętasz hasła?",
       "desc": "Bez obaw! Wpisz poniżej swój adres e-mail, a wyślemy Ci link do zresetowania hasła.",
@@ -131,7 +132,7 @@
     },
     "login": {
       "fail": "Logowanie nie powiodło się",
-      "failCred": "Logowanie nie powiodło się - nieprawidłowe dane logowania",
+      "failCred": "Logowanie nie powiodło się – nieprawidłowe dane logowania",
       "title": "Zaloguj się",
       "forgot": "Nie pamiętasz hasła?",
       "login": "Zaloguj się",
@@ -141,21 +142,21 @@
     },
     "register": {
       "snackbar": {
-        "success": "Pomyślnie zarejestrowano konto na naszej stronie. Aby dokończyć proces rejestracji, sprawdź swoją skrzynkę e-mail",
-        "fail": "Rejestracja nie powiodła się. Spróbuj ponownie"
+        "success": "Rejestracja na naszej stronie zakończyła się pomyślnie. Aby ukończyć proces rejestracji, sprawdź swoją skrzynkę e-mail.",
+        "fail": "Rejestracja nie powiodła się. Spróbuj ponownie."
       },
       "title": "Zarejestruj się",
-      "description": "Utwórz darmowe konto",
-      "terms": "Akceptacja <terms>Regulaminu</terms> i <privacy>Polityki prywatności</privacy>",
+      "description": "Utwórz konto za darmo",
+      "terms": "Akceptuję <terms>Warunki korzystania z serwisu</terms> oraz <privacy>Politykę prywatności</privacy>",
       "submit": "Utwórz konto",
       "goLoginPrompt": "Masz już konto?",
       "login": "Zaloguj się"
     },
     "requireLogin": {
       "saveTitle": "Zaloguj się, aby zapisać przepis",
-      "saveMessage": "Jeśli chcesz zapisać ten przepis, musisz się zalogować lub utworzyć konto. Nie przegap możliwości posiadania ulubionych przepisów zawsze pod ręką!",
+      "saveMessage": "Aby zapisać ten przepis, musisz się zalogować lub utworzyć konto. Nie przegap wygody posiadania swoich ulubionych przepisów zawsze pod ręką, gdy tylko masz na nie ochotę!",
       "rateTitle": "Zaloguj się, aby ocenić przepis",
-      "rateMessage": "Jeśli chcesz ocenić ten przepis, musisz się zalogować lub utworzyć konto. Podziel się swoją opinią i pomóż innym użytkownikom odkrywać świetne przepisy!",
+      "rateMessage": "Aby ocenić ten przepis, musisz się zalogować lub utworzyć konto. Podziel się swoją opinią i pomóż innym użytkownikom odkrywać świetne przepisy!",
       "login": "Zaloguj się"
     },
     "resetPassword": {
@@ -163,7 +164,7 @@
         "fail": "Nie udało się zresetować hasła"
       },
       "title": "Nowe hasło",
-      "description": "Upewnij się, że Twoje hasło ma co najmniej 8 znaków. Najlepiej użyj kombinacji liter i cyfr",
+      "description": "Upewnij się, że Twoje hasło ma co najmniej 8 znaków. Najlepiej, jeśli zawiera kombinację liter i cyfr.",
       "newPasswordTitle": "Nowe hasło",
       "newPasswordPlaceholder": "Wpisz nowe hasło",
       "repeatTitle": "Powtórz nowe hasło",
@@ -173,8 +174,8 @@
     },
     "rateRecipe": {
       "snackbar": {
-        "success": "Dziękujemy za przesłanie oceny!",
-        "fail": "Nie udało się przesłać oceny."
+        "success": "Dziękujemy za wystawienie oceny!",
+        "fail": "Nie udało się przesłać Twojej oceny."
       },
       "title": "Jak oceniasz ten przepis?",
       "description": "Chętnie poznamy Twoją opinię. Twoja ocena pomaga nam ulepszać przepisy i zapewniać lepsze doświadczenia kulinarne.",
@@ -183,7 +184,7 @@
     }
   },
   "footer": {
-    "tos": "Regulamin",
+    "tos": "Warunki korzystania z serwisu",
     "policy": "Polityka prywatności"
   },
   "navbar": {
@@ -202,7 +203,7 @@
     "recipeOfTheDay": "Przepis dnia",
     "prepTime": "Czas przygotowania: {{time}} minut",
     "servings_one": "{{count}} porcja",
-    "servings_other": "{{count}} porcje",
+    "servings_other": "{{count}} porcji",
     "view": "Zobacz przepis",
     "private": "Prywatny",
     "edit": "Edytuj przepis",
@@ -221,8 +222,8 @@
       "oldFirst": "Najstarsze najpierw",
       "savedRecipes": "Zapisane przepisy",
       "unsavedRecipes": "Niezapisane przepisy",
-      "highScore": "Najwyższa ocena najpierw",
-      "lowScore": "Najniższa ocena najpierw"
+      "highScore": "Najwyżej oceniane najpierw",
+      "lowScore": "Najniżej oceniane najpierw"
     },
     "save": "Zapisz"
   }

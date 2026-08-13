@@ -30,6 +30,17 @@ export function SaveRecipeButton({
         }}
         startIcon={icon}
         variant="outlined"
+        sx={{
+          '&:hover': {
+            boxShadow: 3,
+          },
+          '&:hover svg': {
+            transform: 'rotate(15deg) scale(1.1)',
+          },
+          '& svg': {
+            transition: 'transform 100ms ease',
+          },
+        }}
       >
         {t('recipeCard.save')}
       </Button>
@@ -46,7 +57,9 @@ export function SaveRecipeButton({
         backgroundColor: 'white',
         '&:hover': {
           backgroundColor: 'grey.100',
+          transform: 'rotate(15deg) scale(1.1)',
         },
+        transition: 'transform 150ms ease',
       }}
     >
       {icon}

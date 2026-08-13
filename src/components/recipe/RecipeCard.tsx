@@ -77,7 +77,21 @@ export function RecipeCard({
 
   if (isFeatured) {
     return (
-      <Card>
+      <Card
+        sx={{
+          transition: 'transform 200ms ease, box-shadow 200ms ease',
+          '&:hover': {
+            transform: 'translateY(-4px) scale(1.025)',
+            boxShadow: 6,
+          },
+          '& :hover .image': {
+            transform: 'scale(1.025) translateX(-5px)',
+          },
+          '& .image': {
+            transition: 'transform 200ms ease',
+          },
+        }}
+      >
         <Box
           sx={{
             display: {
@@ -92,7 +106,7 @@ export function RecipeCard({
               position: 'relative',
             }}
           >
-            {image}
+            <Box className="image">{image}</Box>
 
             <Box
               sx={{
@@ -167,6 +181,21 @@ export function RecipeCard({
                 textDecoration: 'none',
                 alignSelf: 'flex-start',
                 p: 0,
+                position: 'relative',
+                '&::after': {
+                  content: '""',
+                  width: '100%',
+                  height: '2px',
+                  backgroundColor: 'currentColor',
+                  position: 'absolute',
+                  left: 0,
+                  bottom: 0,
+                  transform: 'scaleX(0)',
+                  transition: 'transform 200ms ease'
+                },
+                '&:hover::after': {
+                  transform: 'scaleX(1)'
+                }
               }}
             >
               {t('recipeCard.view')} &gt;
@@ -184,6 +213,17 @@ export function RecipeCard({
         maxWidth: 300,
         width: '100%',
         cursor: 'pointer',
+        transition: 'transform 200ms ease, box-shadow 200ms ease',
+        '&:hover': {
+          transform: 'translateY(-4px) scale(1.025)',
+          boxShadow: 6,
+        },
+        '& :hover .image': {
+          transform: 'scale(1.05)',
+        },
+        '& .image': {
+          transition: 'transform 200ms ease',
+        },
       }}
     >
       <Box
@@ -191,7 +231,7 @@ export function RecipeCard({
           position: 'relative',
         }}
       >
-        {image}
+        <Box className="image">{image}</Box>
 
         {isOwnedByUser && isPrivate && (
           <Box

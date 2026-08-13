@@ -1,52 +1,48 @@
-import { useEffect, useState } from 'react';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { getRecipeSummaries } from '@/services/recipeService';
 import type { RecipeSummary } from '@/types/recipe';
 import { useAuth } from '@/context/AuthContext';
 import type { RecipeFilters } from '@/services/recipeService';
 
+const PAGE_SIZE = 20;
+
 export function useRecipes(filters?: RecipeFilters) {
   const { authVersion } = useAuth();
 
-  const [recipes, setRecipes] = useState<RecipeSummary[]>([]);
-  const [recipeOfTheDay, setRecipeOfTheDay] = useState<RecipeSummary | null>(
-    null
-  );
-  const [recipesLoading, setRecipesLoading] = useState(true);
+  const query = useInfiniteQuery({
+    queryKey: ['recipes', authVersion, filters],
 
-  async function loadRecipes() {
-    setRecipesLoading(true);
-    try {
-      const recipes = await getRecipeSummaries(filters);
+    queryFn: ({ pageParam }) =>
+      getRecipeSummaries({
+        ...(filters ?? { authored: false }),
+        page: pageParam,
+        limit: PAGE_SIZE,
+      }),
 
-      setRecipes(recipes);
-      setRecipeOfTheDay(recipes[0] ?? null);
-    } catch {
-      setRecipes([]);
-      setRecipeOfTheDay(null);
-    } finally {
-      setRecipesLoading(false);
-    }
-  }
+    initialPageParam: 0,
 
-  useEffect(() => {
-    loadRecipes();
-  }, [
-    authVersion,
-    filters?.category,
-    filters?.saved,
-    filters?.dateOrderIncr,
-    filters?.ratingOrderIncr,
-    filters?.title,
-    filters?.description,
-    filters?.authored,
-  ]);
+    getNextPageParam: (lastPage, allPages) => {
+      if (lastPage.length < PAGE_SIZE) {
+        return undefined;
+      }
+
+      return allPages.length;
+    },
+  });
+
+  const recipes: RecipeSummary[] =
+    query.data?.pages.flatMap((page) => page) ?? [];
 
   return {
     recipes,
-    setRecipes,
-    recipeOfTheDay,
-    setRecipeOfTheDay,
-    reloadRecipes: loadRecipes,
-    recipesLoading,
+    recipeOfTheDay: recipes[0] ?? null,
+
+    recipesLoading: query.isLoading,
+    loadingMore: query.isFetchingNextPage,
+
+    hasMore: query.hasNextPage ?? false,
+    loadMore: query.fetchNextPage,
+
+    reloadRecipes: query.refetch,
   };
 }

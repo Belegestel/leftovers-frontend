@@ -47,6 +47,8 @@ export interface RecipeFilters {
   description?: string;
   title?: string;
   authored: boolean;
+  page?: number;
+  limit?: number;
 }
 export async function getRecipeSummaries(
   filters?: RecipeFilters

@@ -3,9 +3,10 @@ import { describe, expect, vi, it, beforeEach } from 'vitest';
 const mockedNavigate = vi.fn();
 
 vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual<typeof import('react-router-dom')>(
-    'react-router-dom'
-  );
+  const actual =
+    await vi.importActual<typeof import('react-router-dom')>(
+      'react-router-dom'
+    );
 
   return {
     ...actual,
@@ -27,10 +28,16 @@ import { useBookmark } from './useBookmark';
 import { isAuthenticated } from '@/services/tokenService';
 import { bookmarkRecipe } from '@/services/recipeService';
 import { SnackbarProvider } from '@/components/common/SnackbarProvider';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-const wrapper = ({ children }: { children: React.ReactNode }) => (
-  <SnackbarProvider>{children}</SnackbarProvider>
-);
+const wrapper = ({ children }: { children: React.ReactNode }) => {
+  const queryClient = new QueryClient();
+  return (
+    <QueryClientProvider client={queryClient}>
+      <SnackbarProvider>{children}</SnackbarProvider>
+    </QueryClientProvider>
+  );
+};
 
 describe('useBookmark', () => {
   beforeEach(() => {

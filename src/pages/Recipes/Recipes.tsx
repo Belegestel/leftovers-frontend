@@ -43,7 +43,7 @@ export default function Recipes({ mode }: RecipesProps) {
 
   const authored = mode == 'my';
 
-  const { recipes, recipesLoading, hasMore, loadMore, loadingMore } =
+  const { recipes, recipesLoading, hasMore, loadMore } =
     useRecipes({
       category,
       saved,
@@ -90,7 +90,6 @@ export default function Recipes({ mode }: RecipesProps) {
         onBookmarkToggle={toggleBookmark}
         variant={mode === 'my' ? 'own' : 'default'}
         isPrivate={(recipe) => (mode === 'my' ? recipe.isPrivate : false)}
-        loadingMore={loadingMore}
       />
     </Container>
   );

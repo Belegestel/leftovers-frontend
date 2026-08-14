@@ -26,19 +26,20 @@ export function useRecipeSuggestions(query: string) {
       try {
         setLoading(true);
 
-        const data = await getRecipeSuggestions(trimmedQuery);
+        const data = await getRecipeSuggestions(
+          trimmedQuery,
+          controller.signal
+        );
 
         if (!controller.signal.aborted) {
           setSuggestions(data);
         }
       } catch (error) {
-        if (error instanceof DOMException && error.name === 'AbortError') {
+        if (controller.signal.aborted) {
           return;
         }
 
-        if (!controller.signal.aborted) {
-          setSuggestions({ names: [] });
-        }
+        setSuggestions({ names: [] });
       } finally {
         if (!controller.signal.aborted) {
           setLoading(false);

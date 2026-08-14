@@ -31,10 +31,10 @@ export async function getRecipeCategories(): Promise<RecipeCategory[]> {
   return response.data.categories;
 }
 
-export async function getRecipeSuggestions(query: string): Promise<RecipeSuggestions> {
+export async function getRecipeSuggestions(query: string, signal?: AbortSignal): Promise<RecipeSuggestions> {
   const response = await httpService.get<RecipeSuggestions>(
     '/recipes/suggestions/',
-    { params: { query }}
+    { params: { query }, signal }
   );
   return response.data;
 }

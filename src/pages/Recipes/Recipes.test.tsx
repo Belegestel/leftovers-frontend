@@ -4,11 +4,9 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { AuthProvider } from '@/context/AuthContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
-const client = new QueryClient();
-
 describe('Recipes', () => {
   it('displays all recipes title for the all recipes mode', async () => {
+    const client = new QueryClient();
     render(
       <MemoryRouter>
         <QueryClientProvider client={client}>
@@ -24,6 +22,7 @@ describe('Recipes', () => {
   });
 
   it('displays all recipes title for the saved recipes mode', async () => {
+    const client = new QueryClient();
     render(
       <MemoryRouter>
         <QueryClientProvider client={client}>
@@ -39,12 +38,13 @@ describe('Recipes', () => {
   });
 
   it('displays all recipes title for the own recipes mode', async () => {
+    const client = new QueryClient();
     render(
       <MemoryRouter>
-      <QueryClientProvider client={client}>
-        <AuthProvider>
-          <Recipes mode="my" />
-        </AuthProvider>
+        <QueryClientProvider client={client}>
+          <AuthProvider>
+            <Recipes mode="my" />
+          </AuthProvider>
         </QueryClientProvider>
       </MemoryRouter>
     );

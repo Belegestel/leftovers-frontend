@@ -9,7 +9,7 @@ import { AuthProvider } from '@/context/AuthContext';
 const mockedNavigate = vi.fn();
 const mockedLocation = vi.fn();
 const mockedSetSearchParams = vi.fn();
-const mockedSearchParams = { get: vi.fn(), set: vi.fn(), delete: vi.fn() };
+const mockedSearchParams = new URLSearchParams();
 
 vi.mock('@/services/tokenService', () => ({
   isAuthenticated: vi.fn(),
@@ -25,6 +25,14 @@ vi.mock('react-router-dom', () => ({
 vi.mock('@/hooks/useRecipeCategories', () => ({
   useRecipeCategories: () => ({
     categories: [{ name: 'All categories' }, { name: 'breakfast' }],
+    loading: false,
+  }),
+}));
+vi.mock('@/hooks/useRecipeSuggestions', () => ({
+  useRecipeSuggestions: () => ({
+    suggestions: {
+      names: ['Tasty recipe', 'Another recipe'],
+    },
     loading: false,
   }),
 }));
@@ -100,12 +108,16 @@ describe('NavBar', () => {
       </AuthProvider>
     );
 
-    await userEvent.type(screen.getByRole('textbox'), 'tasty recipe');
-    await userEvent.click(screen.getByRole('button', { name: /search/i }));
+    const user = userEvent.setup();
+
+    await user.type(screen.getByRole('combobox'), 'tasty recipe');
+    await user.click(screen.getByRole('button', { name: /search/i }));
+
     expect(mockedSetSearchParams).toHaveBeenCalled();
-    expect(mockedSearchParams.set).toHaveBeenCalled();
-    expect(mockedSetSearchParams).toHaveBeenCalledWith(mockedSearchParams);
-    expect(mockedNavigate).toHaveBeenCalled();
+    expect(mockedNavigate).toHaveBeenCalledWith(
+      '/en/recipes?search=tasty+recipe',
+      undefined
+    );
   });
 
   it('removes category filtering when searching a query', async () => {
@@ -115,10 +127,53 @@ describe('NavBar', () => {
       </AuthProvider>
     );
 
-    await userEvent.type(screen.getByRole('textbox'), '            ');
-    await userEvent.type(screen.getByRole('textbox'), 'tasty recipe');
-    expect(mockedSearchParams.delete).toHaveBeenCalledWith('category');
-    expect(mockedSearchParams.delete).toHaveBeenCalledWith('saved');
+    const user = userEvent.setup();
+    const searchInput = screen.getByRole('combobox');
+    await user.type(searchInput, 'tasty recipe');
+
+    expect(mockedSetSearchParams).toHaveBeenCalled();
+    const params = mockedSetSearchParams.mock.calls.at(-1)?.[0];
+    expect(params.get('category')).toBeNull();
+    expect(params.get('saved')).toBeNull();
     expect(screen.queryByText('Filters')).not.toBeInTheDocument();
+  });
+
+  it('shows autocomplete suggestions when searching', async () => {
+    render(
+      <AuthProvider>
+        <NavBar authenticated={false} onLogout={() => {}} />
+      </AuthProvider>
+    );
+
+    const user = userEvent.setup();
+    const textbox = screen.getByRole('combobox');
+
+    await user.type(textbox, 'tasty');
+
+    expect(screen.getByText('Tasty recipe')).toBeInTheDocument();
+    expect(screen.getByText('Another recipe')).toBeInTheDocument();
+  });
+
+  it('searches when an autocomplete suggestion is selected', async () => {
+    render(
+      <AuthProvider>
+        <NavBar authenticated={false} onLogout={() => {}} />
+      </AuthProvider>
+    );
+
+    const user = userEvent.setup();
+    const textbox = screen.getByRole('combobox');
+
+    await user.type(textbox, 'tasty');
+    await user.click(screen.getByText('Tasty recipe'));
+
+    expect(mockedNavigate).toHaveBeenCalledWith(
+      expect.stringContaining('/recipes?'),
+      undefined
+    );
+    expect(mockedNavigate).toHaveBeenCalledWith(
+      expect.stringContaining('search=Tasty+recipe'),
+      undefined
+    );
   });
 });

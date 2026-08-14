@@ -18,6 +18,9 @@ import { useTranslation } from 'react-i18next';
 import i18n, { supportedLanguages } from '@/i18n';
 import { useLocalizedNavigate } from '@/hooks/useLocalizedNavigate';
 import { useLanguageSuggestion } from '@/hooks/useLanguageSuggestion';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
 
 export function RootLayout() {
   const [authenticated, setAuthenticated] = useState(isAuthenticated());
@@ -73,49 +76,58 @@ export function RootLayout() {
     const language = supportedLanguages.includes(lang ?? '') ? lang : 'en';
     i18n.changeLanguage(language);
   }, [lang]);
-  if (i18n.language !== lang && lang !== undefined) { return null; }
+  if (i18n.language !== lang && lang !== undefined) {
+    return null;
+  }
 
   return (
-    <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <NavBar
-        authenticated={authenticated}
-        onLogout={() => setAuthenticated(false)}
-      />
-      <Box sx={{ flexGrow: 1 }}>
-        <Container maxWidth="lg">
-          <Outlet />
-        </Container>
-      </Box>
-      <Footer />
+    <QueryClientProvider client={queryClient}>
+      <Box
+        sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}
+      >
+        <NavBar
+          authenticated={authenticated}
+          onLogout={() => setAuthenticated(false)}
+        />
+        <Box sx={{ flexGrow: 1 }}>
+          <Container maxWidth="lg">
+            <Outlet />
+          </Container>
+        </Box>
+        <Footer />
 
-      <RegisterModal open={handleSignupOpenModal} onClose={handleSignupClose} />
-      <LoginModal
-        open={handleLoginOpenModal}
-        onLogin={handleLogin}
-        onClose={handleLoginClose}
-      />
-      <RequireLoginModal
-        open={handleRequireLoginRecipeSaveModal}
-        title={t('modals.requireLogin.saveTitle')}
-        message={t('modals.requireLogin.saveMessage')}
-        onClose={handleRequireLoginRecipeSaveClose}
-        onLogin={handleRequireLoginRedirectLogin}
-      />
-      <ForgotPasswordModal
-        open={handleForgotPasswordModal}
-        onClose={handleForgotPasswordClose}
-      />
-      <ResetPasswordModal
-        open={handleResetPasswordModal}
-        onClose={handleResetPasswordClose}
-      />
-      <RequireLoginModal
-        open={handleRequireLoginRecipeRateModal}
-        title={t('modals.requireLogin.rateTitle')}
-        message={t('modals.requireLogin.rateMessage')}
-        onClose={handleRequireLoginRecipeRateClose}
-        onLogin={handleRequireLoginRedirectLogin}
-      />
-    </Box>
+        <RegisterModal
+          open={handleSignupOpenModal}
+          onClose={handleSignupClose}
+        />
+        <LoginModal
+          open={handleLoginOpenModal}
+          onLogin={handleLogin}
+          onClose={handleLoginClose}
+        />
+        <RequireLoginModal
+          open={handleRequireLoginRecipeSaveModal}
+          title={t('modals.requireLogin.saveTitle')}
+          message={t('modals.requireLogin.saveMessage')}
+          onClose={handleRequireLoginRecipeSaveClose}
+          onLogin={handleRequireLoginRedirectLogin}
+        />
+        <ForgotPasswordModal
+          open={handleForgotPasswordModal}
+          onClose={handleForgotPasswordClose}
+        />
+        <ResetPasswordModal
+          open={handleResetPasswordModal}
+          onClose={handleResetPasswordClose}
+        />
+        <RequireLoginModal
+          open={handleRequireLoginRecipeRateModal}
+          title={t('modals.requireLogin.rateTitle')}
+          message={t('modals.requireLogin.rateMessage')}
+          onClose={handleRequireLoginRecipeRateClose}
+          onLogin={handleRequireLoginRedirectLogin}
+        />
+      </Box>
+    </QueryClientProvider>
   );
 }

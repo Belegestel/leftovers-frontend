@@ -68,7 +68,7 @@ export function RequireLoginModal({
           </Button>
 
           <Button variant="contained" onClick={onLogin}>
-            {t('modals.requireLogin.cancel')}
+            {t('modals.requireLogin.login')}
           </Button>
         </Box>
       </Box>

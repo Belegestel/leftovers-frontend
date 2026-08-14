@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   bookmarkRecipe,
   unbookmarkRecipe,
@@ -11,13 +12,6 @@ import { useTranslation } from 'react-i18next';
 
 type BookmarkMode = 'list' | 'single';
 
-interface ListBookmarkState {
-  setRecipes: React.Dispatch<React.SetStateAction<RecipeSummary[]>>;
-  setRecipeOfTheDay?: React.Dispatch<
-    React.SetStateAction<RecipeSummary | null>
-  >;
-}
-
 interface SingleBookmarkState {
   setRecipe: React.Dispatch<React.SetStateAction<Recipe | null>>;
 }
@@ -25,23 +19,21 @@ interface SingleBookmarkState {
 type UseBookmarkProps =
   | {
       mode: 'list';
-      state: ListBookmarkState;
     }
   | {
       mode: 'single';
       state: SingleBookmarkState;
     };
 
-export function useBookmark({ mode, state }: UseBookmarkProps) {
+export function useBookmark({ mode, ...props }: UseBookmarkProps) {
   const showSnackbar = useSnackbar();
   const navigate = useLocalizedNavigate();
+  const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
 
   const { t } = useTranslation();
 
-  async function toggleBookmark(
-    recipe: Recipe | RecipeSummary
-  ) {
+  async function toggleBookmark(recipe: RecipeSummary) {
     if (!isAuthenticated()) {
       navigate('?saveLogin=true');
       return;
@@ -56,41 +48,31 @@ export function useBookmark({ mode, state }: UseBookmarkProps) {
         await unbookmarkRecipe(recipe.id);
 
         showSnackbar({
-          message:
-            `✅ ${t('recipes.snackbar.unsaved')}`,
+          message: `✅ ${t('recipes.snackbar.unsaved')}`,
         });
       } else {
         await bookmarkRecipe(recipe.id);
 
         showSnackbar({
-          message:
-            `✅ ${t('recipes.snackbar.saved')}`,
+          message: `✅ ${t('recipes.snackbar.saved')}`,
         });
       }
 
-      const updatedRecipe = {
-        ...recipe,
-        isBookmarked: !bookmarked,
-      };
-
       if (mode === 'single') {
-        state.setRecipe(updatedRecipe as Recipe);
+        props.state.setRecipe((currentRecipe) =>
+          currentRecipe
+            ? {
+                ...currentRecipe,
+                isBookmarked: !bookmarked,
+              }
+            : null,
+        );
       }
 
       if (mode === 'list') {
-        state.setRecipes((currentRecipes) =>
-          currentRecipes.map((currentRecipe) =>
-            currentRecipe.id === recipe.id
-              ? (updatedRecipe as RecipeSummary)
-              : currentRecipe
-          )
-        );
-
-        state.setRecipeOfTheDay?.((currentRecipe) =>
-          currentRecipe?.id === recipe.id
-            ? (updatedRecipe as RecipeSummary)
-            : currentRecipe
-        );
+        await queryClient.invalidateQueries({
+          queryKey: ['recipes'],
+        });
       }
     } catch (error) {
       console.error('Failed to update bookmark', error);

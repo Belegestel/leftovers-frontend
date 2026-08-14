@@ -10,6 +10,9 @@ import {
 } from '@/services/recipeService';
 import { isAuthenticated } from '@/services/tokenService';
 import { AuthProvider } from '@/context/AuthContext';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const client = new QueryClient();
 
 vi.mock('@/services/recipeService', () => ({
   getRecipeSummaries: vi.fn(),
@@ -19,7 +22,7 @@ vi.mock('@/services/recipeService', () => ({
 
 vi.mock('@/services/tokenService', () => ({
   isAuthenticated: vi.fn(),
-  getToken: vi.fn().mockReturnValue('mock-token')
+  getToken: vi.fn().mockReturnValue('mock-token'),
 }));
 
 vi.mock('@/components/recipe/RecipeCard', () => ({
@@ -66,9 +69,11 @@ describe('Home', () => {
   it('loads and displays recipes', async () => {
     render(
       <MemoryRouter>
-        <AuthProvider>
-          <Home />
-        </AuthProvider>
+        <QueryClientProvider client={client}>
+          <AuthProvider>
+            <Home />
+          </AuthProvider>
+        </QueryClientProvider>
       </MemoryRouter>
     );
 
@@ -83,9 +88,11 @@ describe('Home', () => {
 
     render(
       <MemoryRouter>
-        <AuthProvider>
-          <Home />
-        </AuthProvider>
+        <QueryClientProvider client={client}>
+          <AuthProvider>
+            <Home />
+          </AuthProvider>
+        </QueryClientProvider>
       </MemoryRouter>
     );
 
@@ -101,13 +108,45 @@ describe('Home', () => {
   it('bookmarks a recipe and updates its state', async () => {
     const user = userEvent.setup();
 
-    vi.mocked(bookmarkRecipe).mockResolvedValue();
+    vi.mocked(getRecipeSummaries)
+      .mockResolvedValueOnce([
+        {
+          id: 1,
+          title: 'Pizza',
+          description: 'Italian pizza',
+          prepTime: 30,
+          servings: 2,
+          rating: 5,
+          ratingCount: 120,
+          category: 'Italian',
+          imageLink: null,
+          isBookmarked: false,
+          isPrivate: false,
+        },
+      ])
+      .mockResolvedValue([
+        {
+          id: 1,
+          title: 'Pizza',
+          description: 'Italian pizza',
+          prepTime: 30,
+          servings: 2,
+          rating: 5,
+          ratingCount: 120,
+          category: 'Italian',
+          imageLink: null,
+          isBookmarked: true,
+          isPrivate: false,
+        },
+      ]);
 
     render(
       <MemoryRouter>
-        <AuthProvider>
-          <Home />
-        </AuthProvider>
+        <QueryClientProvider client={client}>
+          <AuthProvider>
+            <Home />
+          </AuthProvider>
+        </QueryClientProvider>
       </MemoryRouter>
     );
 
@@ -127,29 +166,47 @@ describe('Home', () => {
   it('unbookmarks a bookmarked recipe', async () => {
     const user = userEvent.setup();
 
-    vi.mocked(getRecipeSummaries).mockResolvedValue([
-      {
-        id: 1,
-        title: 'Pizza',
-        description: 'Italian pizza',
-        prepTime: 30,
-        servings: 2,
-        rating: 5,
-        ratingCount: 120,
-        category: 'Italian',
-        imageLink: null,
-        isBookmarked: true,
-        isPrivate: false,
-      },
-    ]);
+    vi.mocked(getRecipeSummaries)
+      .mockResolvedValueOnce([
+        {
+          id: 1,
+          title: 'Pizza',
+          description: 'Italian pizza',
+          prepTime: 30,
+          servings: 2,
+          rating: 5,
+          ratingCount: 120,
+          category: 'Italian',
+          imageLink: null,
+          isBookmarked: true,
+          isPrivate: false,
+        },
+      ])
+      .mockResolvedValueOnce([
+        {
+          id: 1,
+          title: 'Pizza',
+          description: 'Italian pizza',
+          prepTime: 30,
+          servings: 2,
+          rating: 5,
+          ratingCount: 120,
+          category: 'Italian',
+          imageLink: null,
+          isBookmarked: false,
+          isPrivate: false,
+        },
+      ]);
 
     vi.mocked(unbookmarkRecipe).mockResolvedValue();
 
     render(
       <MemoryRouter>
-        <AuthProvider>
-          <Home />
-        </AuthProvider>
+        <QueryClientProvider client={client}>
+          <AuthProvider>
+            <Home />
+          </AuthProvider>
+        </QueryClientProvider>
       </MemoryRouter>
     );
 

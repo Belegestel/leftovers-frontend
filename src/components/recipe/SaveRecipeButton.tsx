@@ -41,6 +41,7 @@ export function SaveRecipeButton({
             transition: 'transform 100ms ease',
           },
         }}
+        aria-label="bookmark"
       >
         {t('recipeCard.save')}
       </Button>
@@ -61,6 +62,7 @@ export function SaveRecipeButton({
         },
         transition: 'transform 150ms ease',
       }}
+      aria-label="bookmark"
     >
       {icon}
     </IconButton>

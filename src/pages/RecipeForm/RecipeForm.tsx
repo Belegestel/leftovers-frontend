@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Box, Container, Typography } from '@mui/material';
+import { Box, Container, Skeleton, Typography } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import LunchDiningOutlinedIcon from '@mui/icons-material/LunchDiningOutlined';
 import RestaurantMenuOutlinedIcon from '@mui/icons-material/RestaurantMenuOutlined';
@@ -16,13 +16,14 @@ import {
   editRecipe,
   getRecipe,
 } from '@/services/recipeService';
-import {  useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useSnackbar } from '@/components/common/SnackbarProvider';
 import { useTranslation } from 'react-i18next';
 import { useLocalizedNavigate } from '@/hooks/useLocalizedNavigate';
 import type { Recipe } from '@/types/recipe';
 
-type RecipeFormStep = 'basic' | 'ingredients' | 'preparation' | 'publication';
+type RecipeFormStep =
+  'basic' | 'ingredients' | 'preparation' | 'publication' | 'loading';
 
 const steps: {
   value: RecipeFormStep;
@@ -92,6 +93,7 @@ export default function RecipeForm() {
     setCurrentRecipeId(recipeIdFromRoute);
 
     const loadRecipe = async () => {
+      setActiveStep('loading');
       try {
         const recipe = await getRecipe(recipeIdFromRoute);
 
@@ -122,6 +124,8 @@ export default function RecipeForm() {
       } catch {
         showSnackbar({ message: `❌ ${t('addRecipe.snackbar.editFail')}` });
         navigate('/');
+      } finally {
+        setActiveStep('basic');
       }
     };
 
@@ -196,7 +200,7 @@ export default function RecipeForm() {
             mb: 3,
           }}
         >
-          {t('addRecipe.title')}
+          {recipeIdFromRoute ? t('editRecipe.title') : t('addRecipe.title')}
         </Typography>
 
         <Box
@@ -252,6 +256,12 @@ export default function RecipeForm() {
             borderRadius: 3,
           }}
         >
+          {activeStep === 'loading' && (
+            <Skeleton
+              variant="rectangular"
+              sx={{ mt: 5, width: '100%', height: 350 }}
+            />
+          )}
           {activeStep === 'basic' && <BasicInformation onNext={goToNextStep} />}
 
           {activeStep === 'ingredients' && (

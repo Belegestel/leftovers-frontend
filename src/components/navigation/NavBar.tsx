@@ -3,11 +3,12 @@ import {
   AppBar,
   Box,
   Button,
-  InputBase,
   Toolbar,
   IconButton,
   Menu,
   MenuItem,
+  Autocomplete,
+  TextField,
 } from '@mui/material';
 import logo from '@/assets/logo.svg';
 import SearchIcon from '@mui/icons-material/Search';
@@ -15,6 +16,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
 import { useRecipeCategories } from '@/hooks/useRecipeCategories';
+import { useRecipeSuggestions } from '@/hooks/useRecipeSuggestions';
 import { removeToken } from '@/services/tokenService';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
@@ -29,36 +31,53 @@ interface NavBarProps {
 export function NavBar({ authenticated, onLogout }: NavBarProps) {
   const navigate = useLocalizedNavigate();
   const location = useLocation();
+
   const [recipesAnchor, setRecipesAnchor] = useState<null | HTMLElement>(null);
+
   const [myAccountAnchor, setMyAccountAnchor] = useState<null | HTMLElement>(
     null
   );
+
   const [searchQuery, setSearchQuery] = useState('');
+
   const { authChanged } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const { categories } = useRecipeCategories();
 
+  const { suggestions, loading: suggestionsLoading } =
+    useRecipeSuggestions(searchQuery);
+
   const { t } = useTranslation();
 
-  const handleSearch = () => {
-    if (!searchQuery.trim()) {
+  const handleSearch = (query = searchQuery) => {
+    if (!query.trim()) {
       return;
     }
-    navigate(`/recipes?${searchParams.toString()}`);
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set('search', query.trim());
+
+    navigate(`/recipes?${newParams.toString()}`);
   };
 
   useEffect(() => {
     const query = searchParams.get('search') ?? '';
+
     if (query.trim()) {
       setSearchQuery(query.trim());
     }
   }, []);
 
   return (
-    <StyledAppBar position="static">
+    <StyledAppBar position="sticky">
       <Toolbar>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2,
+          }}
+        >
           <Box>
             <Logo
               src={logo}
@@ -73,28 +92,58 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
               }}
             />
           </Box>
+
           <SearchBox>
-            <SearchInput
-              placeholder={t('navbar.searchPlaceholder')}
-              value={searchQuery}
-              onChange={(event) => {
-                setSearchQuery(event.target.value);
-                const newParams = {
-                  ...searchParams,
-                };
-                if (event.target.value.trim()) {
+            <Autocomplete
+              freeSolo
+              fullWidth
+              options={suggestions.names}
+              loading={suggestionsLoading}
+              inputValue={searchQuery}
+              onInputChange={(_, newValue) => {
+                setSearchQuery(newValue);
+
+                const newParams = new URLSearchParams(searchParams);
+
+                if (newValue.trim()) {
                   newParams.delete('category');
                   newParams.delete('saved');
                 }
-                setSearchParams(newParams);
+
+                setSearchParams(newParams, { replace: true });
               }}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter') {
-                  handleSearch();
+              filterOptions={(options) => options}
+              onChange={(_, value) => {
+                if (!value) {
+                  return;
                 }
+                setSearchQuery(value);
+                handleSearch(value);
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  placeholder={t('navbar.searchPlaceholder')}
+                  variant="standard"
+                  fullWidth
+                />
+              )}
+              sx={{
+                flex: 1,
+                '& .MuiInputBase-root': {
+                  padding: 0,
+                },
+                '& .MuiInput-underline:before, & .MuiInput-underline:after': {
+                  display: 'none',
+                },
               }}
             />
-            <IconButton size="small" onClick={handleSearch} aria-label="search">
+
+            <IconButton
+              size="small"
+              onClick={() => handleSearch()}
+              aria-label="search"
+            >
               <SearchIcon fontSize="small" />
             </IconButton>
           </SearchBox>
@@ -102,7 +151,13 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
 
         <Spacer />
 
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2,
+          }}
+        >
           {authenticated && (
             <Button
               color="primary"
@@ -112,6 +167,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
               {t('navbar.add')}
             </Button>
           )}
+
           <Button
             color="inherit"
             endIcon={<KeyboardArrowDownIcon />}
@@ -119,11 +175,18 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
           >
             {t('navbar.recipes')}
           </Button>
+
           <Menu
             anchorEl={recipesAnchor}
             open={Boolean(recipesAnchor)}
             onClose={() => setRecipesAnchor(null)}
-            slotProps={{ paper: { sx: { width: 220 } } }}
+            slotProps={{
+              paper: {
+                sx: {
+                  width: 220,
+                },
+              },
+            }}
           >
             {categories.map((category, index) => (
               <MenuItem
@@ -132,14 +195,17 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                   navigate({
                     pathname: '/recipes',
                     search:
-                      index == 0
+                      index === 0
                         ? ''
-                        : `?category=${encodeURIComponent(category.name.trim())}`,
+                        : `?category=${encodeURIComponent(
+                            category.name.trim()
+                          )}`,
                   });
+
                   setRecipesAnchor(null);
                 }}
                 sx={{
-                  borderTop: index != 0 ? '1px solid' : '0px solid',
+                  borderTop: index !== 0 ? '1px solid' : '0px solid',
                   borderColor: 'divider',
                 }}
               >
@@ -160,6 +226,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
               </MenuItem>
             ))}
           </Menu>
+
           {authenticated ? (
             <>
               <Button
@@ -170,6 +237,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
               >
                 {t('navbar.myAcc')}
               </Button>
+
               <Menu
                 anchorEl={myAccountAnchor}
                 open={Boolean(myAccountAnchor)}
@@ -192,6 +260,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                 >
                   <Box className="content">{t('navbar.saved')}</Box>
                 </MenuItem>
+
                 <MenuItem
                   key="my-recipes"
                   onClick={() => {
@@ -201,6 +270,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                 >
                   <Box className="content">{t('navbar.myRecipes')}</Box>
                 </MenuItem>
+
                 <MenuItem
                   key="log-out"
                   onClick={() => {
@@ -227,6 +297,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
               >
                 {t('navbar.login')}
               </Button>
+
               <Button
                 variant="contained"
                 onClick={() =>
@@ -262,10 +333,11 @@ const SearchBox = styled(Box)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   border: `1px solid ${theme.palette.divider}`,
 }));
-const SearchInput = styled(InputBase)({ flex: 1 });
+
 const Spacer = styled(Box)({
   flexGrow: 1,
 });
+
 const Logo = styled('img')({
   height: 40,
   width: 'auto',

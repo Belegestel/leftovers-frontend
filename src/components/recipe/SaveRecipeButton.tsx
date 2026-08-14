@@ -30,6 +30,7 @@ export function SaveRecipeButton({
         }}
         startIcon={icon}
         variant="outlined"
+        aria-label="bookmark"
       >
         {t('recipeCard.save')}
       </Button>
@@ -48,6 +49,7 @@ export function SaveRecipeButton({
           backgroundColor: 'grey.100',
         },
       }}
+      aria-label="bookmark"
     >
       {icon}
     </IconButton>

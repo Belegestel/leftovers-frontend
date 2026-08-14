@@ -35,8 +35,8 @@ describe('Publication', () => {
           <Publication
             onBack={vi.fn()}
             onPublish={vi.fn().mockResolvedValue(1)}
-            onSavePrivate={vi.fn().mockResolvedValue(2)}
             onChangeVisibility={vi.fn()}
+            onSavePrivate={vi.fn().mockResolvedValue(2)}
             onRecipeDelete={vi.fn()}
             {...props}
           />

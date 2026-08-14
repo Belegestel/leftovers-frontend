@@ -26,7 +26,11 @@
     "snackbar": {
       "saved": "The recipe was added to Saved Recipes in your profile.",
       "unsaved": "The recipe was removed from Saved Recipes in your profile."
-    }
+    },
+    "nomore": "No more recipes"
+  },
+  "editRecipe": {
+    "title": "Edit Recipe"
   },
   "addRecipe": {
     "labels": {

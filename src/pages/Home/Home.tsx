@@ -1,27 +1,44 @@
-import { Box, Container, Divider, Grid, Typography } from '@mui/material';
+import {
+  Box,
+  Container,
+  Divider,
+  Skeleton,
+  Typography,
+} from '@mui/material';
 import { RecipeCard } from '@/components/recipe/RecipeCard';
 import { useRecipes } from '@/hooks/useRecipes';
 import { useBookmark } from '@/hooks/useBookmark';
 import { useTranslation } from 'react-i18next';
+import { RecipeGrid } from '@/components/recipe/RecipeGrid';
 
 export default function Home() {
+  const {
+    recipes,
+    recipeOfTheDay,
+    recipesLoading,
+    loadingMore,
+    hasMore,
+    loadMore,
+  } = useRecipes();
+
   const { t } = useTranslation();
-  const { recipes, setRecipes, recipeOfTheDay, setRecipeOfTheDay } =
-    useRecipes();
 
   const { toggleBookmark } = useBookmark({
     mode: 'list',
-    state: { setRecipes, setRecipeOfTheDay },
   });
 
   return (
-    <Container>
-      {recipeOfTheDay && (
-        <RecipeCard
-          recipe={recipeOfTheDay}
-          variant="featured"
-          onBookmarkToggle={() => toggleBookmark(recipeOfTheDay)}
-        />
+    <Container sx={{ mt: 5 }}>
+      {recipesLoading ? (
+        <Skeleton variant="rectangular" width="100%" height={360} />
+      ) : (
+        recipeOfTheDay && (
+          <RecipeCard
+            recipe={recipeOfTheDay}
+            variant="featured"
+            onBookmarkToggle={() => toggleBookmark(recipeOfTheDay)}
+          />
+        )
       )}
 
       <Box
@@ -39,27 +56,14 @@ export default function Home() {
         />
       </Box>
 
-      <Grid container spacing={3}>
-        {recipes.map((recipe) => (
-          <Grid
-            key={recipe.id}
-            size={{
-              xs: 12,
-              sm: 6,
-              md: 4,
-            }}
-            sx={{
-              display: 'flex',
-              justifyContent: 'flex-start',
-            }}
-          >
-            <RecipeCard
-              recipe={recipe}
-              onBookmarkToggle={() => toggleBookmark(recipe)}
-            />
-          </Grid>
-        ))}
-      </Grid>
+      <RecipeGrid
+        recipes={recipes}
+        recipesLoading={recipesLoading}
+        loadingMore={loadingMore}
+        hasMore={hasMore}
+        loadMore={loadMore}
+        onBookmarkToggle={toggleBookmark}
+      />
     </Container>
   );
 }

@@ -65,7 +65,20 @@ export function RecipeDetailsCard({
           alignItems: 'stretch',
         }}
       >
-        <Box sx={{ aspectRatio: '1 / 1' }}>{image}</Box>
+        <Box
+          sx={{
+            aspectRatio: '1 / 1',
+            '&:hover .MuiCardMedia-img': {
+              transform: 'translateY(-5px)',
+              boxShadow: 6,
+            },
+            '& .MuiCardMedia-img': {
+              transition: 'transform 200ms ease, box-shadow 200ms ease',
+            },
+          }}
+        >
+          {image}
+        </Box>
 
         <Box sx={{ display: 'flex', flexDirection: 'column', pl: 5 }}>
           <Box
@@ -91,7 +104,7 @@ export function RecipeDetailsCard({
           >
             <Link
               component="button"
-              underline="hover"
+              underline="none"
               onClick={onRate}
               sx={{
                 mt: 2,
@@ -101,6 +114,21 @@ export function RecipeDetailsCard({
                 color: 'primary.main',
                 fontWeight: 700,
                 mb: 1,
+                position: 'relative',
+                '&::after': {
+                  content: '""',
+                  width: '100%',
+                  height: '2px',
+                  backgroundColor: 'currentColor',
+                  position: 'absolute',
+                  left: 0,
+                  bottom: 0,
+                  transform: 'scaleX(0)',
+                  transition: 'transform 200ms ease',
+                },
+                '&:hover::after': {
+                  transform: 'scaleX(1)',
+                },
               }}
             >
               {recipe.userRating ? (
@@ -187,6 +215,10 @@ export function RecipeDetailsCard({
                 key={ingredient}
                 sx={{
                   mt: 1.5,
+                  '&:hover': {
+                    transform: 'translateX(5px)',
+                  },
+                  transition: 'transform 100ms linear',
                 }}
               >
                 {ingredient}
@@ -206,7 +238,15 @@ export function RecipeDetailsCard({
           </Typography>
 
           {recipe.steps.map((step, index) => (
-            <Box key={step}>
+            <Box
+              key={step}
+              sx={{
+                '&:hover': {
+                  transform: 'translateX(5px)',
+                },
+                transition: 'transform 100ms linear',
+              }}
+            >
               <Typography
                 variant="overline"
                 sx={{

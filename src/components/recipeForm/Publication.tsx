@@ -168,10 +168,14 @@ export function Publication({
           <Button
             variant="secondary"
             disabled={loading || (saved === 'private' && !(isDirty ?? false))}
-            onClick={() => handleAction(onSavePrivate, onChangeVisibility, true)}
+            onClick={() =>
+              handleAction(onSavePrivate, onChangeVisibility, true)
+            }
             sx={{
               borderColor: 'currentColor',
               border: '1px solid',
+              '&:hover svg': { transform: 'rotate(15deg)' },
+              '& svg': { transition: 'transform 200ms ease-out' },
             }}
           >
             <LockIcon sx={{ fontSize: 20, mr: 1 }} />
@@ -209,6 +213,10 @@ export function Publication({
             variant="contained"
             disabled={loading || (saved === 'public' && !isDirty)}
             onClick={() => handleAction(onPublish, onChangeVisibility, false)}
+            sx={{
+              '&:hover svg': { transform: 'rotate(15deg)' },
+              '& svg': { transition: 'transform 200ms ease-out' },
+            }}
           >
             <PublicIcon sx={{ mr: 1 }} />
 
@@ -250,6 +258,8 @@ export function Publication({
               border: '1px solid',
               color: 'warning.main',
               borderColor: 'currentColor',
+              '&:hover svg': { transform: 'rotate(15deg)' },
+              '& svg': { transition: 'transform 200ms ease-out' },
             }}
           >
             <DeleteForeverOutlinedIcon

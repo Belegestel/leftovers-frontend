@@ -13,14 +13,13 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import { Controller, useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
-import { useLocation,  useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { useRecipeCategories } from '@/hooks/useRecipeCategories';
 import { useTranslation } from 'react-i18next';
 import { useLocalizedNavigate } from '@/hooks/useLocalizedNavigate';
-import type { RecipeCategory } from '@/services/recipeService';
 
 interface RecipeFilterForm {
-  categories: RecipeCategory[];
+  categories: string[];
   saved: string[];
   rating: string;
   date: string;
@@ -33,12 +32,7 @@ export function RecipeFilters() {
 
   const { categories } = useRecipeCategories(true);
 
-  const categoryNames = categories.map((category) =>
-    category.name
-      .slice(2)
-      .trim()
-      .replace(/\b\w/g, (char) => char.toUpperCase())
-  );
+  const categoryNames = categories.map((category) => category.name);
 
   const normalizeCategory = (category: string) =>
     categoryNames.find(
@@ -71,6 +65,7 @@ export function RecipeFilters() {
     if (location.pathname === '/saved' && values.saved.length > 0) {
       navigate('/recipes', { replace: true });
     }
+
     const params = new URLSearchParams(searchParams);
 
     if (values.categories.length === 0) {
@@ -127,11 +122,18 @@ export function RecipeFilters() {
             sx={{
               border: 1,
               borderColor: 'currentColor',
+              '&:hover svg': {
+                transform: 'rotate(180deg) translateY(1px)',
+              },
+              '& svg': {
+                transition: 'transform 200ms ease',
+              },
             }}
           >
             {t('recipeCard.filters.filters')}
           </Button>
         )}
+
         <Button
           startIcon={<SwapVertIcon />}
           onClick={(event) => setRatingAnchor(event.currentTarget)}
@@ -139,6 +141,12 @@ export function RecipeFilters() {
           sx={{
             border: 1,
             borderColor: 'currentColor',
+            '&:hover svg': {
+              transform: 'rotateY(180deg)',
+            },
+            '& svg': {
+              transition: 'transform 200ms ease',
+            },
           }}
         >
           {t('recipeCard.filters.rating')}
@@ -151,6 +159,12 @@ export function RecipeFilters() {
           sx={{
             border: 1,
             borderColor: 'currentColor',
+            '&:hover svg': {
+              transform: 'rotateY(180deg)',
+            },
+            '& svg': {
+              transition: 'transform 200ms ease',
+            },
           }}
         >
           {t('recipeCard.filters.date')}
@@ -179,34 +193,52 @@ export function RecipeFilters() {
             {t('recipeCard.filters.dishType')}
           </Typography>
 
-          {categoryNames.map((category, index) => (
-            <Box key={category}>
+          {categories.map((category, index) => (
+            <Box key={category.name}>
               {index !== 0 && <Divider />}
 
               <Controller
                 name="categories"
                 control={control}
-                render={({ field }) => (
-                  <FormControlLabel
-                    label={category}
-                    control={
-                      <Checkbox
-                        checked={field.value.includes(category)}
-                        onChange={() => {
-                          field.onChange(
-                            field.value.includes(category)
-                              ? field.value.filter((item) => item !== category)
-                              : [...field.value, normalizeCategory(category)]
-                          );
-                        }}
-                      />
-                    }
-                    sx={{
-                      width: '100%',
-                      pl: 1,
-                    }}
-                  />
-                )}
+                render={({ field }) => {
+                  const selected = field.value.includes(category.name);
+
+                  return (
+                    <FormControlLabel
+                      label={`${category.emoji} ${category.name}`}
+                      control={
+                        <Checkbox
+                          checked={selected}
+                          onChange={() => {
+                            field.onChange(
+                              selected
+                                ? field.value.filter(
+                                    (item) => item !== category.name
+                                  )
+                                : [...field.value, category.name]
+                            );
+                          }}
+                        />
+                      }
+                      sx={{
+                        width: '100%',
+                        pl: 1,
+                        '&:hover .MuiFormControlLabel-label': {
+                          transform: 'translateX(10px)',
+                        },
+                        '& .MuiFormControlLabel-label': {
+                          transition: 'transform 150ms ease-out',
+                        },
+                        '&:hover svg': {
+                          transform: 'scale(1.1)',
+                        },
+                        '& svg': {
+                          transition: 'transform 150ms ease',
+                        },
+                      }}
+                    />
+                  );
+                }}
               />
             </Box>
           ))}
@@ -243,6 +275,18 @@ export function RecipeFilters() {
                   sx={{
                     width: '100%',
                     pl: 1,
+                    '&:hover .MuiFormControlLabel-label': {
+                      transform: 'translateX(10px)',
+                    },
+                    '& .MuiFormControlLabel-label': {
+                      transition: 'transform 150ms ease-out',
+                    },
+                    '&:hover svg': {
+                      transform: 'scale(1.1)',
+                    },
+                    '& svg': {
+                      transition: 'transform 150ms ease',
+                    },
                   }}
                 />
 
@@ -265,6 +309,18 @@ export function RecipeFilters() {
                   sx={{
                     width: '100%',
                     pl: 1,
+                    '&:hover .MuiFormControlLabel-label': {
+                      transform: 'translateX(10px)',
+                    },
+                    '& .MuiFormControlLabel-label': {
+                      transition: 'transform 150ms ease-out',
+                    },
+                    '&:hover svg': {
+                      transform: 'scale(1.1)',
+                    },
+                    '& svg': {
+                      transition: 'transform 150ms ease',
+                    },
                   }}
                 />
               </>
@@ -291,12 +347,28 @@ export function RecipeFilters() {
                 value="desc"
                 control={<Radio />}
                 label={t('recipeCard.filters.highScore')}
+                sx={{
+                  '&:hover .MuiFormControlLabel-label': {
+                    transform: 'translateX(5px)',
+                  },
+                  '& .MuiFormControlLabel-label': {
+                    transition: 'transform 150ms ease',
+                  },
+                }}
               />
 
               <FormControlLabel
                 value="asc"
                 control={<Radio />}
                 label={t('recipeCard.filters.lowScore')}
+                sx={{
+                  '&:hover .MuiFormControlLabel-label': {
+                    transform: 'translateX(5px)',
+                  },
+                  '& .MuiFormControlLabel-label': {
+                    transition: 'transform 150ms ease',
+                  },
+                }}
               />
             </RadioGroup>
           )}
@@ -321,12 +393,28 @@ export function RecipeFilters() {
                 value="desc"
                 control={<Radio />}
                 label={t('recipeCard.filters.newFirst')}
+                sx={{
+                  '&:hover .MuiFormControlLabel-label': {
+                    transform: 'translateX(5px)',
+                  },
+                  '& .MuiFormControlLabel-label': {
+                    transition: 'transform 150ms ease',
+                  },
+                }}
               />
 
               <FormControlLabel
                 value="asc"
                 control={<Radio />}
                 label={t('recipeCard.filters.oldFirst')}
+                sx={{
+                  '&:hover .MuiFormControlLabel-label': {
+                    transform: 'translateX(5px)',
+                  },
+                  '& .MuiFormControlLabel-label': {
+                    transition: 'transform 150ms ease',
+                  },
+                }}
               />
             </RadioGroup>
           )}

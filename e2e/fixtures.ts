@@ -1,6 +1,13 @@
 import { test as base } from '@playwright/test';
 import { mockApi } from './mocks/api';
-import { mockRecipeCategories, mockRecipes } from './mocks/recipes';
+import {
+  mockImageUploadUrl,
+  mockRateRecipe,
+  mockRecipeCategories,
+  mockRecipeCreate,
+  mockRecipeId,
+  mockRecipes,
+} from './mocks/recipes';
 import {
   mockLogin,
   mockMe,
@@ -11,6 +18,10 @@ import {
 type Fixtures = {
   mockRecipeCategories: () => Promise<void>;
   mockRecipes: () => Promise<void>;
+  mockImageUploadUrl: (id?: number) => Promise<void>;
+  mockRecipesCreate: (id?: number) => Promise<void>;
+  mockRecipeId: (id: number) => Promise<void>;
+  mockRateRecipe: (id: number) => Promise<void>;
 
   mockAuth: () => Promise<[void, void, void, void]>;
   mockRegister: () => Promise<void>;
@@ -31,6 +42,22 @@ export const test = base.extend<Fixtures>({
 
   mockRecipes: async ({ page }, use) => {
     await use(() => mockRecipes(page));
+  },
+
+  mockImageUploadUrl: async ({ page }, use) => {
+    await use((id?: number) => mockImageUploadUrl(page, id));
+  },
+
+  mockRecipesCreate: async ({ page }, use) => {
+    await use((id?: number) => mockRecipeCreate(page, id));
+  },
+
+  mockRecipeId: async ({ page }, use) => {
+    await use((id: number) => mockRecipeId(page, id));
+  },
+
+  mockRateRecipe: async ({ page }, use) => {
+    await use((id: number) => mockRateRecipe(page, id));
   },
 
   mockRegister: async ({ page }, use) => {

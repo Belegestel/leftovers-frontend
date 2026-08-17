@@ -16,7 +16,6 @@ export default function Home() {
     recipes,
     recipeOfTheDay,
     recipesLoading,
-    loadingMore,
     hasMore,
     loadMore,
   } = useRecipes();
@@ -59,7 +58,6 @@ export default function Home() {
       <RecipeGrid
         recipes={recipes}
         recipesLoading={recipesLoading}
-        loadingMore={loadingMore}
         hasMore={hasMore}
         loadMore={loadMore}
         onBookmarkToggle={toggleBookmark}

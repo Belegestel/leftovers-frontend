@@ -7,9 +7,9 @@ interface NotificationCardProps {
   notification: Notification;
 }
 
-const { t } = useTranslation();
-
 export function NotificationCard({ notification }: NotificationCardProps) {
+  const { t } = useTranslation();
+
   const title =
     notification.variant === 'RECIPE_EDIT'
       ? t('notification.recipeEdit.title')

@@ -281,7 +281,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                   }}
                 >
                   {notifications.map((notification, index) => (
-                    <Box key={index}>
+                    <Box key={notification.id}>
                       {index != 0 && <Divider />}
                       <NotificationCard notification={notification} />
                     </Box>

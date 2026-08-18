@@ -21,6 +21,28 @@ const NotificationContext = createContext<NotificationContextValue | null>(
   null
 );
 
+async function setup(setNotifications: Function, showSnackbar: Function) {
+  const existing = await getNotifications();
+
+  setNotifications(existing);
+
+  const token = getToken();
+
+  if (!token) {
+    return;
+  }
+
+  const socket = connectNotificationSocket(token);
+
+  socket.on('notification', (notification: Notification) => {
+    notification.createdAt = new Date(notification.createdAt);
+    setNotifications((current) => [notification, ...current]);
+    showSnackbar({
+      message: '🔔You have a new notification!🔔',
+    });
+  });
+}
+
 export function NotificationProvider({
   children,
 }: {
@@ -38,29 +60,7 @@ export function NotificationProvider({
       return;
     }
 
-    async function setup() {
-      const existing = await getNotifications();
-
-      setNotifications(existing);
-
-      const token = getToken();
-
-      if (!token) {
-        return;
-      }
-
-      const socket = connectNotificationSocket(token);
-
-      socket.on('notification', (notification: Notification) => {
-        notification.createdAt = new Date(notification.createdAt);
-        setNotifications((current) => [notification, ...current]);
-        showSnackbar({
-          message: '🔔You have a new notification!🔔',
-        });
-      });
-    }
-
-    setup();
+    setup(setNotifications, showSnackbar);
 
     return () => {
       disconnectNotificationSocket();

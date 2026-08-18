@@ -98,7 +98,13 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
               src={logo}
               alt={t('navbar.logo')}
               onClick={() => navigate('/')}
-              sx={{ cursor: 'pointer' }}
+              sx={{
+                cursor: 'pointer',
+                '&:hover': {
+                  transform: 'scale(1.1)',
+                },
+                transition: 'transform 200ms ease-out',
+              }}
             />
           </Box>
 
@@ -218,9 +224,20 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                   borderColor: 'divider',
                 }}
               >
-                {`${category.emoji} ${category.name.replace(/\b\w/g, (char) =>
-                  char.toUpperCase()
-                )}`}
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    width: '100%',
+                    height: '100%',
+                    '&:hover': {
+                      transform: 'translateX(10px)',
+                    },
+                    transition: 'transform 200ms ease',
+                  }}
+                >
+                  {`${category.emoji} ${category.name.replace(/\b\w/g, (char) => char.toUpperCase())}`}
+                </Box>
               </MenuItem>
             ))}
           </Menu>
@@ -301,6 +318,14 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                 anchorEl={myAccountAnchor}
                 open={Boolean(myAccountAnchor)}
                 onClose={() => setMyAccountAnchor(null)}
+                sx={{
+                  '& .MuiMenuItem-root:hover .content': {
+                    transform: 'translateX(10px)',
+                  },
+                  '& .MuiMenuItem-root .content': {
+                    transition: 'transform 200ms ease',
+                  },
+                }}
               >
                 <MenuItem
                   key="saved-recipes"
@@ -309,7 +334,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                     navigate('/saved');
                   }}
                 >
-                  {t('navbar.saved')}
+                  <Box className="content">{t('navbar.saved')}</Box>
                 </MenuItem>
 
                 <MenuItem
@@ -319,7 +344,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                     navigate('/my-recipes');
                   }}
                 >
-                  {t('navbar.myRecipes')}
+                  <Box className="content">{t('navbar.myRecipes')}</Box>
                 </MenuItem>
 
                 <MenuItem
@@ -331,7 +356,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                     setMyAccountAnchor(null);
                   }}
                 >
-                  {t('navbar.logout')}
+                  <Box className="content">{t('navbar.logout')}</Box>
                 </MenuItem>
               </Menu>
             </>

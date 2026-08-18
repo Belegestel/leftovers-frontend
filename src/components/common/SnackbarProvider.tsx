@@ -48,17 +48,21 @@ export function SnackbarProvider({ children }: { children: React.ReactNode }) {
             >
               {snackbar.message}
             </Typography>
-            {snackbar?.action && (
-              <Box sx={{mr:1}}>
-                {snackbar.action}
-              </Box>
-            )}
+            {snackbar?.action && <Box sx={{ mr: 1 }}>{snackbar.action}</Box>}
 
             <IconButton
               size="small"
               onClick={() => setSnackbar(null)}
               aria-label={t('modals.close')}
-              sx={{ p: 0.5 }}
+              sx={{
+                p: 0.5,
+                '&:hover > svg': {
+                  transform: 'rotate(90deg)',
+                },
+                '& > svg': {
+                  transition: 'transform 200ms ease',
+                },
+              }}
             >
               <CloseIcon fontSize="small" />
             </IconButton>

@@ -15,12 +15,22 @@ export async function mockRecipeCategories(page: Page) {
 export async function mockRecipes(page: Page) {
   await mockGet(page, '/recipes', (url) => {
     const category = url.searchParams.get('category');
+    const page = Number(url.searchParams.get('page') ?? 0);
+    const limit = Number(url.searchParams.get('limit') ?? 20);
 
     if (category === 'breakfasts') {
       return breakfastRecipesResponse;
     }
 
-    return recipesResponse;
+    const start = page * limit;
+    const end = (page + 1) * limit;
+
+    if (start >= recipesResponse.recipes.length) {
+      return { recipes: [] };
+    }
+    return {
+      recipes: recipesResponse.recipes.slice(start, end),
+    };
   });
 }
 
@@ -54,4 +64,19 @@ export async function mockImageUploadUrl(page: Page, id?: number) {
 
 export async function mockRateRecipe(page: Page, id: number) {
   await mockPost(page, `/recipes/${id}/rate`, {});
+}
+
+export async function mockSuggestions(page: Page) {
+  await mockGet(page, '/recipes/suggestions/', (url) => {
+    const query = url.searchParams.get('query') ?? '';
+    return {
+      names: [
+        recipesResponse.recipes
+          .map((recipe) => recipe.title)
+          .filter((recipe) =>
+            recipe.toLowerCase().includes(query.toLowerCase())
+          ),
+      ],
+    };
+  });
 }

@@ -1,5 +1,4 @@
 import { test, expect } from './fixtures';
-import { mockRecipeCategories } from './mocks/recipes';
 import { logIn } from './utils';
 
 test('user can open the recipes page', async ({
@@ -178,4 +177,139 @@ test('user can rate the recipe', async ({
   await expect(thirdStar).toBeVisible();
   await thirdStar.click();
   await page.getByRole('button', { name: 'submit' }).click();
+});
+
+test('more recipes load after scrolling down', async ({
+  page,
+  mockRecipeCategories,
+  mockRecipes,
+}) => {
+  await mockRecipeCategories();
+  await mockRecipes();
+
+  const scrollToBottom = async () => {
+    await page.evaluate(() => {
+      window.scrollTo(0, document.body.scrollHeight);
+    });
+  };
+
+  await page.goto('/');
+
+  const recipeCards = page.locator('.MuiGrid-root > .MuiPaper-root');
+  await expect(recipeCards).toHaveCount(20);
+
+  const scrollingEnd = page.getByText('No more recipes');
+  await expect(scrollingEnd).not.toBeVisible();
+
+  const page1Response = page.waitForResponse(/\page=1/i);
+  await scrollToBottom();
+  await page1Response;
+  await expect(scrollingEnd).not.toBeVisible();
+  await expect(recipeCards).toHaveCount(40);
+
+  const page2Response = page.waitForResponse(/\page=2/i);
+  await scrollToBottom();
+  await page2Response;
+  await expect(recipeCards).toHaveCount(50);
+
+  await scrollToBottom();
+  await expect(scrollingEnd).toBeVisible();
+});
+
+test('user sees recipe suggestions when searching', async ({
+  page,
+  mockRecipeCategories,
+  mockRecipes,
+  mockRecipeSuggestions,
+}) => {
+  await mockRecipeCategories();
+  await mockRecipes();
+  await mockRecipeSuggestions();
+
+  await page.goto('/');
+
+  const pizzaLocator = page.getByText('Pizza');
+
+  const textInput = page.getByRole('combobox');
+  await expect(textInput).toBeVisible();
+  const pizzaCount = await pizzaLocator.count();
+
+  const suggestionsResponse = page.waitForResponse(/\/recipes\/suggestions/i);
+  await textInput.fill('Piz');
+
+  await suggestionsResponse;
+
+  await expect(pizzaLocator).toHaveCount(pizzaCount + 1);
+});
+
+test('user can search for recipes', async ({
+  page,
+  mockRecipeSuggestions,
+  mockRecipes,
+  mockRecipeCategories,
+}) => {
+  await mockRecipeCategories();
+  await mockRecipes();
+  await mockRecipeSuggestions();
+
+  await page.goto('/');
+
+  const textInput = page.getByRole('combobox');
+  await expect(textInput).toBeVisible();
+
+  await textInput.fill('Pizz');
+  await textInput.press('Enter');
+
+  await expect(page.getByText('Search results for')).toBeVisible();
+  await expect(page.locator('.MuiSkeleton-root')).toHaveCount(8);
+  await expect(page.getByRole('heading', { name: 'Pizza' })).toBeVisible();
+});
+
+test('user can order the recipes', async ({
+  page,
+  mockRecipeCategories,
+  mockRecipes,
+}) => {
+  await mockRecipeCategories();
+  await mockRecipes();
+
+  await page.goto('/recipes');
+
+  await expect(page.getByText('All recipes')).toBeVisible();
+
+  const filtersButton = page.getByRole('button', { name: 'Filters' });
+  const ratingButton = page.getByRole('button', { name: 'Rating' });
+  const dateButton = page.getByRole('button', { name: 'Date' });
+
+  await expect(filtersButton).toBeVisible();
+  await expect(ratingButton).toBeVisible();
+  await expect(dateButton).toBeVisible();
+
+  await filtersButton.click();
+  const options = page.locator('label');
+  await expect(options).toHaveCount(10);
+  const breakfastsResponse = page.waitForResponse(/category=breakfasts/);
+  await options.first().click();
+  await breakfastsResponse;
+  await page.keyboard.press('Escape');
+  await expect(options).toHaveCount(0);
+
+  await ratingButton.click();
+  await expect(options).toHaveCount(2);
+  const ratingResponse = page.waitForResponse(/ratingOrderIncr=true/i);
+  await options.nth(1).click();
+  await ratingResponse;
+  await page.keyboard.press('Escape');
+  await expect(options).toHaveCount(0);
+
+  await dateButton.click();
+  await expect(options).toHaveCount(2);
+  const dateResponse = page.waitForResponse(/ratingOrderIncr=true/i);
+  await options.first().click();
+  await dateResponse;
+  await page.keyboard.press('Escape');
+  await expect(options).toHaveCount(0);
+
+  await expect(page.getByText('Breakfast Pancakes')).toBeVisible()
+  await expect(page.getByText('Pizza')).not.toBeVisible()
 });

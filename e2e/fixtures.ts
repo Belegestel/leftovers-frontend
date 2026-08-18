@@ -7,6 +7,7 @@ import {
   mockRecipeCreate,
   mockRecipeId,
   mockRecipes,
+  mockSuggestions,
 } from './mocks/recipes';
 import {
   mockLogin,
@@ -22,6 +23,7 @@ type Fixtures = {
   mockRecipesCreate: (id?: number) => Promise<void>;
   mockRecipeId: (id: number) => Promise<void>;
   mockRateRecipe: (id: number) => Promise<void>;
+  mockRecipeSuggestions: () => Promise<void>;
 
   mockAuth: () => Promise<[void, void, void, void]>;
   mockRegister: () => Promise<void>;
@@ -58,6 +60,10 @@ export const test = base.extend<Fixtures>({
 
   mockRateRecipe: async ({ page }, use) => {
     await use((id: number) => mockRateRecipe(page, id));
+  },
+
+  mockRecipeSuggestions: async ({ page }, use) => {
+    await use(() => mockSuggestions(page));
   },
 
   mockRegister: async ({ page }, use) => {

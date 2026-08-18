@@ -226,5 +226,11 @@
       "lowScore": "Moins bonnes évaluations en premier"
     },
     "save": "Enregistrer"
+  },
+  "notification": {
+    "recipeEdit": {
+      "title": "Nouvelle modification de recette !",
+      "description": "La recette \"{{recipeTitle}}\" a été modifiée !"
+    }
   }
 }

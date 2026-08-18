@@ -7,6 +7,10 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Popover,
+  Typography,
+  Divider,
+  Badge,
   Autocomplete,
   TextField,
 } from '@mui/material';
@@ -20,6 +24,9 @@ import { useRecipeSuggestions } from '@/hooks/useRecipeSuggestions';
 import { removeToken } from '@/services/tokenService';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import { NotificationCard } from '../notification/NotificationCard';
+import { useNotifications } from '@/context/NotificationContext';
 import { useTranslation } from 'react-i18next';
 import { useLocalizedNavigate } from '@/hooks/useLocalizedNavigate';
 
@@ -37,6 +44,9 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
   const [myAccountAnchor, setMyAccountAnchor] = useState<null | HTMLElement>(
     null
   );
+
+  const [notificationsAnchor, setNotificationsAnchor] =
+    useState<null | HTMLElement>(null);
 
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -67,6 +77,11 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
       setSearchQuery(query.trim());
     }
   }, []);
+
+  const { notifications } = useNotifications();
+  const unreadNotificationsCount = notifications.filter(
+    (notification) => !notification.isRead
+  ).length;
 
   return (
     <StyledAppBar position="sticky">
@@ -212,6 +227,67 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
 
           {authenticated ? (
             <>
+              <Button
+                onClick={(event) => setNotificationsAnchor(event.currentTarget)}
+                aria-label="notifications-button"
+              >
+                <Badge
+                  sx={{
+                    '& .MuiBadge-badge': {
+                      backgroundColor: 'notification.main',
+                      color: 'background.default',
+                    },
+                  }}
+                  badgeContent={unreadNotificationsCount}
+                >
+                  <NotificationsIcon />
+                </Badge>
+              </Button>
+              <Popover
+                anchorEl={notificationsAnchor}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                open={Boolean(notificationsAnchor)}
+                onClose={() => setNotificationsAnchor(null)}
+                slotProps={{
+                  paper: {
+                    sx: {
+                      width: {
+                        xs: 'calc(100vw - 32px)',
+                        sm: 400,
+                      },
+                      maxWidth: '100vw',
+                      maxHeight: 'min(70vh, 600px)',
+                      minHeight: '100px',
+
+                      display: 'flex',
+                      flexDirection: 'column',
+                    },
+                  },
+                }}
+              >
+                <Typography
+                  variant="h4"
+                  sx={{ padding: '5px', textAlign: 'center' }}
+                >
+                  Notifications
+                </Typography>
+                <Divider />
+                <Box
+                  sx={{
+                    overflowY: 'auto',
+                    flex: 1,
+                    px: 2,
+                    pb: 2,
+                  }}
+                >
+                  {notifications.map((notification, index) => (
+                    <Box key={notification.id}>
+                      {index != 0 && <Divider />}
+                      <NotificationCard notification={notification} />
+                    </Box>
+                  ))}
+                </Box>
+              </Popover>
               <Button
                 variant="contained"
                 endIcon={<KeyboardArrowDownIcon />}

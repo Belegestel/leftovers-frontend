@@ -10,7 +10,34 @@ const mockedNavigate = vi.fn();
 const mockedLocation = vi.fn();
 const mockedSetSearchParams = vi.fn();
 const mockedSearchParams = new URLSearchParams();
-
+const mockedNotificationContext = vi.hoisted(() => ({
+  notifications: [
+    {
+      id: 1,
+      variant: 'RECIPE_EDIT' as const,
+      data: { recipeTitle: 'Pizza' },
+      isRead: false,
+      createdAt: new Date(),
+    },
+    {
+      id: 2,
+      variant: 'RECIPE_EDIT' as const,
+      data: { recipeTitle: 'Pasta' },
+      isRead: true,
+      createdAt: new Date(),
+    },
+    {
+      id: 3,
+      variant: 'RECIPE_EDIT' as const,
+      data: { recipeTitle: 'Salad' },
+      isRead: false,
+      createdAt: new Date(),
+    },
+  ],
+}));
+vi.mock('@/context/NotificationContext', () => ({
+  useNotifications: () => mockedNotificationContext,
+}));
 vi.mock('@/services/tokenService', () => ({
   isAuthenticated: vi.fn(),
   getToken: vi.fn(),
@@ -138,6 +165,27 @@ describe('NavBar', () => {
     expect(screen.queryByText('Filters')).not.toBeInTheDocument();
   });
 
+  it('shows the number of unread notifications when authenticated', () => {
+    render(
+      <AuthProvider>
+        <NavBar authenticated={true} onLogout={() => {}} />
+      </AuthProvider>
+    );
+
+    expect(screen.getByText('2')).toBeInTheDocument();
+  });
+
+  it('does not show notifications when logged out', () => {
+    render(
+      <AuthProvider>
+        <NavBar authenticated={false} onLogout={() => {}} />
+      </AuthProvider>
+    );
+    expect(
+      screen.queryByRole('button', { name: /notifications-button/i })
+    ).not.toBeInTheDocument();
+  });
+
   it('shows autocomplete suggestions when searching', async () => {
     render(
       <AuthProvider>
@@ -152,6 +200,46 @@ describe('NavBar', () => {
 
     expect(screen.getByText('Tasty recipe')).toBeInTheDocument();
     expect(screen.getByText('Another recipe')).toBeInTheDocument();
+  });
+
+  it('opens the notifications popover', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <AuthProvider>
+        <NavBar authenticated={true} onLogout={() => {}} />
+      </AuthProvider>
+    );
+
+    await user.click(
+      screen.getByRole('button', { name: /notifications-button/i })
+    );
+
+    expect(screen.getByText('Notifications')).toBeInTheDocument();
+  });
+
+  it('displays notifications in the notifications popover', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <AuthProvider>
+        <NavBar authenticated={true} onLogout={() => {}} />
+      </AuthProvider>
+    );
+
+    await user.click(
+      screen.getByRole('button', { name: /notifications-button/i })
+    );
+
+    screen
+      .getAllByText('New recipe edit!')
+      .map((component) => expect(component).toBeDefined());
+    screen
+      .getAllByText('A recipe "Pizza" has changed!')
+      .map((component) => expect(component).toBeDefined());
+    screen
+      .getAllByText('A recipe "Salad" has changed!')
+      .map((component) => expect(component).toBeDefined());
   });
 
   it('searches when an autocomplete suggestion is selected', async () => {

@@ -224,5 +224,11 @@
       "lowScore": "Lowest score first"
     },
     "save": "Save"
+  },
+  "notification": {
+    "recipeEdit": {
+      "title": "New recipe edit!",
+      "description": "A recipe \"{{recipeTitle}}\" has changed!"
+    }
   }
 }

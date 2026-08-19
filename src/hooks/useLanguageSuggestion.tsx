@@ -36,7 +36,7 @@ export function useLanguageSuggestion() {
           size="small"
           onClick={() => {
             sessionStorage.setItem(STORAGE_KEY, 'true');
-            navigate(`${browserLanguage}${location.pathname}`)
+            navigate(`${browserLanguage}${location.pathname}`);
           }}
         >
           {t('language.switch')}

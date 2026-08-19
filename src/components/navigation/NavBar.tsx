@@ -247,18 +247,30 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
               <Button
                 onClick={(event) => setNotificationsAnchor(event.currentTarget)}
                 aria-label="notifications-button"
+                sx={{
+                  '&:hover .content': {
+                    transform: 'rotate(15deg) scale(1.1)',
+                  },
+                  '& .content': {
+                    transformOrigin: 'center 25%',
+                    transition: 'transform 100ms ease-in',
+                  },
+                }}
               >
-                <Badge
-                  sx={{
-                    '& .MuiBadge-badge': {
-                      backgroundColor: 'notification.main',
-                      color: 'background.default',
-                    },
-                  }}
-                  badgeContent={unreadNotificationsCount}
-                >
-                  <NotificationsIcon />
-                </Badge>
+                <Box className="content">
+                  <Badge
+                    sx={{
+                      '& .MuiBadge-badge': {
+                        backgroundColor: 'notification.main',
+                        color: 'background.default',
+                        transformOrigin: 'bottom left',
+                      },
+                    }}
+                    badgeContent={unreadNotificationsCount}
+                  >
+                    <NotificationsIcon />
+                  </Badge>
+                </Box>
               </Button>
               <Popover
                 anchorEl={notificationsAnchor}

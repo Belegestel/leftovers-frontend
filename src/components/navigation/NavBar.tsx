@@ -158,6 +158,14 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
               size="small"
               onClick={() => handleSearch()}
               aria-label="search"
+              sx={{
+                '&:hover svg': {
+                  transform: 'scale(1.2)',
+                },
+                '& svg': {
+                  transition: 'transform 100ms ease',
+                },
+              }}
             >
               <SearchIcon fontSize="small" />
             </IconButton>
@@ -178,6 +186,14 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
               color="primary"
               startIcon={<AddIcon />}
               onClick={() => navigate('/add-recipe')}
+              sx={{
+                '&:hover svg': {
+                  transform: 'rotate(180deg)',
+                },
+                '& svg': {
+                  transition: 'transform 200ms ease',
+                },
+              }}
             >
               {t('navbar.add')}
             </Button>
@@ -186,6 +202,14 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
           <Button
             color="inherit"
             endIcon={<KeyboardArrowDownIcon />}
+            sx={{
+              '&:hover svg': {
+                transform: 'scale(1.2)',
+              },
+              '& svg': {
+                transition: 'transform 200ms linear',
+              },
+            }}
             onClick={(event) => setRecipesAnchor(event.currentTarget)}
           >
             {t('navbar.recipes')}
@@ -321,7 +345,15 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                 variant="contained"
                 endIcon={<KeyboardArrowDownIcon />}
                 onClick={(event) => setMyAccountAnchor(event.currentTarget)}
-                sx={{ whiteSpace: 'nowrap' }}
+                sx={{
+                  whiteSpace: 'nowrap',
+                  '&:hover svg': {
+                    transform: 'scale(1.2)',
+                  },
+                  '& svg': {
+                    transition: 'transform 200ms linear',
+                  },
+                }}
               >
                 {t('navbar.myAcc')}
               </Button>

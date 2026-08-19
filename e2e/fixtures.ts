@@ -15,6 +15,11 @@ import {
   mockRegister,
   mockResetPassword,
 } from './mocks/auth';
+import {
+  createMockNotificationSocket,
+  mockNotification,
+  mockNotificationRead,
+} from './mocks/notifications';
 
 type Fixtures = {
   mockRecipeCategories: () => Promise<void>;
@@ -25,11 +30,15 @@ type Fixtures = {
   mockRateRecipe: (id: number) => Promise<void>;
   mockRecipeSuggestions: () => Promise<void>;
 
-  mockAuth: () => Promise<[void, void, void, void]>;
+  mockAuth: () => Promise<[void, void, void, void, void]>;
   mockRegister: () => Promise<void>;
   mockLogin: (successful?: boolean) => Promise<void>;
   mockResetPassword: () => Promise<void>;
   mockMe: () => Promise<void>;
+
+  mockNotificationSocket: ReturnType<typeof createMockNotificationSocket>;
+  mockNotification: (allRead?: boolean) => Promise<void>;
+  mockNotificationRead: (id: number) => Promise<void>;
 };
 
 export const test = base.extend<Fixtures>({
@@ -89,8 +98,25 @@ export const test = base.extend<Fixtures>({
         mockLogin(page),
         mockResetPassword(page),
         mockMe(page),
+        mockNotification(page),
       ])
     );
+  },
+
+  mockNotification: async ({ page }, use) => {
+    await use((allRead?: boolean) => mockNotification(page, allRead));
+  },
+
+  mockNotificationSocket: async ({}, use) => {
+    const socket = createMockNotificationSocket();
+
+    await socket.start();
+    await use(socket);
+    await socket.stop();
+  },
+
+  mockNotificationRead: async ({ page }, use) => {
+    await use((id: number) => mockNotificationRead(page, id));
   },
 });
 

@@ -148,11 +148,13 @@ test('navbar changes for a logged in user', async ({
   mockRecipes,
   mockLogin,
   mockMe,
+  mockNotification,
 }) => {
   await mockRecipeCategories();
   await mockRecipes();
   await mockLogin();
   await mockMe();
+  await mockNotification();
 
   await page.goto('/');
 

@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import { defineConfig } from '@playwright/test';
 
 dotenv.config({
-  path: '.env.test',
+  path: '.env.e2e',
 });
 
 const frontendUrl = 'http://localhost:5174';

@@ -199,7 +199,15 @@ export function RecipeDetailsCard({
           mt: 5,
         }}
       >
-        <Box>
+        <Box
+          sx={{
+            '&:hover': {
+              transform: 'scale(1.05)',
+            },
+            transition: 'transform 150ms ease',
+            transformOrigin: 'left center',
+          }}
+        >
           <Typography
             variant="h5"
             sx={{
@@ -227,7 +235,23 @@ export function RecipeDetailsCard({
           </Box>
         </Box>
 
-        <Box sx={{ pl: 5 }}>
+        <Box
+          sx={{
+            pl: 5,
+            '&:hover': {
+              transform: 'scale(1.05)',
+            },
+            transition: 'transform 150ms ease',
+            transformOrigin: 'left center',
+            '&:hover hr': {
+              transform: 'scaleX(0.952)',
+            },
+            '& hr': {
+              transition: 'transform 150ms ease',
+              transformOrigin: 'left center',
+            },
+          }}
+        >
           <Typography
             variant="h5"
             sx={{

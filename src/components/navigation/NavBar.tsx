@@ -13,11 +13,17 @@ import {
   Badge,
   Autocomplete,
   TextField,
+  useTheme,
+  useMediaQuery,
 } from '@mui/material';
 import logo from '@/assets/logo.svg';
 import SearchIcon from '@mui/icons-material/Search';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import LoginIcon from '@mui/icons-material/Login';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import HomeIcon from '@mui/icons-material/Home';
 import AddIcon from '@mui/icons-material/Add';
+import MenuIcon from '@mui/icons-material/Menu';
 import { useEffect, useState } from 'react';
 import { useRecipeCategories } from '@/hooks/useRecipeCategories';
 import { useRecipeSuggestions } from '@/hooks/useRecipeSuggestions';
@@ -39,8 +45,13 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
   const navigate = useLocalizedNavigate();
   const location = useLocation();
 
-  const [recipesAnchor, setRecipesAnchor] = useState<null | HTMLElement>(null);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+  const [recipesAnchor, setRecipesAnchor] = useState<null | HTMLElement>(null);
+  const [burgerMenuAnchor, setBurgerMenuAnchor] = useState<null | HTMLElement>(
+    null
+  );
   const [myAccountAnchor, setMyAccountAnchor] = useState<null | HTMLElement>(
     null
   );
@@ -87,7 +98,11 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
 
   return (
     <StyledAppBar position="sticky">
-      <Toolbar>
+      <Toolbar
+        sx={{
+          minWidth: 0,
+        }}
+      >
         <Box
           sx={{
             display: 'flex',
@@ -95,22 +110,25 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
             gap: 2,
             minWidth: 0,
             flexShrink: 1,
+            flex: { xs: 1, sm: '0 1 auto' },
           }}
         >
-          <Box sx={{ flexShrink: 0 }}>
-            <Logo
-              src={logo}
-              alt={t('navbar.logo')}
-              onClick={() => navigate('/')}
-              sx={{
-                cursor: 'pointer',
-                '&:hover': {
-                  transform: 'scale(1.1)',
-                },
-                transition: 'transform 200ms ease-out',
-              }}
-            />
-          </Box>
+          {!isMobile && (
+            <Box sx={{ flexShrink: 0 }}>
+              <Logo
+                src={logo}
+                alt={t('navbar.logo')}
+                onClick={() => navigate('/')}
+                sx={{
+                  cursor: 'pointer',
+                  '&:hover': {
+                    transform: 'scale(1.1)',
+                  },
+                  transition: 'transform 200ms ease-out',
+                }}
+              />
+            </Box>
+          )}
 
           <SearchBox>
             <Autocomplete
@@ -175,235 +193,413 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
           </SearchBox>
         </Box>
 
-        <Spacer />
+        {isMobile ? (
+          <>
+            <Badge
+              sx={{
+                '& .MuiBadge-badge': {
+                  backgroundColor: 'notification.main',
+                  color: 'background.default',
+                },
+              }}
+              overlap="circular"
+              anchorOrigin={{ horizontal: 'left' }}
+              badgeContent={unreadNotificationsCount}
+            >
+              <Button
+                startIcon={<MenuIcon />}
+                onClick={(event) => setBurgerMenuAnchor(event.currentTarget)}
+                sx={{
+                  flexShrink: 0,
+                  '& svg': {
+                    transform: Boolean(burgerMenuAnchor)
+                      ? 'rotate(90deg)'
+                      : 'rotate(0deg)',
+                    transition: 'transform 150ms ease',
+                  },
+                }}
+              />
+            </Badge>
 
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 2,
-            flexShrink: 0,
+            <Menu
+              anchorEl={burgerMenuAnchor}
+              open={Boolean(burgerMenuAnchor)}
+              onClose={() => setBurgerMenuAnchor(null)}
+              disableScrollLock
+              sx={{
+                '& svg': {
+                  mr: 1,
+                },
+              }}
+            >
+              <MenuItem
+                key="home"
+                onClick={() => navigate('/')}
+                sx={{
+                  '&:hover svg': { transform: 'rotate(15deg)' },
+                  '& svg': { transition: 'transform 100ms ease' },
+                }}
+              >
+                <HomeIcon />
+                {t('navbar.home')}
+              </MenuItem>
+
+              {authenticated ? (
+                <>
+                  <MenuItem
+                    key="add-recipe"
+                    onClick={() => navigate('/add-recipe')}
+                    sx={{
+                      '&:hover svg': { transform: 'rotate(90deg)' },
+                      '& svg': { transition: 'transform 150ms ease' },
+                    }}
+                  >
+                    <AddIcon />
+                    {t('navbar.add')}
+                  </MenuItem>
+
+                  <MenuItem
+                    key="notifications"
+                    onClick={(event) =>
+                      setNotificationsAnchor(event.currentTarget)
+                    }
+                    sx={{
+                      '&:hover svg': { transform: 'rotate(15deg)' },
+                      '& svg': { transition: 'transform 100ms ease' },
+                    }}
+                  >
+                    <Badge
+                      sx={{
+                        '& .MuiBadge-badge': {
+                          backgroundColor: 'notification.main',
+                          color: 'background.default',
+                        },
+                      }}
+                      badgeContent={unreadNotificationsCount}
+                      anchorOrigin={{
+                        horizontal: 'left',
+                      }}
+                    >
+                      <NotificationsIcon />
+                    </Badge>
+                    {t('navbar.notifications')}
+                  </MenuItem>
+
+                  <MenuItem
+                    key="recipes"
+                    onClick={(event) => {
+                      setRecipesAnchor(event.currentTarget);
+                    }}
+                    sx={{
+                      '&:hover svg': { transform: 'scale(1.3)' },
+                      '& svg': {
+                        transition: 'transform 150ms ease',
+                        ...(Boolean(recipesAnchor) && {
+                          transform: 'rotateX(180deg)',
+                        }),
+                      },
+                    }}
+                  >
+                    <KeyboardArrowDownIcon />
+                    {t('navbar.recipes')}
+                  </MenuItem>
+
+                  <MenuItem
+                    key="my-account"
+                    onClick={(event) => {
+                      setMyAccountAnchor(event.currentTarget);
+                    }}
+                    sx={{
+                      '&:hover svg': { transform: 'scale(1.3)' },
+                      '& svg': {
+                        transition: 'transform 150ms ease',
+                        ...(Boolean(myAccountAnchor) && {
+                          transform: 'rotateX(180deg)',
+                        }),
+                      },
+                    }}
+                  >
+                    <KeyboardArrowDownIcon />
+                    {t('navbar.myAcc')}
+                  </MenuItem>
+                </>
+              ) : (
+                <>
+                  <MenuItem
+                    key="log in"
+                    onClick={() =>
+                      navigate({
+                        pathname: location.pathname,
+                        search: '?login=true',
+                      })
+                    }
+                    sx={{
+                      '&:hover svg': {
+                        transform: 'scale(1.2) rotate(10deg)',
+                      },
+                      '& svg': {
+                        transition: 'transform 100ms ease',
+                      },
+                    }}
+                  >
+                    <LoginIcon />
+                    {t('navbar.login')}
+                  </MenuItem>
+
+                  <MenuItem
+                    key="sign up"
+                    onClick={() =>
+                      navigate({
+                        pathname: location.pathname,
+                        search: '?signup=true',
+                      })
+                    }
+                    sx={{
+                      '&:hover svg': {
+                        transform: 'scale(1.2) rotate(10deg)',
+                      },
+                      '& svg': {
+                        transition: 'transform 100ms ease',
+                      },
+                    }}
+                  >
+                    <PersonAddIcon />
+                    {t('navbar.signup')}
+                  </MenuItem>
+                </>
+              )}
+            </Menu>
+          </>
+        ) : (
+          <>
+            <Spacer />
+
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 2,
+                flexShrink: 0,
+              }}
+            >
+              {authenticated && (
+                <Button
+                  color="primary"
+                  startIcon={<AddIcon />}
+                  onClick={() => navigate('/add-recipe')}
+                >
+                  {t('navbar.add')}
+                </Button>
+              )}
+
+              <Button
+                color="inherit"
+                endIcon={<KeyboardArrowDownIcon />}
+                onClick={(event) => setRecipesAnchor(event.currentTarget)}
+              >
+                {t('navbar.recipes')}
+              </Button>
+
+              {authenticated ? (
+                <>
+                  <Button
+                    onClick={(event) =>
+                      setNotificationsAnchor(event.currentTarget)
+                    }
+                    aria-label="notifications-button"
+                  >
+                    <Badge
+                      sx={{
+                        '& .MuiBadge-badge': {
+                          backgroundColor: 'notification.main',
+                          color: 'background.default',
+                        },
+                      }}
+                      badgeContent={unreadNotificationsCount}
+                    >
+                      <NotificationsIcon />
+                    </Badge>
+                  </Button>
+
+                  <Button
+                    variant="contained"
+                    endIcon={<KeyboardArrowDownIcon />}
+                    onClick={(event) => setMyAccountAnchor(event.currentTarget)}
+                    sx={{ whiteSpace: 'nowrap' }}
+                  >
+                    {t('navbar.myAcc')}
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    color="primary"
+                    onClick={() =>
+                      navigate({
+                        pathname: location.pathname,
+                        search: '?login=true',
+                      })
+                    }
+                  >
+                    {t('navbar.login')}
+                  </Button>
+
+                  <Button
+                    variant="contained"
+                    onClick={() =>
+                      navigate({
+                        pathname: location.pathname,
+                        search: '?signup=true',
+                      })
+                    }
+                    sx={{ whiteSpace: 'nowrap' }}
+                  >
+                    {t('navbar.signup')}
+                  </Button>
+                </>
+              )}
+            </Box>
+          </>
+        )}
+
+        <Menu
+          anchorEl={recipesAnchor}
+          open={Boolean(recipesAnchor)}
+          onClose={() => setRecipesAnchor(null)}
+          slotProps={{
+            paper: {
+              sx: {
+                width: 220,
+              },
+            },
           }}
         >
-          {authenticated && (
-            <Button
-              color="primary"
-              startIcon={<AddIcon />}
-              onClick={() => navigate('/add-recipe')}
+          {categories.map((category, index) => (
+            <MenuItem
+              key={category.name}
+              onClick={() => {
+                navigate({
+                  pathname: '/recipes',
+                  search:
+                    index === 0
+                      ? ''
+                      : `?category=${encodeURIComponent(category.name.trim())}`,
+                });
+
+                setRecipesAnchor(null);
+              }}
+              sx={{
+                borderTop: index !== 0 ? '1px solid' : '0px solid',
+                borderColor: 'divider',
+              }}
             >
-              {t('navbar.add')}
-            </Button>
-          )}
-
-          <Button
-            color="inherit"
-            endIcon={<KeyboardArrowDownIcon />}
-            onClick={(event) => setRecipesAnchor(event.currentTarget)}
-          >
-            {t('navbar.recipes')}
-          </Button>
-
-          <Menu
-            anchorEl={recipesAnchor}
-            open={Boolean(recipesAnchor)}
-            onClose={() => setRecipesAnchor(null)}
-            slotProps={{
-              paper: {
-                sx: {
-                  width: 220,
-                },
-              },
-            }}
-          >
-            {categories.map((category, index) => (
-              <MenuItem
-                key={category.name}
-                onClick={() => {
-                  navigate({
-                    pathname: '/recipes',
-                    search:
-                      index === 0
-                        ? ''
-                        : `?category=${encodeURIComponent(
-                            category.name.trim()
-                          )}`,
-                  });
-
-                  setRecipesAnchor(null);
-                }}
+              <Box
                 sx={{
-                  borderTop: index !== 0 ? '1px solid' : '0px solid',
-                  borderColor: 'divider',
-                }}
-              >
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    width: '100%',
-                    height: '100%',
-                    '&:hover': {
-                      transform: 'translateX(10px)',
-                    },
-                    transition: 'transform 200ms ease',
-                  }}
-                >
-                  {`${category.emoji} ${category.name.replace(/\b\w/g, (char) => char.toUpperCase())}`}
-                </Box>
-              </MenuItem>
-            ))}
-          </Menu>
-
-          {authenticated ? (
-            <>
-              <Button
-                onClick={(event) => setNotificationsAnchor(event.currentTarget)}
-                aria-label="notifications-button"
-              >
-                <Badge
-                  sx={{
-                    '& .MuiBadge-badge': {
-                      backgroundColor: 'notification.main',
-                      color: 'background.default',
-                    },
-                  }}
-                  badgeContent={unreadNotificationsCount}
-                >
-                  <NotificationsIcon />
-                </Badge>
-              </Button>
-
-              <Popover
-                anchorEl={notificationsAnchor}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                open={Boolean(notificationsAnchor)}
-                onClose={() => setNotificationsAnchor(null)}
-                slotProps={{
-                  paper: {
-                    sx: {
-                      width: {
-                        xs: 'calc(100vw - 32px)',
-                        sm: 400,
-                      },
-                      maxWidth: '100vw',
-                      maxHeight: 'min(70vh, 600px)',
-                      minHeight: '100px',
-                      display: 'flex',
-                      flexDirection: 'column',
-                    },
-                  },
-                }}
-              >
-                <Typography
-                  variant="h4"
-                  sx={{ padding: '5px', textAlign: 'center' }}
-                >
-                  Notifications
-                </Typography>
-
-                <Divider />
-
-                <Box
-                  sx={{
-                    overflowY: 'auto',
-                    flex: 1,
-                    px: 2,
-                    pb: 2,
-                  }}
-                >
-                  {notifications.map((notification, index) => (
-                    <Box key={notification.id}>
-                      {index !== 0 && <Divider />}
-                      <NotificationCard notification={notification} />
-                    </Box>
-                  ))}
-                </Box>
-              </Popover>
-
-              <Button
-                variant="contained"
-                endIcon={<KeyboardArrowDownIcon />}
-                onClick={(event) => setMyAccountAnchor(event.currentTarget)}
-                sx={{ whiteSpace: 'nowrap' }}
-              >
-                {t('navbar.myAcc')}
-              </Button>
-
-              <Menu
-                anchorEl={myAccountAnchor}
-                open={Boolean(myAccountAnchor)}
-                onClose={() => setMyAccountAnchor(null)}
-                sx={{
-                  '& .MuiMenuItem-root:hover .content': {
+                  display: 'flex',
+                  flexDirection: 'row',
+                  width: '100%',
+                  height: '100%',
+                  '&:hover': {
                     transform: 'translateX(10px)',
                   },
-                  '& .MuiMenuItem-root .content': {
-                    transition: 'transform 200ms ease',
-                  },
+                  transition: 'transform 200ms ease',
                 }}
               >
-                <MenuItem
-                  key="saved-recipes"
-                  onClick={() => {
-                    setMyAccountAnchor(null);
-                    navigate('/saved');
-                  }}
-                >
-                  <Box className="content">{t('navbar.saved')}</Box>
-                </MenuItem>
+                {`${category.emoji} ${category.name.replace(/\b\w/g, (char) => char.toUpperCase())}`}
+              </Box>
+            </MenuItem>
+          ))}
+        </Menu>
 
-                <MenuItem
-                  key="my-recipes"
-                  onClick={() => {
-                    setMyAccountAnchor(null);
-                    navigate('/my-recipes');
-                  }}
-                >
-                  <Box className="content">{t('navbar.myRecipes')}</Box>
-                </MenuItem>
+        <Menu
+          anchorEl={myAccountAnchor}
+          open={Boolean(myAccountAnchor)}
+          onClose={() => setMyAccountAnchor(null)}
+          sx={{
+            '& .MuiMenuItem-root:hover .content': {
+              transform: 'translateX(10px)',
+            },
+            '& .MuiMenuItem-root .content': {
+              transition: 'transform 200ms ease',
+            },
+          }}
+        >
+          <MenuItem
+            key="saved-recipes"
+            onClick={() => {
+              setMyAccountAnchor(null);
+              navigate('/saved');
+            }}
+          >
+            <Box className="content">{t('navbar.saved')}</Box>
+          </MenuItem>
 
-                <MenuItem
-                  key="log-out"
-                  onClick={() => {
-                    removeToken();
-                    onLogout();
-                    authChanged();
-                    setMyAccountAnchor(null);
-                  }}
-                >
-                  <Box className="content">{t('navbar.logout')}</Box>
-                </MenuItem>
-              </Menu>
-            </>
-          ) : (
-            <>
-              <Button
-                color="primary"
-                onClick={() =>
-                  navigate({
-                    pathname: location.pathname,
-                    search: '?login=true',
-                  })
-                }
-              >
-                {t('navbar.login')}
-              </Button>
+          <MenuItem
+            key="my-recipes"
+            onClick={() => {
+              setMyAccountAnchor(null);
+              navigate('/my-recipes');
+            }}
+          >
+            <Box className="content">{t('navbar.myRecipes')}</Box>
+          </MenuItem>
 
-              <Button
-                variant="contained"
-                onClick={() =>
-                  navigate({
-                    pathname: location.pathname,
-                    search: '?signup=true',
-                  })
-                }
-                sx={{ whiteSpace: 'nowrap' }}
-              >
-                {t('navbar.signup')}
-              </Button>
-            </>
-          )}
-        </Box>
+          <MenuItem
+            key="log-out"
+            onClick={() => {
+              removeToken();
+              onLogout();
+              authChanged();
+              setMyAccountAnchor(null);
+            }}
+          >
+            <Box className="content">{t('navbar.logout')}</Box>
+          </MenuItem>
+        </Menu>
+
+        <Popover
+          anchorEl={notificationsAnchor}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          open={Boolean(notificationsAnchor)}
+          onClose={() => setNotificationsAnchor(null)}
+          slotProps={{
+            paper: {
+              sx: {
+                width: {
+                  xs: 'calc(100vw - 32px)',
+                  sm: 400,
+                },
+                maxWidth: '100vw',
+                maxHeight: 'min(70vh, 600px)',
+                minHeight: '100px',
+                display: 'flex',
+                flexDirection: 'column',
+              },
+            },
+          }}
+        >
+          <Typography variant="h4" sx={{ padding: '5px', textAlign: 'center' }}>
+            Notifications
+          </Typography>
+
+          <Divider />
+
+          <Box
+            sx={{
+              overflowY: 'auto',
+              flex: 1,
+              px: 2,
+              pb: 2,
+            }}
+          >
+            {notifications.map((notification, index) => (
+              <Box key={notification.id}>
+                {index !== 0 && <Divider />}
+                <NotificationCard notification={notification} />
+              </Box>
+            ))}
+          </Box>
+        </Popover>
       </Toolbar>
     </StyledAppBar>
   );
@@ -426,6 +622,10 @@ const SearchBox = styled(Box)(({ theme }) => ({
   padding: '0 16px',
   borderRadius: theme.shape.borderRadius,
   border: `1px solid ${theme.palette.divider}`,
+
+  [theme.breakpoints.down('sm')]: {
+    width: '100%',
+  },
 }));
 
 const Spacer = styled(Box)({

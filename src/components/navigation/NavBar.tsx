@@ -64,6 +64,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
     if (!query.trim()) {
       return;
     }
+
     const newParams = new URLSearchParams(searchParams);
     newParams.set('search', query.trim());
 
@@ -79,6 +80,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
   }, []);
 
   const { notifications } = useNotifications();
+
   const unreadNotificationsCount = notifications.filter(
     (notification) => !notification.isRead
   ).length;
@@ -91,9 +93,11 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
             display: 'flex',
             alignItems: 'center',
             gap: 2,
+            minWidth: 0,
+            flexShrink: 1,
           }}
         >
-          <Box>
+          <Box sx={{ flexShrink: 0 }}>
             <Logo
               src={logo}
               alt={t('navbar.logo')}
@@ -132,6 +136,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                 if (!value) {
                   return;
                 }
+
                 setSearchQuery(value);
                 handleSearch(value);
               }}
@@ -145,9 +150,12 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
               )}
               sx={{
                 flex: 1,
+                minWidth: 0,
+
                 '& .MuiInputBase-root': {
                   padding: 0,
                 },
+
                 '& .MuiInput-underline:before, & .MuiInput-underline:after': {
                   display: 'none',
                 },
@@ -158,6 +166,9 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
               size="small"
               onClick={() => handleSearch()}
               aria-label="search"
+              sx={{
+                flexShrink: 0,
+              }}
             >
               <SearchIcon fontSize="small" />
             </IconButton>
@@ -171,6 +182,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
             display: 'flex',
             alignItems: 'center',
             gap: 2,
+            flexShrink: 0,
           }}
         >
           {authenticated && (
@@ -260,6 +272,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                   <NotificationsIcon />
                 </Badge>
               </Button>
+
               <Popover
                 anchorEl={notificationsAnchor}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
@@ -275,7 +288,6 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                       maxWidth: '100vw',
                       maxHeight: 'min(70vh, 600px)',
                       minHeight: '100px',
-
                       display: 'flex',
                       flexDirection: 'column',
                     },
@@ -288,7 +300,9 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                 >
                   Notifications
                 </Typography>
+
                 <Divider />
+
                 <Box
                   sx={{
                     overflowY: 'auto',
@@ -299,12 +313,13 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                 >
                   {notifications.map((notification, index) => (
                     <Box key={notification.id}>
-                      {index != 0 && <Divider />}
+                      {index !== 0 && <Divider />}
                       <NotificationCard notification={notification} />
                     </Box>
                   ))}
                 </Box>
               </Popover>
+
               <Button
                 variant="contained"
                 endIcon={<KeyboardArrowDownIcon />}
@@ -404,6 +419,9 @@ const SearchBox = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   width: 570,
+  flexShrink: 1,
+  minWidth: 0,
+
   height: 40,
   padding: '0 16px',
   borderRadius: theme.shape.borderRadius,
@@ -412,6 +430,7 @@ const SearchBox = styled(Box)(({ theme }) => ({
 
 const Spacer = styled(Box)({
   flexGrow: 1,
+  minWidth: 0,
 });
 
 const Logo = styled('img')({

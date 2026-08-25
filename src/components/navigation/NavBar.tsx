@@ -204,10 +204,10 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
             endIcon={<KeyboardArrowDownIcon />}
             sx={{
               '&:hover svg': {
-                transform: 'scale(1.2)',
+                transform: 'scale(1.3)',
               },
               '& svg': {
-                transition: 'transform 200ms linear',
+                transition: 'transform 100ms linear',
               },
             }}
             onClick={(event) => setRecipesAnchor(event.currentTarget)}
@@ -348,10 +348,10 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                 sx={{
                   whiteSpace: 'nowrap',
                   '&:hover svg': {
-                    transform: 'scale(1.2)',
+                    transform: 'scale(1.3)',
                   },
                   '& svg': {
-                    transition: 'transform 200ms linear',
+                    transition: 'transform 100ms linear',
                   },
                 }}
               >

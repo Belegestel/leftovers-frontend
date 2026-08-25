@@ -262,36 +262,37 @@ export function RecipeDetailsCard({
           </Typography>
 
           {recipe.steps.map((step, index) => (
-            <Box
-              key={step}
-              sx={{
-                '&:hover': {
-                  transform: 'translateX(5px)',
-                },
-                transition: 'transform 100ms linear',
-              }}
-            >
-              <Typography
-                variant="overline"
+            <>
+              <Box
+                key={step}
                 sx={{
-                  fontWeight: 700,
-                  mt: 1,
-                  color: 'primary.main',
+                  '&:hover': {
+                    transform: 'translateX(5px)',
+                  },
+                  transition: 'transform 100ms linear',
                 }}
               >
-                {t('recipeCard.stepNum', { index: index + 1 })}
-              </Typography>
+                <Typography
+                  variant="overline"
+                  sx={{
+                    fontWeight: 700,
+                    mt: 1,
+                    color: 'primary.main',
+                  }}
+                >
+                  {t('recipeCard.stepNum', { index: index + 1 })}
+                </Typography>
 
-              <Typography
-                sx={{
-                  mb: 1,
-                }}
-              >
-                {step}
-              </Typography>
-
+                <Typography
+                  sx={{
+                    mb: 1,
+                  }}
+                >
+                  {step}
+                </Typography>
+              </Box>
               {index !== recipe.steps.length - 1 && <Divider sx={{ mb: 1 }} />}
-            </Box>
+            </>
           ))}
         </Box>
       </Box>

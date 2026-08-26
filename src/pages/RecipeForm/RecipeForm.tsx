@@ -105,9 +105,7 @@ export default function RecipeForm() {
         reset({
           title: recipe.title,
           description: recipe.description,
-          category: recipe.category
-            .toLowerCase()
-            .replace(/\b\w/g, (char) => char.toUpperCase()),
+          category: recipe.category,
           prepTime: recipe.prepTime,
           servings: recipe.servings,
           ingredients: recipe.ingredients.map((ingredient: string) => ({
@@ -130,7 +128,7 @@ export default function RecipeForm() {
     };
 
     loadRecipe();
-  }, [recipeIdFromRoute, reset, navigate, showSnackbar]);
+  }, [recipeIdFromRoute, reset, showSnackbar]);
 
   const goToNextStep = () => {
     setActiveStep((currentStep) => {
@@ -159,10 +157,7 @@ export default function RecipeForm() {
       {
         title: values.title,
         description: values.description,
-        category:
-          values.category.toLowerCase() === 'breakfasts'
-            ? 'BREAKFAST'
-            : values.category.toUpperCase(),
+        category: values.category,
         prepTime: values.prepTime ?? 0,
         servings: values.servings,
         ingredients: values.ingredients.map((ingredient) => ingredient.value),

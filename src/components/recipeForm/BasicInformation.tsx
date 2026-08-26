@@ -362,6 +362,11 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
                         selected: 30,
                       })}
                     </MenuItem>
+                    <MenuItem value={45}>
+                      {t('addRecipe.pages.basic.prepTime.selected', {
+                        selected: 45,
+                      })}
+                    </MenuItem>
                     <MenuItem value={60}>
                       {t('addRecipe.pages.basic.prepTime.selected', {
                         selected: 60,

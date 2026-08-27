@@ -36,7 +36,7 @@ test('user can filter recipes by category', async ({
   await expect(page.getByText('Pizza')).toHaveCount(0);
 });
 
-test('user can create recipe', async ({
+test('user can create a recipe', async ({
   page,
   mockAuth,
   mockRecipeCategories,
@@ -166,7 +166,6 @@ test('user can edit recipe', async ({
   await expect(nextButton).toBeDisabled();
 
   await page.getByRole('textbox', { name: 'Step 4' }).fill('Additional step');
-  await page.getByRole('textbox', { name: 'Step 3' }).fill('Minor change');
   await expect(nextButton).toBeEnabled();
   await nextButton.click();
 

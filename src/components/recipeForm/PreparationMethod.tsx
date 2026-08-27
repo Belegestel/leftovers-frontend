@@ -17,8 +17,7 @@ interface PreparationMethodProps {
 }
 
 export function PreparationMethod({ onBack, onNext }: PreparationMethodProps) {
-  const { control, register, getValues } =
-    useFormContext<RecipeFormValues>();
+  const { control, getValues } = useFormContext<RecipeFormValues>();
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -80,14 +79,16 @@ export function PreparationMethod({ onBack, onNext }: PreparationMethodProps) {
           <Controller
             key={field.id}
             name={`steps.${index}.value`}
+            control={control}
+            rules={{ required: true }}
             render={({ field }) => (
               <TextField
                 {...field}
                 fullWidth
-            label={t('addRecipe.pages.preparation.stepLabel', {
-              index: index + 1,
-            })}
-            placeholder={t('addRecipe.pages.preparation.stepPlaceholder')}
+                label={t('addRecipe.pages.preparation.stepLabel', {
+                  index: index + 1,
+                })}
+                placeholder={t('addRecipe.pages.preparation.stepPlaceholder')}
                 value={field.value}
                 slotProps={{
                   inputLabel: {

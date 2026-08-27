@@ -126,11 +126,13 @@ test('user can edit recipe', async ({
   mockRecipes,
   mockAuth,
   mockRecipeId,
+  mockRecipeEdit,
 }) => {
   await mockRecipeCategories();
   await mockRecipes();
   await mockAuth();
   await mockRecipeId(3);
+  await mockRecipeEdit(3);
 
   await page.goto('/');
 
@@ -138,8 +140,154 @@ test('user can edit recipe', async ({
 
   await page.goto('/my-recipes');
 
+  const editRecipeButton = page.getByText('Edit the recipe').first();
+
   await expect(page.getByText('My Recipes')).toBeVisible();
-  await expect(page.getByText('Edit the recipe').nth(0)).toBeVisible();
+  await expect(editRecipeButton).toBeVisible();
+
+  await editRecipeButton.click();
+
+  await expect(page.getByText('Edit Recipe')).toBeVisible();
+
+  const nextButton = page.getByRole('button', { name: /next/i });
+  const prevButton = page.getByRole('button', { name: /back/i });
+
+  await nextButton.click();
+  await nextButton.click();
+  await nextButton.click();
+
+  await expect(page.getByText('Recipe published')).toBeVisible();
+
+  await prevButton.click();
+
+  await page.getByText('Add a new step').click();
+  await expect(nextButton).toBeVisible();
+  await expect(nextButton).toBeDisabled();
+
+  await page.getByRole('textbox', { name: 'Step 4' }).fill('Additional step');
+  await page.getByRole('textbox', { name: 'Step 3' }).fill('Minor change');
+  await expect(nextButton).toBeEnabled();
+  await nextButton.click();
+
+  await expect(page.getByText('Recipe published')).not.toBeVisible();
+
+  const publishButton = page.getByRole('button', {
+    name: /publish the recipe/i,
+  });
+  await expect(publishButton).toBeEnabled();
+  await publishButton.click();
+  await expect(page.getByText('Publish the recipe')).not.toBeVisible();
+  await expect(publishButton).not.toBeVisible();
+  await expect(
+    page.getByRole('button', { name: /recipe published/i })
+  ).toBeDisabled();
+});
+
+test('user can change recipe visibility without editing its content', async ({
+  page,
+  mockRecipeCategories,
+  mockRecipes,
+  mockRecipeId,
+  mockRecipeEdit,
+  mockAuth,
+}) => {
+  await mockRecipeCategories();
+  await mockRecipes();
+  await mockRecipeId(3);
+  await mockRecipeEdit(3);
+  await mockAuth();
+
+  await page.goto('/');
+  await logIn(page);
+  await page.goto('/my-recipes');
+
+  await page.getByText('Edit the recipe').first().click();
+  const nextButton = page.getByRole('button', { name: /next/i });
+  await nextButton.click();
+  await nextButton.click();
+  await nextButton.click();
+
+  const privateButton = page.getByRole('button', { name: /save as private/i });
+  await expect(privateButton).toBeVisible();
+  await expect(privateButton).toBeEnabled();
+  const publicSavedButton = page.getByRole('button', {
+    name: /recipe published/i,
+  });
+  await expect(publicSavedButton).toBeVisible();
+  await expect(publicSavedButton).not.toBeEnabled();
+
+  await privateButton.click();
+
+  await expect(privateButton).not.toBeVisible();
+  await expect(publicSavedButton).not.toBeVisible();
+  const privateSavedButton = page.getByRole('button', {
+    name: /recipe saved/i,
+  });
+  await expect(privateSavedButton).toBeVisible();
+  await expect(privateSavedButton).not.toBeEnabled();
+  const publicButton = page.getByRole('button', {
+    name: /publish the recipe/i,
+  });
+  await expect(publicButton).toBeVisible();
+
+  const snackbarSaved = page.getByText('Your recipe has been saved as private');
+  await expect(snackbarSaved).toBeVisible();
+
+  await publicButton.click();
+
+  await expect(publicButton).not.toBeVisible();
+  await expect(publicSavedButton).toBeVisible();
+  await expect(publicSavedButton).toBeDisabled();
+  await expect(privateButton).toBeVisible();
+  await expect(privateButton).toBeEnabled();
+  await expect(page.getByText('Your recipe has been published')).toBeVisible();
+});
+
+test('user can delete a recipe with a confirmation modal', async ({
+  page,
+  mockRecipeCategories,
+  mockRecipes,
+  mockRecipeId,
+  mockRecipeDelete,
+  mockAuth,
+}) => {
+  await mockAuth();
+  await mockRecipes();
+  await mockRecipeCategories();
+  await mockRecipeId(3);
+  await mockRecipeDelete(3);
+
+  await page.goto('/');
+  await logIn(page);
+  await page.goto('/my-recipes');
+
+  await page.getByText('Edit the recipe').first().click();
+  const nextButton = page.getByRole('button', { name: /next/i });
+  await nextButton.click();
+  await nextButton.click();
+  await nextButton.click();
+
+  const deleteButton = page.getByRole('button', { name: /delete/i });
+  await expect(deleteButton).toBeVisible();
+  await expect(deleteButton).toBeEnabled();
+
+  await deleteButton.click();
+
+  const modalTitle = page.getByText(/are you sure/i);
+  await expect(modalTitle).toBeVisible();
+  const confirmButton = page.getByRole('button', { name: /delete/i });
+  const cancelButton = page.getByRole('button', { name: /cancel/i });
+  await expect(confirmButton).toBeVisible();
+  await expect(cancelButton).toBeVisible();
+
+  await cancelButton.click();
+  await expect(modalTitle).not.toBeVisible();
+
+  await deleteButton.click();
+  await expect(modalTitle).toBeVisible();
+  await confirmButton.click();
+
+  await expect(page.getByText('Edit recipe')).not.toBeVisible();
 });
 
 test('user can rate the recipe', async ({
@@ -310,6 +458,6 @@ test('user can order the recipes', async ({
   await page.keyboard.press('Escape');
   await expect(options).toHaveCount(0);
 
-  await expect(page.getByText('Breakfast Pancakes')).toBeVisible()
-  await expect(page.getByText('Pizza')).not.toBeVisible()
+  await expect(page.getByText('Breakfast Pancakes')).toBeVisible();
+  await expect(page.getByText('Pizza')).not.toBeVisible();
 });

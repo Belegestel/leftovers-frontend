@@ -63,12 +63,13 @@ test('user can create recipe', async ({
 
   await expect(nextPageButton).not.toBeEnabled();
   const imageBox = page.locator('input[type=file]');
-  await imageBox.setInputFiles('e2e/fixtures/pizza.jpg');
   await page.getByRole('textbox', { name: 'Title' }).fill('Pizza');
   await page.getByRole('textbox', { name: 'Description' }).fill('Tasty pizza');
   await expect(nextPageButton).not.toBeEnabled();
   await page.locator('#mui-component-select-category').click();
   await page.getByRole('option', { name: 'Breakfast' }).click();
+  await expect(nextPageButton).not.toBeEnabled();
+  await imageBox.setInputFiles('e2e/fixtures/pizza.jpg');
   await expect(nextPageButton).toBeEnabled();
   await nextPageButton.click();
 
@@ -288,6 +289,7 @@ test('user can delete a recipe with a confirmation modal', async ({
   await confirmButton.click();
 
   await expect(page.getByText('Edit recipe')).not.toBeVisible();
+  await page.waitForURL('/en/');
 });
 
 test('user can rate the recipe', async ({

@@ -90,14 +90,13 @@ export function Publication({
 
   const handleDelete = async () => {
     try {
-      if (recipeId === undefined) {
-        return;
+      if (recipeId !== undefined) {
+        await onRecipeDelete(recipeId);
       }
 
       setLoading(true);
       setError(null);
 
-      await onRecipeDelete(recipeId);
       navigate('/');
       showSnackbar({
         message: '🗑️ Your recipe has been deleted!',

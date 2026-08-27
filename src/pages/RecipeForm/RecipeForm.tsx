@@ -1,5 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Box, Container, Skeleton, Typography } from '@mui/material';
+import {
+  Box,
+  Container,
+  Skeleton,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import LunchDiningOutlinedIcon from '@mui/icons-material/LunchDiningOutlined';
 import RestaurantMenuOutlinedIcon from '@mui/icons-material/RestaurantMenuOutlined';
@@ -62,6 +69,9 @@ export default function RecipeForm() {
   const showSnackbar = useSnackbar();
   const navigate = useLocalizedNavigate();
   const { recipe } = useParams();
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const recipeIdFromRoute = recipe ? Number(recipe) : undefined;
 
@@ -233,15 +243,16 @@ export default function RecipeForm() {
                 }}
               >
                 {step.icon}
-
-                <Typography
-                  variant="body2"
-                  sx={{
-                    fontWeight: isActive ? 600 : 400,
-                  }}
-                >
-                  {step.label}
-                </Typography>
+                {(!isMobile || isActive) && (
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontWeight: isActive ? 600 : 400,
+                    }}
+                  >
+                    {step.label}
+                  </Typography>
+                )}
               </Box>
             );
           })}
@@ -262,7 +273,7 @@ export default function RecipeForm() {
               sx={{ mt: 5, width: '100%', height: 350 }}
             />
           )}
-          {activeStep === 'basic' && <BasicInformation onNext={goToNextStep} />}
+          {activeStep === 'basic' && <BasicInformation onNext={goToNextStep} isMobile={isMobile} />}
 
           {activeStep === 'ingredients' && (
             <Box sx={{ mt: 4 }}>

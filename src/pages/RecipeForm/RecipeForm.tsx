@@ -277,7 +277,7 @@ export default function RecipeForm() {
 
           {activeStep === 'ingredients' && (
             <Box sx={{ mt: 4 }}>
-              <Ingredients onNext={goToNextStep} onBack={goToPreviousStep} />
+              <Ingredients onNext={goToNextStep} onBack={goToPreviousStep} isMobile={isMobile}/>
             </Box>
           )}
 

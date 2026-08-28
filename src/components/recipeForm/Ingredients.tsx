@@ -14,11 +14,11 @@ import type { RecipeFormValues } from '@/types/recipeForm';
 interface IngredientsProps {
   onBack: () => void;
   onNext: () => void;
+  isMobile: boolean;
 }
 
-export function Ingredients({ onBack, onNext }: IngredientsProps) {
-  const { control, register, getValues } =
-    useFormContext<RecipeFormValues>();
+export function Ingredients({ onBack, onNext, isMobile }: IngredientsProps) {
+  const { control, getValues } = useFormContext<RecipeFormValues>();
 
   const { t } = useTranslation();
 
@@ -59,9 +59,13 @@ export function Ingredients({ onBack, onNext }: IngredientsProps) {
           <Button
             variant="secondary"
             onClick={onBack}
-            sx={{ border: '1px solid', borderColor: 'currentColor' }}
+            sx={{
+              border: '1px solid',
+              borderColor: 'currentColor',
+              overflow: 'nowrap',
+            }}
           >
-            &lt; {t('addRecipe.back')}
+            &lt; {!isMobile && t('addRecipe.back')}
           </Button>
 
           <Button
@@ -69,7 +73,7 @@ export function Ingredients({ onBack, onNext }: IngredientsProps) {
             disabled={!ingredientsValid}
             onClick={onNext}
           >
-            {t('addRecipe.next')} &gt;
+            {!isMobile && t('addRecipe.next')} &gt;
           </Button>
         </Box>
       </Box>
@@ -94,7 +98,9 @@ export function Ingredients({ onBack, onNext }: IngredientsProps) {
                 label={t('addRecipe.pages.ingredients.ingredientCounter', {
                   index: index + 1,
                 })}
-                placeholder={t('addRecipe.pages.ingredients.ingredientCounterPlaceholder')}
+                placeholder={t(
+                  'addRecipe.pages.ingredients.ingredientCounterPlaceholder'
+                )}
                 value={field.value || ''}
                 slotProps={{
                   inputLabel: {

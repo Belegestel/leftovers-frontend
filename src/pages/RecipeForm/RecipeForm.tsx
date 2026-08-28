@@ -286,6 +286,7 @@ export default function RecipeForm() {
               <PreparationMethod
                 onNext={goToNextStep}
                 onBack={goToPreviousStep}
+                isMobile={isMobile}
               />
             </Box>
           )}

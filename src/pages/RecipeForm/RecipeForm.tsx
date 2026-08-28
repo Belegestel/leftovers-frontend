@@ -304,6 +304,7 @@ export default function RecipeForm() {
                 recipeId={currentRecipeId}
                 isPublic={savedIsPublic}
                 isDirty={isDirty}
+                isMobile={isMobile}
               />
             </Box>
           )}

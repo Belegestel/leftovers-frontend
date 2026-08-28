@@ -28,3 +28,6 @@ stats.html
 .eslintcache
 
 .env
+
+playwright-report/
+test-results/

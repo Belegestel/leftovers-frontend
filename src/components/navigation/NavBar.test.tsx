@@ -5,6 +5,7 @@ import { isAuthenticated, removeToken } from '@/services/tokenService';
 import { describe, expect, it, vi } from 'vitest';
 import '@testing-library/jest-dom/vitest';
 import { AuthProvider } from '@/context/AuthContext';
+import { useMediaQuery } from '@mui/material';
 
 const mockedNavigate = vi.fn();
 const mockedLocation = vi.fn();
@@ -63,6 +64,15 @@ vi.mock('@/hooks/useRecipeSuggestions', () => ({
     loading: false,
   }),
 }));
+vi.mock('@mui/material', async () => {
+  const actual =
+    await vi.importActual<typeof import('@mui/material')>('@mui/material');
+
+  return {
+    ...actual,
+    useMediaQuery: vi.fn(),
+  };
+});
 
 describe('NavBar', () => {
   it('shows login and signup when logged out', async () => {
@@ -263,5 +273,17 @@ describe('NavBar', () => {
       expect.stringContaining('search=Tasty+recipe'),
       undefined
     );
+  });
+
+  it('renders a simplified navbar on narrow screens', () => {
+    vi.mocked(useMediaQuery).mockReturnValue(true);
+
+    render(
+      <AuthProvider>
+        <NavBar authenticated={false} onLogout={() => {}} />
+      </AuthProvider>
+    );
+
+    expect(screen.getByTestId('MenuIcon')).toBeInTheDocument();
   });
 });

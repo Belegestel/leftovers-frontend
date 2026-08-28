@@ -197,7 +197,9 @@
     "myRecipes": "Mes recettes",
     "logout": "Se déconnecter",
     "login": "Se connecter",
-    "signup": "S'inscrire"
+    "signup": "S'inscrire",
+    "home": "Accueil",
+    "notifications": "Notifications"
   },
   "recipeCard": {
     "recipeOfTheDay": "Recette du jour",

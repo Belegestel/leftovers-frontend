@@ -1,5 +1,4 @@
 import { test, expect } from './fixtures';
-import { mockNotificationSocket } from './mocks/notifications';
 import { logIn } from './utils';
 
 test('receives notification', async ({

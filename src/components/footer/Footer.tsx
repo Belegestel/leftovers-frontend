@@ -1,9 +1,11 @@
-import { Box, Link, Typography } from '@mui/material';
+import { Box, Link, Typography, useMediaQuery, useTheme } from '@mui/material';
 import instagramIcon from '@/assets/instagram.svg';
 import facebookIcon from '@/assets/facebook.svg';
 import { useTranslation } from 'react-i18next';
 
 export function Footer() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { t } = useTranslation();
   return (
     <Box
@@ -16,6 +18,7 @@ export function Footer() {
         py: 2,
         borderTop: '1px solid',
         borderColor: 'divider',
+        flexWrap: isMobile ? 'wrap' : 'nowrap',
       }}
     >
       <Link href="https://www.instagram.com/" aria-label="Instagram">

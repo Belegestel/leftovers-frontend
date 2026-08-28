@@ -244,6 +244,25 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                 {t('navbar.home')}
               </MenuItem>
 
+              <MenuItem
+                key="recipes"
+                onClick={(event) => {
+                  setRecipesAnchor(event.currentTarget);
+                }}
+                sx={{
+                  '&:hover svg': { transform: 'scale(1.3)' },
+                  '& svg': {
+                    transition: 'transform 150ms ease',
+                    ...(Boolean(recipesAnchor) && {
+                      transform: 'rotateX(180deg)',
+                    }),
+                  },
+                }}
+              >
+                <KeyboardArrowDownIcon />
+                {t('navbar.recipes')}
+              </MenuItem>
+
               {authenticated ? (
                 <>
                   <MenuItem
@@ -283,25 +302,6 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                       <NotificationsIcon />
                     </Badge>
                     {t('navbar.notifications')}
-                  </MenuItem>
-
-                  <MenuItem
-                    key="recipes"
-                    onClick={(event) => {
-                      setRecipesAnchor(event.currentTarget);
-                    }}
-                    sx={{
-                      '&:hover svg': { transform: 'scale(1.3)' },
-                      '& svg': {
-                        transition: 'transform 150ms ease',
-                        ...(Boolean(recipesAnchor) && {
-                          transform: 'rotateX(180deg)',
-                        }),
-                      },
-                    }}
-                  >
-                    <KeyboardArrowDownIcon />
-                    {t('navbar.recipes')}
                   </MenuItem>
 
                   <MenuItem

@@ -160,7 +160,9 @@
       "login": "Login"
     },
     "resetPassword": {
-      "snackbar": { "fail": "Password reset failed" },
+      "snackbar": {
+        "fail": "Password reset failed"
+      },
       "title": "New password",
       "description": "Please ensure your password is a minimum of 8 characters long. Ideally, include a mix of both letters and numbers",
       "newPasswordTitle": "New password",

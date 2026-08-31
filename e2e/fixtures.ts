@@ -27,7 +27,7 @@ type Fixtures = {
   mockImageUploadUrl: (id?: number) => Promise<void>;
   mockRecipesCreate: (id?: number) => Promise<void>;
   mockRecipeId: (id: number) => Promise<void>;
-  mockRateRecipe: (id: number) => Promise<void>;
+  mockRateRecipe: (id: number, authorized?: boolean) => Promise<void>;
   mockRecipeSuggestions: () => Promise<void>;
 
   mockAuth: () => Promise<[void, void, void, void, void]>;
@@ -68,7 +68,9 @@ export const test = base.extend<Fixtures>({
   },
 
   mockRateRecipe: async ({ page }, use) => {
-    await use((id: number) => mockRateRecipe(page, id));
+    await use((id: number, authorized?: boolean) =>
+      mockRateRecipe(page, id, authorized)
+    );
   },
 
   mockRecipeSuggestions: async ({ page }, use) => {

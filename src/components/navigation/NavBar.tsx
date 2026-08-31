@@ -185,6 +185,12 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
               onClick={() => handleSearch()}
               aria-label="search"
               sx={{
+                '&:hover svg': {
+                  transform: 'scale(1.2)',
+                },
+                '& svg': {
+                  transition: 'transform 100ms ease',
+                },
                 flexShrink: 0,
               }}
             >
@@ -283,8 +289,13 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                       setNotificationsAnchor(event.currentTarget)
                     }
                     sx={{
-                      '&:hover svg': { transform: 'rotate(15deg)' },
-                      '& svg': { transition: 'transform 100ms ease' },
+                      '&:hover svg': {
+                        transform: 'rotate(15deg) scale(1.1)',
+                      },
+                      '& svg': {
+                        transition: 'transform 100ms ease-in',
+                        transformOrigin: 'center 25%',
+                      },
                     }}
                   >
                     <Badge
@@ -407,25 +418,45 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
                       setNotificationsAnchor(event.currentTarget)
                     }
                     aria-label="notifications-button"
+                    sx={{
+                      '&:hover .content': {
+                        transform: 'rotate(15deg) scale(1.1)',
+                      },
+                      '& .content': {
+                        transformOrigin: 'center 25%',
+                        transition: 'transform 100ms ease-in',
+                      },
+                    }}
                   >
-                    <Badge
-                      sx={{
-                        '& .MuiBadge-badge': {
-                          backgroundColor: 'notification.main',
-                          color: 'background.default',
-                        },
-                      }}
-                      badgeContent={unreadNotificationsCount}
-                    >
-                      <NotificationsIcon />
-                    </Badge>
+                    <Box className="content">
+                      <Badge
+                        sx={{
+                          '& .MuiBadge-badge': {
+                            backgroundColor: 'notification.main',
+                            color: 'background.default',
+                            transformOrigin: 'bottom left',
+                          },
+                        }}
+                        badgeContent={unreadNotificationsCount}
+                      >
+                        <NotificationsIcon />
+                      </Badge>
+                    </Box>
                   </Button>
 
                   <Button
                     variant="contained"
                     endIcon={<KeyboardArrowDownIcon />}
                     onClick={(event) => setMyAccountAnchor(event.currentTarget)}
-                    sx={{ whiteSpace: 'nowrap' }}
+                    sx={{
+                      whiteSpace: 'nowrap',
+                      '&:hover svg': {
+                        transform: 'scale(1.3)',
+                      },
+                      '& svg': {
+                        transition: 'transform 100ms linear',
+                      },
+                    }}
                   >
                     {t('navbar.myAcc')}
                   </Button>
@@ -579,7 +610,7 @@ export function NavBar({ authenticated, onLogout }: NavBarProps) {
           }}
         >
           <Typography variant="h4" sx={{ padding: '5px', textAlign: 'center' }}>
-            Notifications
+            {t('navbar.notifications')}
           </Typography>
 
           <Divider />

@@ -42,6 +42,35 @@ export function NotificationCard({ notification }: NotificationCardProps) {
         display: 'block',
         width: '100%',
         ...(notification.isRead && { pointerEvents: 'none' }),
+
+        '&:hover .dateField': {
+          transform: 'scale(1.2)',
+        },
+        '& .dateField': {
+          transition: 'transform 150ms ease',
+        },
+        '&:hover ::before': {
+          ...(!notification.isRead && {
+            top: 4,
+            bottom: 4,
+            width: 8,
+          }),
+        },
+        '& ::before': {
+          transition: 'top 150ms ease, bottom 150ms ease, width 150ms ease',
+        },
+        '&:hover p': {
+          transform: 'translateX(4px)',
+        },
+        '& p': {
+          transition: 'transform 150ms ease',
+        },
+        '&:hover h6': {
+          transform: 'translateX(4px)',
+        },
+        '& h6': {
+          transition: 'transform 150ms ease',
+        },
       }}
     >
       <Box
@@ -70,12 +99,14 @@ export function NotificationCard({ notification }: NotificationCardProps) {
         <Typography variant="h6">{title}</Typography>
         <Typography>{description}</Typography>
         <Typography
+          className="dateField"
           sx={{
             position: 'absolute',
             top: 0,
             right: 0,
             fontSize: 12,
             color: 'text.secondary',
+            transformOrigin: 'top right',
           }}
         >
           {date}

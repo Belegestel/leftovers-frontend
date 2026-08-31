@@ -5,6 +5,7 @@ import { SaveRecipeButton } from './SaveRecipeButton';
 import { RecipeRating } from './RecipeRating';
 import CheckIcon from '@mui/icons-material/Check';
 import { useTranslation } from 'react-i18next';
+import React from 'react';
 
 interface RecipeDetailsCardProps {
   recipe: Recipe;
@@ -199,7 +200,15 @@ export function RecipeDetailsCard({
           mt: 5,
         }}
       >
-        <Box>
+        <Box
+          sx={{
+            '&:hover': {
+              transform: 'scale(1.05)',
+            },
+            transition: 'transform 150ms ease',
+            transformOrigin: 'left center',
+          }}
+        >
           <Typography
             variant="h5"
             sx={{
@@ -210,9 +219,9 @@ export function RecipeDetailsCard({
           </Typography>
 
           <Box>
-            {recipe.ingredients.map((ingredient) => (
+            {recipe.ingredients.map((ingredient, idx) => (
               <Typography
-                key={ingredient}
+                key={idx}
                 sx={{
                   mt: 1.5,
                   '&:hover': {
@@ -227,7 +236,23 @@ export function RecipeDetailsCard({
           </Box>
         </Box>
 
-        <Box sx={{ pl: 5 }}>
+        <Box
+          sx={{
+            pl: 5,
+            '&:hover': {
+              transform: 'scale(1.05)',
+            },
+            transition: 'transform 150ms ease',
+            transformOrigin: 'left center',
+            '&:hover hr': {
+              transform: 'scaleX(0.952)',
+            },
+            '& hr': {
+              transition: 'transform 150ms ease',
+              transformOrigin: 'left center',
+            },
+          }}
+        >
           <Typography
             variant="h5"
             sx={{
@@ -238,36 +263,36 @@ export function RecipeDetailsCard({
           </Typography>
 
           {recipe.steps.map((step, index) => (
-            <Box
-              key={step}
-              sx={{
-                '&:hover': {
-                  transform: 'translateX(5px)',
-                },
-                transition: 'transform 100ms linear',
-              }}
-            >
-              <Typography
-                variant="overline"
+            <React.Fragment key={index}>
+              <Box
                 sx={{
-                  fontWeight: 700,
-                  mt: 1,
-                  color: 'primary.main',
+                  '&:hover': {
+                    transform: 'translateX(5px)',
+                  },
+                  transition: 'transform 100ms linear',
                 }}
               >
-                {t('recipeCard.stepNum', { index: index + 1 })}
-              </Typography>
+                <Typography
+                  variant="overline"
+                  sx={{
+                    fontWeight: 700,
+                    mt: 1,
+                    color: 'primary.main',
+                  }}
+                >
+                  {t('recipeCard.stepNum', { index: index + 1 })}
+                </Typography>
 
-              <Typography
-                sx={{
-                  mb: 1,
-                }}
-              >
-                {step}
-              </Typography>
-
+                <Typography
+                  sx={{
+                    mb: 1,
+                  }}
+                >
+                  {step}
+                </Typography>
+              </Box>
               {index !== recipe.steps.length - 1 && <Divider sx={{ mb: 1 }} />}
-            </Box>
+            </React.Fragment>
           ))}
         </Box>
       </Box>

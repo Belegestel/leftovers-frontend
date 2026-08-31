@@ -17,12 +17,13 @@ import type { RecipeFormValues } from '@/types/recipeForm';
 
 interface BasicInformationProps {
   onNext: () => void;
+  isMobile: boolean;
 }
 
 const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/gif', 'image/svg+xml'];
 const ALLOWED_FILE_SIZE = 3 * 1024 * 1024;
 
-export function BasicInformation({ onNext }: BasicInformationProps) {
+export function BasicInformation({ onNext, isMobile }: BasicInformationProps) {
   const {
     control,
     register,
@@ -90,15 +91,32 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
     });
   };
 
+  const nextButton = (
+    <Button variant="contained" disabled={!isValid || !image} onClick={onNext}>
+      {t('addRecipe.next')} &gt;
+    </Button>
+  );
+
   return (
     <Box
       sx={{
         display: 'flex',
         gap: 5,
         mt: 4,
+        flexDirection: isMobile ? 'column-reverse' : 'row',
       }}
     >
-      <Box sx={{ width: 300 }}>
+      {isMobile && nextButton}
+      <Box
+        sx={{
+          width: 300,
+          ...(isMobile && {
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }),
+        }}
+      >
         <Typography
           variant="h6"
           sx={{
@@ -119,8 +137,8 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
         <Box
           onClick={() => fileInputRef.current?.click()}
           sx={{
-            width: 300,
-            height: 300,
+            width: isMobile ? 180 : 300,
+            height: isMobile ? 180 : 300,
             border: '1px dashed',
             borderColor: 'divider',
             display: 'flex',
@@ -200,13 +218,7 @@ export function BasicInformation({ onNext }: BasicInformationProps) {
             {t('addRecipe.pages.basic.title')}
           </Typography>
 
-          <Button
-            variant="contained"
-            disabled={!isValid || !image}
-            onClick={onNext}
-          >
-            {t('addRecipe.next')} &gt;
-          </Button>
+          {!isMobile && nextButton}
         </Box>
 
         <Box

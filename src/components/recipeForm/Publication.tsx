@@ -18,6 +18,7 @@ interface PublicationProps {
   recipeId?: number;
   isPublic?: boolean;
   isDirty?: boolean;
+  isMobile: boolean;
 }
 
 export function Publication({
@@ -29,6 +30,7 @@ export function Publication({
   recipeId,
   isPublic,
   isDirty,
+  isMobile,
 }: PublicationProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -131,7 +133,7 @@ export function Publication({
           onClick={onBack}
           sx={{ border: '1px solid', borderColor: 'currentColor' }}
         >
-          &lt; {t('addRecipe.back')}
+          &lt; {!isMobile && t('addRecipe.back')}
         </Button>
       </Box>
 
@@ -153,6 +155,10 @@ export function Publication({
             justifyContent: 'space-between',
             alignItems: 'center',
             py: 3,
+            flexDirection: isMobile ? 'column' : 'row',
+            '& button': {
+              mt: 1,
+            },
           }}
         >
           <Box>
@@ -197,6 +203,10 @@ export function Publication({
             justifyContent: 'space-between',
             alignItems: 'center',
             py: 3,
+            flexDirection: isMobile ? 'column' : 'row',
+            '& button': {
+              mt: 1,
+            },
           }}
         >
           <Box>
@@ -238,6 +248,10 @@ export function Publication({
             justifyContent: 'space-between',
             alignItems: 'center',
             py: 3,
+            flexDirection: isMobile ? 'column' : 'row',
+            '& button': {
+              mt: 1,
+            },
           }}
         >
           <Box>

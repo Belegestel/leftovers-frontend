@@ -14,11 +14,15 @@ import type { RecipeFormValues } from '@/types/recipeForm';
 interface PreparationMethodProps {
   onBack: () => void;
   onNext: () => void;
+  isMobile: boolean;
 }
 
-export function PreparationMethod({ onBack, onNext }: PreparationMethodProps) {
-  const { control, register, getValues } =
-    useFormContext<RecipeFormValues>();
+export function PreparationMethod({
+  onBack,
+  onNext,
+  isMobile,
+}: PreparationMethodProps) {
+  const { control, getValues } = useFormContext<RecipeFormValues>();
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -60,11 +64,11 @@ export function PreparationMethod({ onBack, onNext }: PreparationMethodProps) {
             onClick={onBack}
             sx={{ border: '1px solid', borderColor: 'currentColor' }}
           >
-            &lt; {t('addRecipe.back')}
+            &lt; {!isMobile && t('addRecipe.back')}
           </Button>
 
           <Button variant="contained" disabled={!stepsValid} onClick={onNext}>
-            {t('addRecipe.next')} &gt;
+            {!isMobile && t('addRecipe.next')} &gt;
           </Button>
         </Box>
       </Box>
@@ -84,10 +88,10 @@ export function PreparationMethod({ onBack, onNext }: PreparationMethodProps) {
               <TextField
                 {...field}
                 fullWidth
-            label={t('addRecipe.pages.preparation.stepLabel', {
-              index: index + 1,
-            })}
-            placeholder={t('addRecipe.pages.preparation.stepPlaceholder')}
+                label={t('addRecipe.pages.preparation.stepLabel', {
+                  index: index + 1,
+                })}
+                placeholder={t('addRecipe.pages.preparation.stepPlaceholder')}
                 value={field.value}
                 slotProps={{
                   inputLabel: {

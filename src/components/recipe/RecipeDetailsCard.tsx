@@ -5,6 +5,7 @@ import { SaveRecipeButton } from './SaveRecipeButton';
 import { RecipeRating } from './RecipeRating';
 import CheckIcon from '@mui/icons-material/Check';
 import { useTranslation } from 'react-i18next';
+import React from 'react';
 
 interface RecipeDetailsCardProps {
   recipe: Recipe;
@@ -218,9 +219,9 @@ export function RecipeDetailsCard({
           </Typography>
 
           <Box>
-            {recipe.ingredients.map((ingredient) => (
+            {recipe.ingredients.map((ingredient, idx) => (
               <Typography
-                key={ingredient}
+                key={idx}
                 sx={{
                   mt: 1.5,
                   '&:hover': {
@@ -262,9 +263,8 @@ export function RecipeDetailsCard({
           </Typography>
 
           {recipe.steps.map((step, index) => (
-            <>
+            <React.Fragment key={index}>
               <Box
-                key={step}
                 sx={{
                   '&:hover': {
                     transform: 'translateX(5px)',
@@ -292,7 +292,7 @@ export function RecipeDetailsCard({
                 </Typography>
               </Box>
               {index !== recipe.steps.length - 1 && <Divider sx={{ mb: 1 }} />}
-            </>
+            </React.Fragment>
           ))}
         </Box>
       </Box>

@@ -1,4 +1,4 @@
-import { httpService } from "./httpService";
+import { httpService } from './httpService';
 
 export interface RegisterRequest {
   email: string;
@@ -17,6 +17,10 @@ export interface ForgotPasswordRequest {
 export interface ResetPasswordRequest {
   token: string;
   newPassword: string;
+}
+
+export interface RefreshRequest {
+  token: string;
 }
 
 export async function register(data: RegisterRequest) {
@@ -39,6 +43,12 @@ export async function forgotPassword(data: ForgotPasswordRequest) {
 
 export async function resetPassword(data: ResetPasswordRequest) {
   const response = await httpService.post('/auth/reset-password/confirm', data);
+
+  return response.data;
+}
+
+export async function refresh(data: RefreshRequest) {
+  const response = await httpService.post('/auth/refresh', data);
 
   return response.data;
 }

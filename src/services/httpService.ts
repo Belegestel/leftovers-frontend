@@ -6,6 +6,7 @@ import {
   clearTokens,
   updateTokens,
 } from './tokenService';
+import { refresh } from './authService';
 
 export const httpService = axios.create({
   baseURL: env.apiUrl,
@@ -77,9 +78,7 @@ httpService.interceptors.response.use(
     isRefreshing = true;
 
     try {
-      const { data } = await axios.post(`${env.apiUrl}/auth/refresh`, {
-        token: refreshToken,
-      });
+      const data = await refresh({ token: refreshToken });
 
       updateTokens(data.accessToken, data.refreshToken);
 

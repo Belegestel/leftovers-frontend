@@ -115,10 +115,12 @@ test('user can request a password reset', async ({
   mockRecipeCategories,
   mockRecipes,
   mockResetPassword,
+  mockRecipeId,
 }) => {
   await mockRecipes();
   await mockRecipeCategories();
   await mockResetPassword();
+  await mockRecipeId(3);
 
   await page.goto('/');
 
@@ -158,11 +160,43 @@ test('navbar changes for a logged in user', async ({
 
   await page.goto('/');
 
-  const loginButton = page.getByRole('button', {name: 'Log in'});
+  const loginButton = page.getByRole('button', { name: 'Log in' });
 
   await logIn(page);
 
   await expect(loginButton).not.toBeVisible();
   await expect(page.getByRole('button', { name: 'My account' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Add recipe' })).toBeVisible();
+});
+
+test("user's tokens refresh automatically", async ({
+  page,
+  mockRecipes,
+  mockRecipeCategories,
+  mockLogin,
+  mockMe,
+  mockNotification,
+  mockRecipeId,
+  mockRateRecipe,
+}) => {
+  await mockRecipeCategories();
+  await mockRecipes();
+  await mockLogin();
+  await mockMe();
+  await mockNotification();
+  await mockRecipeId(3);
+  await mockRateRecipe(3, false);
+
+  await page.goto('/');
+  await logIn(page);
+
+  await page.getByText('Pizza').nth(2).click();
+  await expect(page.getByText('Pizza')).toHaveCount(2);
+
+  await page.getByRole('button', { name: /rate the recipe/i }).click();
+  const submitButton = page.getByText(/submit/i);
+  await expect(submitButton).toBeVisible();
+
+  await page.locator('label').filter({ hasText: '4 Stars' }).click();
+  await submitButton.click();
 });

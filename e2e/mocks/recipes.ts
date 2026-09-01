@@ -62,8 +62,13 @@ export async function mockImageUploadUrl(page: Page, id?: number) {
   });
 }
 
-export async function mockRateRecipe(page: Page, id: number) {
-  await mockPost(page, `/recipes/${id}/rate`, {});
+export async function mockRateRecipe(page: Page, id: number, authorized?: boolean) {
+  if (authorized === false) {
+    await mockPost(page, `/recipes/${id}/rate`, Error());
+  }
+  else {
+    await mockPost(page, `/recipes/${id}/rate`, {});
+  }
 }
 
 export async function mockSuggestions(page: Page) {

@@ -94,7 +94,7 @@ type ImageUploadUrlResponse = {
   key: string;
 };
 
-async function uploadImage(recipeId: number, image: File) {
+export async function uploadImage(recipeId: number, image: File) {
   const uploadUrlResponse = await httpService.post<ImageUploadUrlResponse>(
     `/recipes/${recipeId}/image-upload-url`,
     {

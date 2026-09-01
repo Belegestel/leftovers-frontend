@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test';
-import { mockGet, mockPost } from './api';
+import { mockGet, mockPatch, mockPost } from './api';
 import {
   recipesResponse,
   categoriesResponse,
@@ -84,4 +84,12 @@ export async function mockSuggestions(page: Page) {
       ],
     };
   });
+}
+
+export async function mockRecipeEdit(page: Page, id: number) {
+  await mockPatch(page, `/recipes/${id}/edit`, {});
+}
+
+export async function mockRecipeDelete(page: Page, id: number) {
+  await mockPost(page, `/recipes/${id}/delete`, {});
 }

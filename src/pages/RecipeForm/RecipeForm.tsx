@@ -15,6 +15,7 @@ import {
   deleteRecipe,
   editRecipe,
   getRecipe,
+  uploadImage,
 } from '@/services/recipeService';
 import { useParams } from 'react-router-dom';
 import { useSnackbar } from '@/components/common/SnackbarProvider';
@@ -105,9 +106,7 @@ export default function RecipeForm() {
         reset({
           title: recipe.title,
           description: recipe.description,
-          category: recipe.category
-            .toLowerCase()
-            .replace(/\b\w/g, (char) => char.toUpperCase()),
+          category: recipe.category,
           prepTime: recipe.prepTime,
           servings: recipe.servings,
           ingredients: recipe.ingredients.map((ingredient: string) => ({
@@ -130,7 +129,7 @@ export default function RecipeForm() {
     };
 
     loadRecipe();
-  }, [recipeIdFromRoute, reset, navigate, showSnackbar]);
+  }, [recipeIdFromRoute, reset, showSnackbar]);
 
   const goToNextStep = () => {
     setActiveStep((currentStep) => {
@@ -155,14 +154,15 @@ export default function RecipeForm() {
   const handleSaveRecipe = async (isPublic: boolean): Promise<Recipe> => {
     const values = methods.getValues();
 
+    if (typeof values.image === 'string') {
+      throw new Error('File upload error');
+    }
+
     const recipe = await createRecipeWithImage(
       {
         title: values.title,
         description: values.description,
-        category:
-          values.category.toLowerCase() === 'breakfasts'
-            ? 'BREAKFAST'
-            : values.category.toUpperCase(),
+        category: values.category,
         prepTime: values.prepTime ?? 0,
         servings: values.servings,
         ingredients: values.ingredients.map((ingredient) => ingredient.value),
@@ -171,7 +171,30 @@ export default function RecipeForm() {
       },
       values.image
     );
+    reset(methods.getValues());
     return recipe;
+  };
+
+  const handleEditRecipe = async (
+    recipeId: number,
+    isPrivate: boolean
+  ): Promise<void> => {
+    const values = methods.getValues();
+
+    await editRecipe(recipeId, {
+      title: values.title,
+      description: values.description,
+      category: values.category,
+      prepTime: values.prepTime ?? 0,
+      servings: values.servings,
+      ingredients: values.ingredients.map((ingredient) => ingredient.value),
+      steps: values.steps.map((step) => step.value),
+      isPublic: !isPrivate,
+    });
+    if (values.image && typeof values.image !== 'string') {
+      await uploadImage(recipeId, values.image);
+    }
+    reset(methods.getValues());
   };
 
   const handleEditVisibility = async (
@@ -285,6 +308,9 @@ export default function RecipeForm() {
                 onBack={goToPreviousStep}
                 onSavePrivate={() => handleSaveRecipe(false)}
                 onPublish={() => handleSaveRecipe(true)}
+                onEdit={(recipeId: number, isPrivate: boolean) =>
+                  handleEditRecipe(recipeId, isPrivate)
+                }
                 onChangeVisibility={(recipeId: number, isPrivate: boolean) =>
                   handleEditVisibility(recipeId, isPrivate)
                 }

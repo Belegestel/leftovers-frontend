@@ -17,8 +17,7 @@ interface IngredientsProps {
 }
 
 export function Ingredients({ onBack, onNext }: IngredientsProps) {
-  const { control, register, getValues } =
-    useFormContext<RecipeFormValues>();
+  const { control, getValues } = useFormContext<RecipeFormValues>();
 
   const { t } = useTranslation();
 
@@ -94,7 +93,9 @@ export function Ingredients({ onBack, onNext }: IngredientsProps) {
                 label={t('addRecipe.pages.ingredients.ingredientCounter', {
                   index: index + 1,
                 })}
-                placeholder={t('addRecipe.pages.ingredients.ingredientCounterPlaceholder')}
+                placeholder={t(
+                  'addRecipe.pages.ingredients.ingredientCounterPlaceholder'
+                )}
                 value={field.value || ''}
                 slotProps={{
                   inputLabel: {

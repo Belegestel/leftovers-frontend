@@ -13,6 +13,7 @@ interface PublicationProps {
   onBack: () => void;
   onSavePrivate: () => Promise<Recipe>;
   onPublish: () => Promise<Recipe>;
+  onEdit: (recipeId: number, isPrivate: boolean) => Promise<void>;
   onChangeVisibility: (recipeId: number, isPrivate: boolean) => Promise<void>;
   onRecipeDelete: (recipeId: number) => Promise<void>;
   recipeId?: number;
@@ -24,6 +25,7 @@ export function Publication({
   onBack,
   onSavePrivate,
   onPublish,
+  onEdit,
   onChangeVisibility,
   onRecipeDelete,
   recipeId,
@@ -43,6 +45,7 @@ export function Publication({
 
   const handleAction = async (
     action: () => Promise<Recipe>,
+    editAction: (recipeId: number, isPrivate: boolean) => Promise<void>,
     visibilityAction: (recipeId: number, isPrivate: boolean) => Promise<void>,
     isPrivate: boolean
   ) => {
@@ -51,11 +54,14 @@ export function Publication({
       setError(null);
 
       if (recipeId === undefined || isDirty) {
-        const recipe = await action();
+        if (recipeId === undefined) {
+          await action();
+        } else {
+          await editAction(recipeId, isPrivate);
+        }
       } else {
         await visibilityAction(recipeId, isPrivate);
       }
-
       if (isPrivate) {
         showSnackbar({
           message: `🔒 ${t('addRecipe.snackbar.savedPrivate')}`,
@@ -84,14 +90,13 @@ export function Publication({
 
   const handleDelete = async () => {
     try {
-      if (recipeId === undefined) {
-        return;
+      if (recipeId !== undefined) {
+        await onRecipeDelete(recipeId);
       }
 
       setLoading(true);
       setError(null);
 
-      await onRecipeDelete(recipeId);
       navigate('/');
       showSnackbar({
         message: '🗑️ Your recipe has been deleted!',
@@ -169,7 +174,7 @@ export function Publication({
             variant="secondary"
             disabled={loading || (saved === 'private' && !(isDirty ?? false))}
             onClick={() =>
-              handleAction(onSavePrivate, onChangeVisibility, true)
+              handleAction(onSavePrivate, onEdit, onChangeVisibility, true)
             }
             sx={{
               borderColor: 'currentColor',
@@ -212,7 +217,9 @@ export function Publication({
           <Button
             variant="contained"
             disabled={loading || (saved === 'public' && !isDirty)}
-            onClick={() => handleAction(onPublish, onChangeVisibility, false)}
+            onClick={() =>
+              handleAction(onPublish, onEdit, onChangeVisibility, false)
+            }
             sx={{
               '&:hover svg': { transform: 'rotate(15deg)' },
               '& svg': { transition: 'transform 200ms ease-out' },
